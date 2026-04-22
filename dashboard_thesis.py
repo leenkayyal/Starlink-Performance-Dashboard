@@ -575,6 +575,171 @@ def make_model_comparison_table(df):
 
 
 # ======================
+# ADVISOR TAB HELPERS
+# ======================
+
+ADVISOR_USE_CASES = {
+    "Video calls / online meetings": {
+        "icon": "📹",
+        "latency_max": 50,
+        "jitter_max": 10,
+        "download_min": 10,
+        "upload_min": 5,
+        "description": "Needs low latency and stable jitter. Upload matters as much as download.",
+    },
+    "Live gaming": {
+        "icon": "🎮",
+        "latency_max": 40,
+        "jitter_max": 8,
+        "download_min": 15,
+        "upload_min": 5,
+        "description": "Very sensitive to latency spikes and jitter. The most demanding use case.",
+    },
+    "Streaming (Netflix, YouTube, etc.)": {
+        "icon": "📺",
+        "latency_max": 100,
+        "jitter_max": 20,
+        "download_min": 25,
+        "upload_min": 1,
+        "description": "Mostly needs consistent download speed. Latency matters less here.",
+    },
+    "General browsing / social media": {
+        "icon": "🌐",
+        "latency_max": 100,
+        "jitter_max": 25,
+        "download_min": 5,
+        "upload_min": 1,
+        "description": "Low requirements. Works in most conditions.",
+    },
+    "File uploads / cloud backup": {
+        "icon": "☁️",
+        "latency_max": 150,
+        "jitter_max": 30,
+        "download_min": 5,
+        "upload_min": 10,
+        "description": "Upload speed is the main factor here.",
+    },
+    "Remote work / VPN / company systems": {
+        "icon": "💼",
+        "latency_max": 60,
+        "jitter_max": 12,
+        "download_min": 10,
+        "upload_min": 5,
+        "description": "Needs reliable latency and stable connection. Similar demands to video calls.",
+    },
+}
+
+# Location adjustments — penalty/bonus on latency and download
+LOCATION_ADJUSTMENTS = {
+    "City (Muscat, major urban area)":        {"latency_delta": 0,   "download_factor": 1.0},
+    "Suburb (outside city centre)":           {"latency_delta": 3,   "download_factor": 0.95},
+    "Rural area":                             {"latency_delta": 6,   "download_factor": 0.90},
+    "Desert / very remote area":              {"latency_delta": 10,  "download_factor": 0.82},
+}
+
+SKY_ADJUSTMENTS = {
+    "Completely clear — no obstructions":     {"latency_delta": 0,   "download_factor": 1.0},
+    "Mostly clear — minor trees or walls":    {"latency_delta": 3,   "download_factor": 0.95},
+    "Partially blocked — buildings nearby":   {"latency_delta": 8,   "download_factor": 0.88},
+    "Heavily obstructed":                     {"latency_delta": 18,  "download_factor": 0.70},
+}
+
+TIME_ADJUSTMENTS = {
+    "Morning (6 AM – 12 PM)":                {"latency_delta": 0,   "download_factor": 1.0},
+    "Afternoon (12 PM – 6 PM)":              {"latency_delta": 2,   "download_factor": 0.97},
+    "Evening (6 PM – 10 PM)":               {"latency_delta": 8,   "download_factor": 0.88},
+    "Night (10 PM – 6 AM)":                  {"latency_delta": -2,  "download_factor": 1.05},
+}
+
+WEATHER_ADJUSTMENTS = {
+    "Clear / sunny":                          {"latency_delta": 0,   "download_factor": 1.0},
+    "Partly cloudy":                          {"latency_delta": 2,   "download_factor": 0.97},
+    "Overcast / cloudy":                      {"latency_delta": 4,   "download_factor": 0.93},
+    "Light rain or drizzle":                  {"latency_delta": 7,   "download_factor": 0.88},
+    "Heavy rain or thunderstorm":             {"latency_delta": 15,  "download_factor": 0.75},
+    "Sandstorm / dust":                       {"latency_delta": 10,  "download_factor": 0.82},
+}
+
+TEMP_ADJUSTMENTS = {
+    "Below 20°C":                             {"latency_delta": 0,   "download_factor": 1.0},
+    "20–30°C":                                {"latency_delta": 0,   "download_factor": 1.0},
+    "30–40°C":                                {"latency_delta": 2,   "download_factor": 0.97},
+    "Above 40°C":                             {"latency_delta": 5,   "download_factor": 0.93},
+}
+
+
+def advisor_predict(base_latency, base_download, base_upload, base_jitter,
+                    location, sky, time_of_day, weather, temp):
+    """Apply condition adjustments to base forecast values and return adjusted metrics."""
+    adj = [
+        LOCATION_ADJUSTMENTS[location],
+        SKY_ADJUSTMENTS[sky],
+        TIME_ADJUSTMENTS[time_of_day],
+        WEATHER_ADJUSTMENTS[weather],
+        TEMP_ADJUSTMENTS[temp],
+    ]
+    total_lat_delta = sum(a["latency_delta"] for a in adj)
+    total_dl_factor = 1.0
+    for a in adj:
+        total_dl_factor *= a["download_factor"]
+
+    adj_latency  = max(10.0, base_latency  + total_lat_delta)
+    adj_jitter   = max(2.0,  base_jitter   + total_lat_delta * 0.3)
+    adj_download = max(2.0,  base_download * total_dl_factor)
+    adj_upload   = max(1.0,  base_upload   * total_dl_factor)
+
+    return adj_latency, adj_jitter, adj_download, adj_upload
+
+
+def traffic_light(use_case_name, latency, jitter, download, upload):
+    """Returns 'green', 'amber', or 'red' for a given use case."""
+    uc = ADVISOR_USE_CASES[use_case_name]
+    failures = 0
+    if latency  > uc["latency_max"]:   failures += 2
+    if jitter   > uc["jitter_max"]:    failures += 1
+    if download < uc["download_min"]:  failures += 2
+    if upload   < uc["upload_min"]:    failures += 2
+
+    if failures == 0:
+        return "green"
+    elif failures <= 2:
+        return "amber"
+    else:
+        return "red"
+
+
+def traffic_light_html(color, use_case, icon, description):
+    bg = {"green": "#052e16", "amber": "#1c1a08", "red": "#1c0505"}[color]
+    border = {"green": "#10b981", "amber": "#f59e0b", "red": "#ef4444"}[color]
+    label  = {"green": "Suitable", "amber": "Limited", "red": "Not Recommended"}[color]
+    text   = {"green": "#10b981",  "amber": "#f59e0b",  "red": "#ef4444"}[color]
+    dot    = {"green": "#10b981",  "amber": "#f59e0b",  "red": "#ef4444"}[color]
+    return f"""
+    <div style="
+        background:{bg}; border:1px solid {border}44;
+        border-left:4px solid {border};
+        border-radius:12px; padding:1rem 1.2rem; margin-bottom:0.6rem;
+        display:flex; align-items:flex-start; gap:1rem;
+    ">
+        <div style="font-size:1.5rem; margin-top:0.1rem;">{icon}</div>
+        <div style="flex:1;">
+            <div style="font-weight:700; color:#e2e8f0; font-size:0.95rem;">{use_case}</div>
+            <div style="color:#94a3b8; font-size:0.8rem; margin-top:0.15rem;">{description}</div>
+        </div>
+        <div style="
+            display:flex; flex-direction:column; align-items:center; min-width:90px;
+        ">
+            <div style="
+                width:16px; height:16px; border-radius:50%;
+                background:{dot}; box-shadow:0 0 8px {dot}88;
+                margin-bottom:0.3rem;
+            "></div>
+            <div style="color:{text}; font-weight:800; font-size:0.85rem;">{label}</div>
+        </div>
+    </div>"""
+
+
+# ======================
 # SIDEBAR
 # ======================
 with st.sidebar:
@@ -759,9 +924,9 @@ st.markdown("---")
 # ======================
 # TABS
 # ======================
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "Overview", "Historical Trends", "Forecasting",
-    "Alerts & Recommendations", "Model Evaluation"
+    "Alerts & Recommendations", "Model Evaluation", "Advisor"
 ])
 
 # ---------- TAB 1: OVERVIEW ----------
@@ -926,3 +1091,115 @@ with tab5:
         "Download Latency Predictions CSV",
         pred_df.to_csv(index=False).encode("utf-8"),
         "latency_predictions_thesis.csv", "text/csv")
+
+# ---------- TAB 6: ADVISOR ----------
+with tab6:
+    st.markdown('<div class="section-title">Starlink Suitability Advisor</div>', unsafe_allow_html=True)
+
+    st.markdown("""
+    <div style="
+        background:linear-gradient(135deg,#0d1f3c,#0a1628);
+        border:1px solid #1e3a5f; border-radius:12px;
+        padding:1rem 1.4rem; margin-bottom:1.2rem;
+        color:#94a3b8; font-size:0.88rem; line-height:1.6;
+    ">
+        Answer six questions about your situation and this system will estimate whether
+        Starlink is likely to work for your needs. Predictions are based on real
+        measurements collected in Muscat during March 2026 and adjusted for your conditions.
+    </div>
+    """, unsafe_allow_html=True)
+
+    adv_col1, adv_col2 = st.columns(2)
+
+    with adv_col1:
+        adv_location = st.selectbox(
+            "1. Where are you located?",
+            list(LOCATION_ADJUSTMENTS.keys())
+        )
+        adv_sky = st.selectbox(
+            "2. How clear is the sky view for the dish?",
+            list(SKY_ADJUSTMENTS.keys())
+        )
+        adv_time = st.selectbox(
+            "3. What time of day will you mainly use it?",
+            list(TIME_ADJUSTMENTS.keys())
+        )
+
+    with adv_col2:
+        adv_weather = st.selectbox(
+            "4. What is the weather usually like?",
+            list(WEATHER_ADJUSTMENTS.keys())
+        )
+        adv_temp = st.selectbox(
+            "5. What is the usual temperature?",
+            list(TEMP_ADJUSTMENTS.keys())
+        )
+        adv_uses = st.multiselect(
+            "6. What will you use it for? (select all that apply)",
+            list(ADVISOR_USE_CASES.keys()),
+            default=["Video calls / online meetings", "General browsing / social media"]
+        )
+
+    st.markdown("---")
+
+    if st.button("Get My Prediction", type="primary"):
+        if not adv_uses:
+            st.warning("Please select at least one use case.")
+        else:
+            # Compute adjusted metrics using thesis forecast as the base
+            adj_lat, adj_jitter, adj_dl, adj_ul = advisor_predict(
+                latency_forecast, download_forecast, upload_forecast, current_jitter,
+                adv_location, adv_sky, adv_time, adv_weather, adv_temp
+            )
+
+            # Show predicted metrics
+            st.markdown("### Predicted Performance for Your Conditions")
+            pm1, pm2, pm3, pm4 = st.columns(4)
+            pm1.markdown(kpi_card("Est. Latency",  f"{adj_lat:.1f}",    "ms",   "#60a5fa", "📡"), unsafe_allow_html=True)
+            pm2.markdown(kpi_card("Est. Jitter",   f"{adj_jitter:.1f}", "ms",   "#f472b6", "〰️"), unsafe_allow_html=True)
+            pm3.markdown(kpi_card("Est. Download", f"{adj_dl:.1f}",     "Mbps", "#34d399", "⬇"), unsafe_allow_html=True)
+            pm4.markdown(kpi_card("Est. Upload",   f"{adj_ul:.1f}",     "Mbps", "#fb923c", "⬆"), unsafe_allow_html=True)
+
+            st.markdown("<div style='margin-top:1.2rem;'></div>", unsafe_allow_html=True)
+            st.markdown("### Use Case Ratings")
+
+            for uc_name in adv_uses:
+                uc = ADVISOR_USE_CASES[uc_name]
+                color = traffic_light(uc_name, adj_lat, adj_jitter, adj_dl, adj_ul)
+                st.markdown(
+                    traffic_light_html(color, uc_name, uc["icon"], uc["description"]),
+                    unsafe_allow_html=True
+                )
+
+            # Confidence note
+            st.markdown("<div style='margin-top:1.2rem;'></div>", unsafe_allow_html=True)
+            st.markdown("""
+            <div style="
+                background:linear-gradient(135deg,#1c1a08,#120f04);
+                border:1px solid #f59e0b44; border-left:4px solid #f59e0b;
+                border-radius:12px; padding:1rem 1.4rem;
+                color:#94a3b8; font-size:0.85rem; line-height:1.7;
+            ">
+                <span style="color:#f59e0b; font-weight:700; font-size:0.88rem;">
+                    About these predictions
+                </span><br>
+                These estimates are based on Starlink data collected at a single residential
+                location in Muscat, Oman between March 7 and 28, 2026. The base values come
+                from a trained machine learning model, and the condition adjustments are
+                derived from observed patterns in that dataset. Results may differ at your
+                location due to satellite beam assignment, local obstructions, hardware
+                setup, or network congestion patterns not captured during the experiment.
+                This tool is designed to give a general indication, not a guarantee.
+                If you are in a location or situation very different from Muscat city,
+                treat the amber and red ratings especially seriously.
+            </div>
+            """, unsafe_allow_html=True)
+    else:
+        st.markdown("""
+        <div style="
+            color:#64748b; font-size:0.88rem;
+            padding:0.5rem 0; margin-top:0.5rem;
+        ">
+            Fill in your answers above, then press <strong style="color:#a78bfa">Get My Prediction</strong>.
+        </div>
+        """, unsafe_allow_html=True)
