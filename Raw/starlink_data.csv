@@ -2300,3 +2300,6 @@ timestamp,network_type,ping_target,ping_avg_rtt_ms,ping_jitter_ms,packet_loss_pe
 2026-04-22 11:30:00,Starlink,1.1.1.1,49.869,15.711,5.0,,74.68,33.73,Dubai,Omani Qatari Telecommunication Company SAOC,30.0,84,3.19,,1
 2026-04-22 11:45:00,Starlink,1.1.1.1,34.735,15.727,15.0,,196.05,139.75,Seeb,Omani Qatari Telecommunication Company SAOC,30.1,84,3.42,,1
 2026-04-22 12:15:00,Starlink,1.1.1.1,14.952,6.515,5.0,,225.04,141.71,Seeb,Omani Qatari Telecommunication Company SAOC,30.3,84,3.83,,1
+2026-04-22 12:30:00,Starlink,1.1.1.1,30.567,15.315,5.0,,23.48,79.49,Muscat,Omani Qatari Telecommunication Company SAOC,30.5,84,3.94,,1
+2026-04-22 12:45:00,Starlink,1.1.1.1,12.279,5.533,0.0,,309.42,250.07,Dubai,Omani Qatari Telecommunication Company SAOC,30.6,84,4.08,,1
+2026-04-22 13:00:00,Starlink,1.1.1.1,14.463,7.284,0.0,,,,Muscat,SpaceX Starlink,30.7,84,4.25,,0
