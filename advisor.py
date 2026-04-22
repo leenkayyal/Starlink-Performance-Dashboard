@@ -38,9 +38,10 @@ html, body, [class*="css"], .stApp, .main, .block-container {
 }
 
 .block-container {
-    padding-top: 1.5rem !important;
-    padding-left: 2.5rem !important;
-    padding-right: 2.5rem !important;
+    padding-top: 3.5rem !important;
+    padding-left: 3rem !important;
+    padding-right: 3rem !important;
+    padding-bottom: 3rem !important;
     max-width: 100% !important;
 }
 section[data-testid="stSidebar"] { display: none !important; }
@@ -144,9 +145,9 @@ LOCATION_ADJ = {
     "Desert / very remote area":           {"lat": 10, "dl": 0.82},
 }
 SKY_ADJ = {
-    "Completely clear — no obstructions":  {"lat": 0,  "dl": 1.00},
-    "Mostly clear — minor trees or walls": {"lat": 3,  "dl": 0.95},
-    "Partially blocked — buildings nearby":{"lat": 8,  "dl": 0.88},
+    "Completely clear, no obstructions":  {"lat": 0,  "dl": 1.00},
+    "Mostly clear, minor trees or walls": {"lat": 3,  "dl": 0.95},
+    "Partially blocked, buildings nearby":{"lat": 8,  "dl": 0.88},
     "Heavily obstructed":                  {"lat": 18, "dl": 0.70},
 }
 TIME_ADJ = {
@@ -303,8 +304,8 @@ base = load_base()
 st.markdown("""
 <div style="
     background: linear-gradient(135deg, #0d1f3c 0%, #0a0d1f 50%, #0d1f3c 100%);
-    border-radius: 16px; padding: 2rem 2.5rem; margin-bottom: 1.5rem;
-    border: 1px solid rgba(99,102,241,0.25);
+    border-radius: 16px; padding: 2.5rem 3rem; margin-bottom: 2rem; overflow: hidden;
+    border: 1px solid rgba(99,102,241,0.5);
     box-shadow: 0 0 40px rgba(99,102,241,0.1);
     display: flex; justify-content: space-between; align-items: center;
 ">
@@ -315,10 +316,13 @@ st.markdown("""
         </div>
         <div style="
             font-size: 2.2rem; font-weight: 900; letter-spacing: -1px; line-height: 1.1;
+            font-family: 'DM Sans', system-ui, sans-serif;
             background: linear-gradient(90deg, #60a5fa, #a78bfa, #f472b6);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
         ">Will Starlink work for you?</div>
-        <div style="color:#64748b; font-size:0.9rem; margin-top:0.5rem;">
+        <div style="color:#64748b; font-size:0.9rem; margin-top:0.5rem;
+                    font-family:'DM Sans', system-ui, sans-serif;">
             Answer six questions. Get an honest, data-backed answer.
         </div>
     </div>
@@ -373,9 +377,13 @@ st.markdown("<div style='margin-top:1.5rem;'></div>", unsafe_allow_html=True)
 if st.session_state.step == 1:
 
     st.markdown("""
-    <div style="background:linear-gradient(135deg,#0c1423,#080e1c);border:1px solid #1e3050;
-        border-radius:16px;padding:1.4rem 2rem 0.5rem 2rem;margin-bottom:0.5rem;">
-        <div class="step-label">Step 1 of 3 — Your conditions</div>
+    <div style="border-left:4px solid #3b82f6;padding-left:1rem;margin-bottom:1.2rem;">
+        <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;
+                    letter-spacing:1.8px;color:#3b82f6;margin-bottom:0.2rem;">Step 1 of 3</div>
+        <div style="font-size:1.15rem;font-weight:700;color:#ffffff;">Your conditions</div>
+        <div style="font-size:0.82rem;color:#64748b;margin-top:0.2rem;">
+            Tell us about your location, environment, and what you need Starlink for.
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -429,9 +437,13 @@ elif st.session_state.step == 2:
     perf = adv["perf"]
 
     st.markdown("""
-    <div style="background:linear-gradient(135deg,#0c1423,#080e1c);border:1px solid #1e3050;
-        border-radius:16px;padding:1.4rem 2rem 0.5rem 2rem;margin-bottom:1rem;">
-        <div class="step-label">Step 2 of 3 — Advisory result</div>
+    <div style="border-left:4px solid #a78bfa;padding-left:1rem;margin-bottom:1.2rem;">
+        <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;
+                    letter-spacing:1.8px;color:#a78bfa;margin-bottom:0.2rem;">Step 2 of 3</div>
+        <div style="font-size:1.15rem;font-weight:700;color:#ffffff;">Advisory result</div>
+        <div style="font-size:0.82rem;color:#64748b;margin-top:0.2rem;">
+            Estimated performance based on your conditions and Muscat data.
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -485,7 +497,7 @@ elif st.session_state.step == 2:
             st.session_state.step = 1
             st.rerun()
     with nc:
-        if st.button("I am connected to Starlink — get my forecast →"):
+        if st.button("I am connected to Starlink, get my forecast →"):
             st.session_state.measurements = []
             st.session_state.step = 3
             st.rerun()
@@ -498,9 +510,13 @@ elif st.session_state.step == 3:
     adv = st.session_state.advisory
 
     st.markdown("""
-    <div style="background:linear-gradient(135deg,#0c1423,#080e1c);border:1px solid #1e3050;
-        border-radius:16px;padding:1.4rem 2rem 0.5rem 2rem;margin-bottom:1rem;">
-        <div class="step-label">Step 3 of 3 — Live connection forecast</div>
+    <div style="border-left:4px solid #34d399;padding-left:1rem;margin-bottom:1.2rem;">
+        <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;
+                    letter-spacing:1.8px;color:#34d399;margin-bottom:0.2rem;">Step 3 of 3</div>
+        <div style="font-size:1.15rem;font-weight:700;color:#ffffff;">Live connection forecast</div>
+        <div style="font-size:0.82rem;color:#64748b;margin-top:0.2rem;">
+            Enter your real speed test results to get a personalised forecast.
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
