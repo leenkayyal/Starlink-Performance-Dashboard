@@ -30,6 +30,33 @@ refresh_seconds = 60
 st_autorefresh(interval=refresh_seconds * 1000, key="thesis_refresh")
 
 # ======================
+# LOGIN / ACCESS CONTROL
+# ======================
+from security_config import USERS
+
+def check_login():
+    if "authenticated" not in st.session_state:
+        st.session_state.authenticated = False
+        st.session_state.role = None
+
+    if not st.session_state.authenticated:
+        st.markdown("## Starlink Thesis Dashboard")
+        st.markdown("Please log in to continue.")
+        username = st.text_input("Username")
+        password = st.text_input("Password", type="password")
+        if st.button("Login"):
+            if username in USERS and USERS[username]["password"] == password:
+                st.session_state.authenticated = True
+                st.session_state.role = USERS[username]["role"]
+                st.rerun()
+            else:
+                st.error("Invalid username or password.")
+        st.stop()
+
+check_login()
+
+
+# ======================
 # FILE PATHS
 # ======================
 # These two files contain ONLY the validated March 7–28 experiment data.
