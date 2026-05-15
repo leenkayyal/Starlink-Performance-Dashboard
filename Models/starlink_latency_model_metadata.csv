@@ -1,0 +1,2 @@
+best_model_for_advisor,rows_combined,train_rows,test_rows
+Linear Regression,4050,3240,810

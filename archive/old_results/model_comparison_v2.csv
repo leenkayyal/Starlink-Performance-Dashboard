@@ -1,0 +1,5 @@
+Model,MAE,RMSE
+Naive Baseline,5.135,11.507
+Linear Regression,4.695,11.254
+Random Forest,5.008,11.275
+XGBoost,5.227,12.153

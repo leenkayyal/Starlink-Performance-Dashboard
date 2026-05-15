@@ -1,0 +1,42 @@
+STARLINK CLEANING REPORT
+============================================================
+
+Original rows    : 2085
+Original columns : 16
+Duplicate timestamps after rounding removed : 1
+Corrupt upload_mbps values (< -1e+10) replaced with NaN: 8
+Original rows with at least one NaN numeric value: 17
+
+Grid start : 2026-04-20 11:45:00
+Grid end   : 2026-05-12 07:45:00
+Grid slots : 2097
+Missing timestamp rows created (interpolated): 13
+  2026-05-07 08:30:00
+  2026-05-07 08:45:00
+  2026-05-07 09:00:00
+  2026-05-07 09:15:00
+  2026-05-07 09:30:00
+  2026-05-07 09:45:00
+  2026-05-07 10:00:00
+  2026-05-07 10:15:00
+  2026-05-07 10:30:00
+  2026-05-07 10:45:00
+  2026-05-07 11:00:00
+  2026-05-07 11:15:00
+  2026-05-07 11:30:00
+
+Rows with had_empty_measurement_in_raw=True : 17
+Rows with was_missing_timestamp_row=True    : 13
+Rows with was_estimated_row=True            : 30
+
+Final rows    : 2097
+Final columns : 19
+
+Remaining NaN per column after interpolation:
+
+Remaining limitations:
+  - 13 consecutive slots missing (2026-05-07 08:30 to 11:30) filled by interpolation
+  - Weather data during that gap is also interpolated
+  - speedtest_server_name / speedtest_server_location not normalised further
+
+Saved to: /mnt/user-data/outputs/Starlink_2_cleaned.csv
