@@ -95,246 +95,155 @@ THESIS_START = PERIOD1_START
 THESIS_END   = PERIOD2_END
 
 # ============================================================
-# STYLE  — Forest Dark + Lime + Teal palette
+# STYLE
 # ============================================================
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Barlow:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Syne:wght@400;600;700;800&family=Space+Grotesk:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 html, body, [class*="css"], .stApp, .main, .block-container {
-    background-color: #0d1a0f !important;
-    color: #d6e8d0 !important;
-    font-family: 'Barlow', sans-serif !important;
-}
-.block-container { padding-top: 1rem !important; max-width: 100% !important; }
-
-section[data-testid="stSidebar"],
-section[data-testid="stSidebar"] > div {
-    background-color: #0a130c !important;
-    border-right: 1px solid rgba(206,241,53,0.10) !important;
-}
-section[data-testid="stSidebar"]::before {
-    content: '';
-    display: block;
-    height: 2px;
-    background: linear-gradient(90deg, #1de9c8, #cef135);
+    background-color: #05080f !important;
+    color: #d1d9e6 !important;
+    font-family: 'Syne', sans-serif !important;
 }
 
-[data-testid="stSidebar"] label {
-    color: #4a6b50 !important;
-    font-size: 0.63rem !important;
-    font-weight: 600 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 2px !important;
-    font-family: 'IBM Plex Mono', monospace !important;
-}
-[data-testid="stSidebar"] strong { color: #d6e8d0 !important; font-weight: 600 !important; }
-[data-testid="stSidebar"] p,
-[data-testid="stSidebar"] span,
-[data-testid="stSidebar"] li { color: #4a6b50 !important; font-size: 0.82rem !important; }
-[data-testid="stSidebar"] .stMarkdown h3 {
-    color: #cef135 !important;
-    font-family: 'IBM Plex Mono', monospace !important;
-    font-size: 0.6rem !important;
-    font-weight: 600 !important;
-    letter-spacing: 2.5px !important;
-    text-transform: uppercase !important;
-    padding-bottom: 0.3rem !important;
-    border-bottom: 1px solid rgba(206,241,53,0.12) !important;
-    margin-top: 1rem !important;
+section[data-testid="stSidebar"], section[data-testid="stSidebar"] > div {
+    background: linear-gradient(180deg, #080c17 0%, #05080f 100%) !important;
+    border-right: 1px solid #0e1f3a !important;
 }
 
 [data-testid="metric-container"] {
-    background: #111f14 !important;
-    border: 1px solid rgba(206,241,53,0.10) !important;
-    border-top: 2px solid #cef135 !important;
-    border-radius: 6px !important;
-    padding: 0.85rem 1rem !important;
+    background: linear-gradient(135deg, #091628 0%, #060d1e 100%) !important;
+    border: 1px solid #112240 !important;
+    border-top: 3px solid #2d6af0 !important;
+    border-radius: 10px !important;
+    padding: 1rem !important;
+    box-shadow: 0 0 18px rgba(45,106,240,0.12) !important;
 }
-[data-testid="metric-container"]:hover { border-color: rgba(206,241,53,0.22) !important; }
 [data-testid="metric-container"] label,
 [data-testid="metric-container"] [data-testid="stMetricLabel"] p {
-    color: #4a6b50 !important;
-    font-size: 0.59rem !important;
-    font-weight: 600 !important;
+    color: #4a6080 !important;
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
     text-transform: uppercase !important;
-    letter-spacing: 2px !important;
+    letter-spacing: 1.4px !important;
     font-family: 'IBM Plex Mono', monospace !important;
 }
 [data-testid="metric-container"] [data-testid="stMetricValue"] div,
 [data-testid="metric-container"] [data-testid="stMetricValue"] {
-    color: #d6e8d0 !important;
-    font-size: 1.8rem !important;
-    font-weight: 700 !important;
+    color: #e8f0fe !important;
+    font-size: 1.75rem !important;
+    font-weight: 800 !important;
     font-family: 'IBM Plex Mono', monospace !important;
-    letter-spacing: -0.5px !important;
 }
 [data-testid="metric-container"] [data-testid="stMetricDelta"] {
-    color: #cef135 !important;
-    font-weight: 600 !important;
-    font-family: 'IBM Plex Mono', monospace !important;
+    color: #22c55e !important;
+    font-weight: 700 !important;
 }
 
 .stTabs [data-baseweb="tab-list"] {
-    background: transparent !important;
-    border-radius: 0 !important;
-    padding: 0 !important;
-    border: none !important;
-    border-bottom: 1px solid rgba(206,241,53,0.12) !important;
-    gap: 0 !important;
-    margin-bottom: 1rem !important;
+    background: #080c17 !important;
+    border-radius: 10px !important;
+    padding: 4px !important;
+    border: 1px solid #0e1f3a !important;
+    gap: 3px !important;
 }
 .stTabs [data-baseweb="tab"] {
-    color: #3a5240 !important;
-    font-weight: 600 !important;
-    border-radius: 0 !important;
-    padding: 9px 20px !important;
-    font-size: 0.66rem !important;
+    color: #4a6080 !important;
+    font-weight: 700 !important;
+    border-radius: 7px !important;
+    padding: 7px 18px !important;
+    font-size: 0.82rem !important;
     font-family: 'IBM Plex Mono', monospace !important;
-    letter-spacing: 1.5px !important;
-    text-transform: uppercase !important;
-    border-bottom: 2px solid transparent !important;
-    background: transparent !important;
+    letter-spacing: 0.3px !important;
 }
-.stTabs [data-baseweb="tab"]:hover { color: #8ab890 !important; background: rgba(206,241,53,0.03) !important; }
+.stTabs [data-baseweb="tab"]:hover { color: #93c5fd !important; background: rgba(45,106,240,0.08) !important; }
 .stTabs [aria-selected="true"] {
-    background: transparent !important;
-    color: #cef135 !important;
-    border-bottom: 2px solid #cef135 !important;
-    box-shadow: none !important;
+    background: linear-gradient(135deg, #1d4ed8, #4338ca) !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 14px rgba(29,78,216,0.35) !important;
 }
 .stTabs [data-baseweb="tab-highlight"],
 .stTabs [data-baseweb="tab-border"] { display: none !important; }
 
 .card {
-    background: #111f14;
-    border-radius: 6px;
-    padding: 1.1rem 1.3rem;
-    border: 1px solid rgba(206,241,53,0.09);
+    background: linear-gradient(135deg, #091628 0%, #060d1e 100%);
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    border: 1px solid #112240;
+    box-shadow: 0 0 18px rgba(45,106,240,0.08);
     margin-bottom: 0.5rem;
 }
 .card-title {
-    font-size: 0.59rem;
-    font-weight: 600;
-    color: #4a6b50;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #4a6080;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 0.75rem;
+    letter-spacing: 1.4px;
+    margin-bottom: 0.7rem;
     font-family: 'IBM Plex Mono', monospace;
 }
 .badge {
     display: inline-block;
-    padding: 0.2rem 0.75rem;
-    border-radius: 3px;
-    font-size: 0.67rem;
-    font-weight: 600;
+    padding: 0.25rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
     font-family: 'IBM Plex Mono', monospace;
-    letter-spacing: 1px;
-    text-transform: uppercase;
 }
 .period-tag {
     display: inline-block;
-    padding: 0.16rem 0.55rem;
-    border-radius: 3px;
-    font-size: 0.63rem;
-    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 700;
     font-family: 'IBM Plex Mono', monospace;
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-hr { border: none !important; border-top: 1px solid rgba(206,241,53,0.10) !important; margin: 0.9rem 0 !important; }
-p, li { color: #4a6b50; }
-h1, h2, h3 { color: #d6e8d0 !important; font-family: 'Barlow', sans-serif !important; font-weight: 700 !important; }
+hr { border-color: #0e1f3a !important; }
 
+[data-testid="stSidebar"] label {
+    color: #4a6080 !important; font-size: 0.72rem !important;
+    font-weight: 700 !important; text-transform: uppercase !important;
+    letter-spacing: 0.8px !important; font-family: 'IBM Plex Mono', monospace !important;
+}
+[data-testid="stSidebar"] strong { color: #d1d9e6 !important; }
 div[data-baseweb="select"] > div {
-    background: #111f14 !important;
-    border: 1px solid rgba(206,241,53,0.14) !important;
-    border-radius: 5px !important;
-    color: #d6e8d0 !important;
-    font-family: 'IBM Plex Mono', monospace !important;
-    font-size: 0.82rem !important;
+    background: #080c17 !important; border: 1px solid #0e1f3a !important;
+    border-radius: 7px !important; color: #d1d9e6 !important;
 }
-.stTextInput input {
-    background: #111f14 !important;
-    border: 1px solid rgba(206,241,53,0.14) !important;
-    border-radius: 5px !important;
-    color: #d6e8d0 !important;
-    font-family: 'IBM Plex Mono', monospace !important;
-}
-.stButton button {
-    background: rgba(206,241,53,0.08) !important;
-    border: 1px solid rgba(206,241,53,0.20) !important;
-    border-radius: 4px !important;
-    color: #cef135 !important;
-    font-family: 'IBM Plex Mono', monospace !important;
-    font-size: 0.7rem !important;
-    font-weight: 600 !important;
-    letter-spacing: 1px !important;
-    text-transform: uppercase !important;
-}
-.stButton button:hover {
-    background: rgba(206,241,53,0.14) !important;
-    border-color: rgba(206,241,53,0.35) !important;
-}
-.stDownloadButton button {
-    background: rgba(29,233,200,0.07) !important;
-    border: 1px solid rgba(29,233,200,0.20) !important;
-    border-radius: 4px !important;
-    color: #1de9c8 !important;
-    font-family: 'IBM Plex Mono', monospace !important;
-    font-size: 0.7rem !important;
-    text-transform: uppercase !important;
-    letter-spacing: 1px !important;
-}
-[data-testid="stToggle"] label { color: #4a6b50 !important; }
-
-[data-testid="stDataFrame"] { border: 1px solid rgba(206,241,53,0.10) !important; border-radius: 6px !important; }
-[data-testid="stDataFrame"] table { background: #111f14 !important; font-family: 'IBM Plex Mono', monospace !important; font-size: 0.76rem !important; }
-[data-testid="stDataFrame"] th { background: #0a130c !important; color: #4a6b50 !important; font-size: 0.59rem !important; text-transform: uppercase !important; letter-spacing: 1.5px !important; border-bottom: 1px solid rgba(206,241,53,0.14) !important; }
-[data-testid="stDataFrame"] td { color: #d6e8d0 !important; border-color: rgba(206,241,53,0.06) !important; }
-
-[data-testid="stAlert"] { border-radius: 5px !important; font-family: 'IBM Plex Mono', monospace !important; font-size: 0.8rem !important; background: #111f14 !important; }
-[data-testid="stExpander"] { border: 1px solid rgba(206,241,53,0.10) !important; border-radius: 6px !important; background: #111f14 !important; }
-[data-testid="stExpander"] summary { color: #4a6b50 !important; font-family: 'IBM Plex Mono', monospace !important; font-size: 0.76rem !important; }
-
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: #0d1a0f; }
-::-webkit-scrollbar-thumb { background: rgba(206,241,53,0.15); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(206,241,53,0.28); }
-.stCaption, small { color: #2f4a34 !important; font-family: 'IBM Plex Mono', monospace !important; font-size: 0.7rem !important; }
+p, li, span { color: #d1d9e6; }
+h1, h2, h3 { color: #e8f0fe !important; }
 </style>
 """, unsafe_allow_html=True)
-
 
 # ============================================================
 # PLOT THEME
 # ============================================================
-PLOT_BG   = "rgba(17,31,20,0.96)"
+PLOT_BG   = "rgba(9,22,40,0.85)"
 PAPER_BG  = "rgba(0,0,0,0)"
-GRID_CLR  = "rgba(206,241,53,0.05)"
-AXIS_CLR  = "#4a6b50"
-FONT_CLR  = "#8ab890"
+GRID_CLR  = "rgba(255,255,255,0.04)"
+AXIS_CLR  = "#4a6080"
+FONT_CLR  = "#d1d9e6"
 
-P1_COLOR  = "#1de9c8"   # teal  – Period 1
-P2_COLOR  = "#cef135"   # lime  – Period 2
-P1_FILL   = "rgba(29,233,200,0.07)"
-P2_FILL   = "rgba(206,241,53,0.07)"
+P1_COLOR  = "#2d6af0"   # blue  – Period 1
+P2_COLOR  = "#22c55e"   # green – Period 2
+P1_FILL   = "rgba(45,106,240,0.08)"
+P2_FILL   = "rgba(34,197,94,0.08)"
 
 BASE_LAYOUT = dict(
     plot_bgcolor=PLOT_BG,
     paper_bgcolor=PAPER_BG,
     font=dict(color=FONT_CLR, family="IBM Plex Mono"),
     margin=dict(l=10, r=10, t=42, b=10),
-    xaxis=dict(gridcolor=GRID_CLR, color=AXIS_CLR, showline=False,
-               tickfont=dict(family="IBM Plex Mono", size=10)),
-    yaxis=dict(gridcolor=GRID_CLR, color=AXIS_CLR, showline=False,
-               tickfont=dict(family="IBM Plex Mono", size=10)),
-    legend=dict(bgcolor="rgba(0,0,0,0)", font=dict(color=FONT_CLR, family="IBM Plex Mono")),
+    xaxis=dict(gridcolor=GRID_CLR, color=AXIS_CLR, showline=False),
+    yaxis=dict(gridcolor=GRID_CLR, color=AXIS_CLR, showline=False),
+    legend=dict(bgcolor="rgba(0,0,0,0)", font=dict(color=FONT_CLR)),
 )
 
 # ============================================================
-# HELPERS — FORMATTING
+# HELPERS, FORMATTING
 # ============================================================
 def fmt_temp(v):
     try:    return f"{float(v):.1f} °C" if pd.notna(v) else "—"
@@ -359,7 +268,7 @@ def safe_float(row, col):
     except: return 0.0
 
 # ============================================================
-# HELPERS — BUSINESS LOGIC
+# HELPERS, BUSINESS LOGIC
 # ============================================================
 def compute_health(latency, jitter, download, upload):
     score = 100
@@ -422,46 +331,40 @@ def ai_insight(latency, jitter, download, upload):
 
 def health_badge_html(score):
     if score >= 85:
-        return ('<span class="badge" style="background:rgba(206,241,53,0.12);color:#cef135;'
-                'border:1px solid rgba(206,241,53,0.28);">Excellent</span>')
+        return ('<span class="badge" style="background:#052e16;color:#22c55e;'
+                'border:1px solid #22c55e33;">Excellent</span>')
     elif score >= 70:
-        return ('<span class="badge" style="background:rgba(29,233,200,0.10);color:#1de9c8;'
-                'border:1px solid rgba(29,233,200,0.28);">Good</span>')
+        return ('<span class="badge" style="background:#1c1a08;color:#eab308;'
+                'border:1px solid #eab30833;">Good</span>')
     elif score >= 50:
-        return ('<span class="badge" style="background:rgba(240,180,41,0.10);color:#f0b429;'
-                'border:1px solid rgba(240,180,41,0.28);">Fair</span>')
-    return ('<span class="badge" style="background:rgba(239,68,68,0.10);color:#ef4444;'
-            'border:1px solid rgba(239,68,68,0.28);">Poor</span>')
+        return ('<span class="badge" style="background:#1c0f05;color:#f97316;'
+                'border:1px solid #f9731633;">Fair</span>')
+    return ('<span class="badge" style="background:#1c0505;color:#ef4444;'
+            'border:1px solid #ef444433;">Poor</span>')
 
 # ============================================================
-# HELPERS — KPI CARD
+# HELPERS, KPI CARD
 # ============================================================
 def kpi_card(label, value, unit, color, icon):
-    _palette = {"#2d6af0": "#1de9c8", "#22c55e": "#cef135",
-                "#f472b6": "#cef135", "#f97316": "#1de9c8"}
-    c = _palette.get(color, color)
     return f"""
 <div style="
-    background:#111f14;
-    border:1px solid rgba(206,241,53,0.09);
-    border-top:2px solid {c};
-    border-radius:6px;
-    padding:0.85rem 1rem 0.8rem;
-    font-family:'IBM Plex Mono',monospace;
+    background:linear-gradient(135deg,{color}1a 0%,{color}0d 100%);
+    border:1px solid {color}33; border-top:3px solid {color};
+    border-radius:10px; padding:1rem 1.1rem;
+    box-shadow:0 4px 18px {color}1a;
 ">
-    <div style="color:{c};font-size:0.75rem;margin-bottom:0.25rem;opacity:0.7;">{icon}</div>
-    <div style="color:#4a6b50;font-size:0.58rem;font-weight:600;text-transform:uppercase;
-                letter-spacing:2px;margin-bottom:0.2rem;">{label}</div>
-    <div style="display:flex;align-items:baseline;gap:4px;">
-        <span style="color:#d6e8d0;font-size:1.85rem;font-weight:700;
-                     letter-spacing:-0.5px;line-height:1.1;">{value}</span>
-        <span style="color:{c};font-size:0.7rem;font-weight:500;
-                     padding-bottom:1px;">{unit}</span>
+    <div style="color:{color};font-size:1.2rem;margin-bottom:0.15rem;">{icon}</div>
+    <div style="color:#4a6080;font-size:0.66rem;font-weight:700;text-transform:uppercase;
+                letter-spacing:1.4px;font-family:'IBM Plex Mono',monospace;">{label}</div>
+    <div style="color:#e8f0fe;font-size:1.8rem;font-weight:900;line-height:1.1;
+                margin-top:0.15rem;font-family:'IBM Plex Mono',monospace;">
+        {value}<span style="font-size:0.82rem;color:#4a6080;font-weight:500;
+        margin-left:3px;">{unit}</span>
     </div>
 </div>"""
 
 # ============================================================
-# HELPERS — CHARTS
+# HELPERS, CHARTS
 # ============================================================
 def _apply_base(fig, title, height=360):
     layout = dict(BASE_LAYOUT)
@@ -514,7 +417,7 @@ def make_dual_period_chart(df1, df2, col, title, y_label, height=370):
         x=[0.5], y=[(y_min + y_max) / 2],
         mode="text",
         text=["23-day<br>gap"],
-        textfont=dict(color="#4a6b50", size=9, family="IBM Plex Mono"),
+        textfont=dict(color="#4a6080", size=9, family="IBM Plex Mono"),
         showlegend=False,
         xaxis="x2", yaxis="y"
     ), row=1, col=2)
@@ -553,9 +456,16 @@ def make_dual_period_chart(df1, df2, col, title, y_label, height=370):
         plot_bgcolor=PLOT_BG,
         paper_bgcolor=PAPER_BG,
         font=dict(color=FONT_CLR, family="IBM Plex Mono"),
-        margin=dict(l=10, r=10, t=55, b=10),
-        legend=dict(bgcolor="rgba(0,0,0,0)", font=dict(color=FONT_CLR),
-                    orientation="h", yanchor="bottom", y=-0.18, xanchor="center", x=0.5)
+        margin=dict(l=10, r=10, t=65, b=90),
+        legend=dict(
+            bgcolor="rgba(0,0,0,0)",
+            font=dict(color=FONT_CLR, size=11),
+            orientation="h",
+            yanchor="top",
+            y=-0.28,
+            xanchor="center",
+            x=0.5
+        )
     )
     return fig
 
@@ -596,15 +506,15 @@ def make_health_gauge(score):
         number={"suffix": "/100", "font": {"size": 26, "color": bar_color,
                                             "family": "IBM Plex Mono"}},
         gauge={
-            "axis": {"range": [0, 100], "tickwidth": 1, "tickcolor": "#1a2e1c",
-                     "tickfont": {"color": "#2f4a34", "size": 9}},
+            "axis": {"range": [0, 100], "tickwidth": 1, "tickcolor": "#1e3a5f",
+                     "tickfont": {"color": "#4a6080", "size": 9}},
             "bar":  {"color": bar_color, "thickness": 0.38},
             "bgcolor": "rgba(0,0,0,0)", "borderwidth": 0,
             "steps": [
-                {"range": [0,  50], "color": "rgba(239,68,68,0.08)"},
-                {"range": [50, 70], "color": "rgba(240,180,41,0.08)"},
-                {"range": [70, 85], "color": "rgba(29,233,200,0.08)"},
-                {"range": [85,100], "color": "rgba(206,241,53,0.08)"},
+                {"range": [0,  50], "color": "rgba(239,68,68,0.10)"},
+                {"range": [50, 70], "color": "rgba(249,115,22,0.10)"},
+                {"range": [70, 85], "color": "rgba(234,179,8,0.10)"},
+                {"range": [85,100], "color": "rgba(34,197,94,0.10)"},
             ],
             "threshold": {"line": {"color": bar_color, "width": 3},
                           "thickness": 0.8, "value": score}
@@ -612,7 +522,7 @@ def make_health_gauge(score):
     ))
     fig.update_layout(height=240, margin=dict(l=20, r=20, t=28, b=8),
                       paper_bgcolor="rgba(0,0,0,0)",
-                      font={"color": "#8ab890", "family": "IBM Plex Mono"})
+                      font={"color": "#d1d9e6", "family": "IBM Plex Mono"})
     return fig
 
 def make_isp_comparison_chart(df_sl, df_isp, isp_name, col, title, y_label):
@@ -673,9 +583,9 @@ def make_residual_chart(y_test, y_pred, title):
     fig = go.Figure()
     fig.add_trace(go.Scatter(
         y=residuals, mode="lines", name="Residual",
-        line=dict(color="#cef135", width=1.4)
+        line=dict(color="#f472b6", width=1.4)
     ))
-    fig.add_hline(y=0, line_dash="dash", line_color="rgba(206,241,53,0.20)", line_width=1)
+    fig.add_hline(y=0, line_dash="dash", line_color="#4a6080", line_width=1)
     _apply_base(fig, title, 300)
     fig.update_layout(yaxis_title="Residual (ms)", xaxis_title="Test Steps")
     return fig
@@ -684,10 +594,11 @@ def make_residual_chart(y_test, y_pred, title):
 # LIVE DATA ROUTING
 # ============================================================
 def classify_and_route_new_rows():
+    """Route new rows from the raw file into retrain/monitor queues."""
     if not os.path.exists(RAW_FILE):
         return None
     raw = pd.read_csv(RAW_FILE)
-    raw["timestamp"] = pd.to_datetime(raw["timestamp"], dayfirst=True, errors="coerce")
+    raw["timestamp"] = pd.to_datetime(raw["timestamp"], dayfirst=False, errors="coerce")
     new_rows = raw[raw["timestamp"] > THESIS_END].copy()
     if len(new_rows) == 0:
         return None
@@ -699,10 +610,44 @@ def classify_and_route_new_rows():
         _append_dedup(LIVE_MONITOR_FILE, other_new)
     return new_rows.sort_values("timestamp").iloc[-1]
 
+def load_latest_live_row():
+    """
+    Return (row, source) for the live KPI overlay.
+    Priority: raw file post-thesis rows -> retrain queue -> (None, None).
+    """
+    # 1. Try raw file
+    if os.path.exists(RAW_FILE):
+        try:
+            raw = pd.read_csv(RAW_FILE)
+            raw.columns = [c.lower() for c in raw.columns]
+            raw["timestamp"] = pd.to_datetime(raw["timestamp"], dayfirst=False, errors="coerce")
+            post = raw[raw["timestamp"] > THESIS_END].dropna(subset=["timestamp"])
+            if len(post) > 0:
+                return post.sort_values("timestamp").iloc[-1], "raw"
+        except Exception:
+            pass
+    # 2. Fall back to retrain queue
+    rpath = STARLINK_RETRAIN_FILE if os.path.exists(STARLINK_RETRAIN_FILE) else (
+            STARLINK_RETRAIN_FALLBACK if os.path.exists(STARLINK_RETRAIN_FALLBACK) else None)
+    if rpath:
+        try:
+            df = pd.read_csv(rpath)
+            df.columns = [c.lower() for c in df.columns]
+            df["timestamp"] = pd.to_datetime(df["timestamp"], dayfirst=False, errors="coerce")
+            df = df.dropna(subset=["timestamp"]).sort_values("timestamp")
+            if len(df) > 0:
+                # Prefer most recent row with valid speedtest data (download > 0)
+                valid = df[df["download_mbps"].notna() & (df["download_mbps"] > 0)]
+                best = valid.iloc[-1] if len(valid) > 0 else df.iloc[-1]
+                return best, "retrain_queue"
+        except Exception:
+            pass
+    return None, None
+
 def _append_dedup(path, new_df):
     if os.path.exists(path):
         existing = pd.read_csv(path)
-        existing["timestamp"] = pd.to_datetime(existing["timestamp"], dayfirst=True, errors="coerce")
+        existing["timestamp"] = pd.to_datetime(existing["timestamp"], dayfirst=False, errors="coerce")
         combined = pd.concat([existing, new_df]).drop_duplicates(subset=["timestamp"])
     else:
         combined = new_df
@@ -715,7 +660,7 @@ def retrain_queue_status():
     if path is None:
         return 0, None
     df = pd.read_csv(path)
-    return len(df), pd.to_datetime(df["timestamp"]).max()
+    return len(df), pd.to_datetime(df["timestamp"], format="mixed", errors="coerce").max()
 
 # ============================================================
 # FILE PATH RESOLVER
@@ -738,7 +683,7 @@ def load_period1():
         st.stop()
     df = pd.read_csv(path)
     df.columns = [c.lower() for c in df.columns]  # normalise temperature_C -> temperature_c
-    df["timestamp"] = pd.to_datetime(df["timestamp"], dayfirst=True, errors="coerce")
+    df["timestamp"] = pd.to_datetime(df["timestamp"], dayfirst=False, errors="coerce")
     df = df[(df["timestamp"] >= PERIOD1_START) & (df["timestamp"] <= PERIOD1_END)]
     df = df.sort_values("timestamp").reset_index(drop=True)
     return df
@@ -752,7 +697,7 @@ def load_period2():
         st.stop()
     df = pd.read_csv(path)
     df.columns = [c.lower() for c in df.columns]
-    df["timestamp"] = pd.to_datetime(df["timestamp"], dayfirst=True, errors="coerce")
+    df["timestamp"] = pd.to_datetime(df["timestamp"], dayfirst=False, errors="coerce")
     df = df[(df["timestamp"] >= PERIOD2_START) & (df["timestamp"] <= PERIOD2_END)]
     df = df.sort_values("timestamp").reset_index(drop=True)
     return df
@@ -764,7 +709,7 @@ def load_omantel():
         return None
     df = pd.read_csv(path)
     df.columns = [c.lower() for c in df.columns]
-    df["timestamp"] = pd.to_datetime(df["timestamp"], dayfirst=True, errors="coerce")
+    df["timestamp"] = pd.to_datetime(df["timestamp"], dayfirst=False, errors="coerce")
     return df.sort_values("timestamp").reset_index(drop=True)
 
 @st.cache_data(ttl=120)
@@ -774,7 +719,7 @@ def load_awasr():
         return None
     df = pd.read_csv(path)
     df.columns = [c.lower() for c in df.columns]
-    df["timestamp"] = pd.to_datetime(df["timestamp"], dayfirst=True, errors="coerce")
+    df["timestamp"] = pd.to_datetime(df["timestamp"], dayfirst=False, errors="coerce")
     return df.sort_values("timestamp").reset_index(drop=True)
 
 @st.cache_data(ttl=120)
@@ -924,7 +869,13 @@ combined_clean = pd.concat([p1_df, p2_df], ignore_index=True).sort_values("times
 dl_feat = build_download_upload_features(combined_clean, "download_mbps")
 ul_feat = build_download_upload_features(combined_clean, "upload_mbps")
 
-latest_live_row = classify_and_route_new_rows()
+# Route any new raw rows into queues (best-effort)
+try:
+    classify_and_route_new_rows()
+except Exception:
+    pass
+# Load most recent available row for live overlay
+latest_live_row, latest_live_source = load_latest_live_row()
 
 # ============================================================
 # SIDEBAR
@@ -946,15 +897,15 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("**Dataset periods**")
     st.markdown(
-        f'<span class="period-tag" style="background:rgba(29,233,200,0.09);color:{P1_COLOR};'
+        f'<span class="period-tag" style="background:#0d2348;color:{P1_COLOR};'
         f'border:1px solid {P1_COLOR}44;">P1</span> '
-        f'<span style="color:#4a6b50;font-size:0.78rem;">Mar 7 – Mar 28, 2026</span>',
+        f'<span style="color:#4a6080;font-size:0.78rem;">Mar 7 – Mar 28, 2026</span>',
         unsafe_allow_html=True
     )
     st.markdown(
-        f'<span class="period-tag" style="background:rgba(206,241,53,0.09);color:{P2_COLOR};'
+        f'<span class="period-tag" style="background:#0a2318;color:{P2_COLOR};'
         f'border:1px solid {P2_COLOR}44;">P2</span> '
-        f'<span style="color:#4a6b50;font-size:0.78rem;">Apr 20 – May 12, 2026</span>',
+        f'<span style="color:#4a6080;font-size:0.78rem;">Apr 20 – May 12, 2026</span>',
         unsafe_allow_html=True
     )
     st.markdown("---")
@@ -989,19 +940,30 @@ if upload_forecast <= 0:
 # ============================================================
 # DECIDE DISPLAY ROW
 # ============================================================
-if show_live and latest_live_row is not None:
-    display_row       = latest_live_row
-    live_source_label = str(latest_live_row.get("network_type", "Unknown"))
-    is_live_starlink  = live_source_label.strip().lower() == "starlink"
-    kpi_note = ("Live Starlink data — consistent with research dataset"
-                if is_live_starlink
-                else f"Live monitor only ({live_source_label}) — not part of research dataset")
-    kpi_note_color = "#cef135" if is_live_starlink else "#f0b429"
+if show_live:
+    if latest_live_row is not None:
+        display_row = latest_live_row
+        _net = str(latest_live_row.get("network_type", "Starlink")
+                   if hasattr(latest_live_row, "get")
+                   else getattr(latest_live_row, "network_type", "Starlink"))
+        _ts  = str(latest_live_row.get("timestamp", "")
+                   if hasattr(latest_live_row, "get")
+                   else getattr(latest_live_row, "timestamp", ""))[:16]
+        if latest_live_source == "raw":
+            kpi_note = f"Live data (raw file), {_net} · {_ts}"
+            kpi_note_color = "#22c55e"
+        else:
+            kpi_note = f"Live overlay, retrain queue · most recent row · {_ts}"
+            kpi_note_color = "#eab308"
+    else:
+        display_row    = p2_df.iloc[-1]
+        kpi_note       = "Live overlay: no post-thesis data found, showing last Period 2 row"
+        kpi_note_color = "#ef4444"
 else:
-    display_row       = p2_df.iloc[-1]   # last row of the most recent period
-    kpi_note          = ("Showing last observation from Period 2 "
-                         "(most recent validated clean dataset, May 12, 2026)")
-    kpi_note_color    = "#2f4a34"
+    display_row    = p2_df.iloc[-1]
+    kpi_note       = ("Showing last observation from Period 2 "
+                      "(most recent validated clean dataset, May 12, 2026)")
+    kpi_note_color = "#4a6080"
 
 current_latency  = safe_float(display_row, "ping_avg_rtt_ms")
 current_jitter   = safe_float(display_row, "ping_jitter_ms")
@@ -1031,83 +993,93 @@ wind_val     = _get(display_row, "wind_speed_mps")
 # ============================================================
 # HEADER
 # ============================================================
-_now_str = pd.Timestamp.now().strftime("%Y-%m-%d  %H:%M:%S")
+st.markdown(
+    f'<div style="margin-bottom:-1.4rem;'
+    f'margin-top:-2rem;color:#4a6080;'
+    f'font-size:0.72rem;font-family:\'IBM Plex Mono\',monospace;">'
+    f'Last refresh: {pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S")}'
+    f'</div>',
+    unsafe_allow_html=True
+)
 
-st.markdown(f"""
-<div style="
-    background:#111f14;
-    border:1px solid rgba(206,241,53,0.11);
-    border-left:3px solid #cef135;
-    border-radius:6px;
-    padding:1.1rem 1.6rem 1.15rem;
-    margin-bottom:0.55rem;
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-">
-    <div>
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:0.56rem;
-                    color:#4a6b50;letter-spacing:2.5px;font-weight:600;
-                    margin-bottom:0.45rem;display:flex;align-items:center;gap:0.5rem;">
-            <span style="display:inline-block;width:5px;height:5px;border-radius:50%;
-                         background:#cef135;"></span>
-            STARLINK INTELLIGENCE PLATFORM &nbsp;·&nbsp; MUSCAT, OMAN &nbsp;·&nbsp; 2026
-        </div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;
-                    font-weight:700;letter-spacing:0.5px;line-height:1;
-                    margin-bottom:0.45rem;">
-            <span style="color:#d6e8d0;">PERFORMANCE</span>
-            <span style="color:#cef135;"> FORECAST</span>
-            <span style="color:#1de9c8;font-weight:400;"> SYSTEM</span>
-        </div>
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:0.62rem;
-                    color:#2f4a34;letter-spacing:0.3px;display:flex;gap:0.9rem;">
-            <span>NETWORK MONITORING</span>
-            <span>·</span>
-            <span>LATENCY FORECASTING</span>
-            <span>·</span>
-            <span>OUTAGE DETECTION</span>
-            <span>·</span>
-            <span>ISP COMPARISON</span>
-        </div>
-    </div>
-    <div style="text-align:right;flex-shrink:0;margin-left:2rem;">
-        <div style="background:rgba(206,241,53,0.09);border:1px solid rgba(206,241,53,0.18);
-                    padding:0.22rem 0.75rem;border-radius:3px;font-size:0.57rem;font-weight:600;
-                    color:#cef135;letter-spacing:2px;margin-bottom:0.4rem;
-                    font-family:'IBM Plex Mono',monospace;display:inline-block;">
-            GUTECH AI THESIS
-        </div>
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;
-                    color:#2f4a34;margin-bottom:0.12rem;">STARLINK · GEN6 LEO · OMAN</div>
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:0.57rem;
-                    color:#1a2e1c;">{_now_str}</div>
-    </div>
-</div>
-""", unsafe_allow_html=True)
+_now_str = pd.Timestamp.now().strftime("%Y-%m-%d  %H:%M:%S")
+st.markdown(
+    f'<div style="background:linear-gradient(135deg,#0d1f3c 0%,#111830 40%,#0a1830 100%);'
+    f'border-radius:16px;padding:1.2rem 2.4rem 1.6rem 2.4rem;margin-bottom:0.5rem;'
+    f'border:1px solid rgba(45,106,240,0.3);'
+    f'box-shadow:0 0 40px rgba(45,106,240,0.10);'
+    f'position:relative;overflow:hidden;">'
+
+    f'<div style="position:absolute;inset:0;'
+    f'background-image:linear-gradient(rgba(61,127,255,0.04) 1px,transparent 1px),'
+    f'linear-gradient(90deg,rgba(61,127,255,0.04) 1px,transparent 1px);'
+    f'background-size:40px 40px;pointer-events:none;"></div>'
+
+    f'<div style="position:absolute;top:0;left:0;right:0;height:1px;'
+    f'background:linear-gradient(90deg,transparent,rgba(61,127,255,0.55),rgba(52,211,153,0.35),transparent);'
+    f'pointer-events:none;"></div>'
+
+    f'<div style="display:flex;justify-content:space-between;align-items:flex-start;'
+    f'position:relative;z-index:1;">'
+
+    f'<div>'
+    f'<div style="font-family:\'JetBrains Mono\',monospace;font-size:0.62rem;'
+    f'color:#4d8fff;letter-spacing:2.5px;font-weight:600;margin-bottom:0.6rem;'
+    f'display:flex;align-items:center;gap:0.45rem;">'
+    f'<span style="display:inline-block;width:7px;height:7px;border-radius:50%;'
+    f'background:#22c55e;box-shadow:0 0 8px #22c55e;"></span>'
+    f'STARLINK INTELLIGENCE PLATFORM</div>'
+
+    f'<div style="font-family:\'Space Grotesk\',sans-serif;font-size:2rem;'
+    f'font-weight:800;line-height:1.1;letter-spacing:-0.8px;margin-bottom:0.5rem;">'
+    f'<span style="color:#e2e8f8;">Performance </span>'
+    f'<span style="background:linear-gradient(90deg,#60a5fa,#34d399);'
+    f'-webkit-background-clip:text;-webkit-text-fill-color:transparent;'
+    f'background-clip:text;">Forecast System</span></div>'
+
+    f'<div style="font-family:\'JetBrains Mono\',monospace;font-size:0.75rem;'
+    f'color:#4a6080;letter-spacing:0.3px;">'
+    f'Network Monitoring &nbsp;&middot;&nbsp; Latency Forecasting &nbsp;&middot;&nbsp;'
+    f'Outage Detection &nbsp;&middot;&nbsp; Infrastructure Intelligence</div>'
+    f'</div>'
+
+    f'<div style="text-align:right;flex-shrink:0;margin-left:2rem;">'
+    f'<div style="background:linear-gradient(135deg,rgba(29,78,216,0.5),rgba(67,56,202,0.4));'
+    f'border:1px solid rgba(29,78,216,0.4);'
+    f'padding:0.32rem 0.9rem;border-radius:6px;'
+    f'font-size:0.68rem;font-weight:700;color:#93c5fd;'
+    f'letter-spacing:0.8px;margin-bottom:0.5rem;'
+    f'font-family:\'JetBrains Mono\',monospace;display:inline-block;">'
+    f'GUtech AI Thesis Prototype</div>'
+    f'<div style="font-family:\'JetBrains Mono\',monospace;font-size:0.7rem;'
+    f'color:#4a6080;margin-bottom:0.2rem;">Starlink · Muscat, Oman · 2026</div>'
+    f'<div style="font-family:\'JetBrains Mono\',monospace;font-size:0.65rem;'
+    f'color:#2a4060;">{_now_str}</div>'
+    f'</div>'
+
+    f'</div></div>',
+    unsafe_allow_html=True
+)
 
 # Dataset banner
 st.markdown(f"""
 <div style="
-    background:#0a130c;
-    border:1px solid rgba(206,241,53,0.09);
-    border-left:3px solid #cef135;
-    border-radius:5px;
-    padding:0.48rem 1rem;
-    margin-bottom:0.48rem;
-    display:flex; align-items:center; gap:0.7rem;
-    font-family:'IBM Plex Mono',monospace;
+    background:linear-gradient(90deg,#04200f,#062a14);
+    border:1px solid #22c55e22; border-left:4px solid #22c55e;
+    border-radius:9px; padding:0.65rem 1.1rem; margin-bottom:0.7rem;
+    display:flex; align-items:center; gap:0.8rem;
 ">
+    <span style="font-size:1.1rem;">🛰️</span>
     <div>
-        <span style="color:#cef135;font-weight:600;font-size:0.6rem;
-                     letter-spacing:2px;text-transform:uppercase;">
+        <span style="color:#22c55e;font-weight:700;font-size:0.82rem;
+                     font-family:'IBM Plex Mono',monospace;">
             VALIDATED RESEARCH DATASET
         </span>
-        <span style="color:#2f4a34;font-size:0.68rem;margin-left:0.8rem;">
-            P1: Mar 7–28 2026 &nbsp;·&nbsp;
-            P2: Apr 20 – May 12 2026 &nbsp;·&nbsp;
-            {len(p1_df):,} + {len(p2_df):,} = {len(p1_df)+len(p2_df):,} rows &nbsp;·&nbsp;
-            Forecast: {len(forecast_df):,} rows
+        <span style="color:#4a6080;font-size:0.8rem;margin-left:0.7rem;">
+            Period 1: Mar 7 – Mar 28 2026 &nbsp;|&nbsp;
+            Period 2: Apr 20 – May 12 2026 &nbsp;|&nbsp;
+            {len(p1_df):,} + {len(p2_df):,} = {len(p1_df)+len(p2_df):,} total rows &nbsp;|&nbsp;
+            Forecast dataset: {len(forecast_df):,} rows ({forecast_merge_status.replace("_"," ")})
         </span>
     </div>
 </div>
@@ -1116,15 +1088,10 @@ st.markdown(f"""
 # KPI source note
 st.markdown(f"""
 <div style="
-    background:#0a130c;
-    border:1px solid rgba(206,241,53,0.07);
-    border-radius:4px;
-    padding:0.32rem 0.9rem;
-    margin-bottom:0.55rem;
-    font-size:0.66rem;
-    color:{kpi_note_color};
+    background:rgba(255,255,255,0.025);border:1px solid #0e1f3a;
+    border-radius:7px;padding:0.45rem 1rem;margin-bottom:0.7rem;
+    font-size:0.78rem;color:{kpi_note_color};
     font-family:'IBM Plex Mono',monospace;
-    letter-spacing:0.3px;
 ">{kpi_note}</div>
 """, unsafe_allow_html=True)
 
@@ -1132,20 +1099,21 @@ st.markdown(f"""
 # KPI CARDS
 # ============================================================
 c1, c2, c3, c4, c5 = st.columns(5)
-hcolor = ("#cef135" if health_score >= 85 else "#1de9c8" if health_score >= 70
-          else "#f0b429" if health_score >= 50 else "#ef4444")
+hcolor = ("#22c55e" if health_score >= 85 else "#eab308" if health_score >= 70
+          else "#f97316" if health_score >= 50 else "#ef4444")
 
-with c1: st.markdown(kpi_card("Latency",      f"{current_latency:.1f}",  "ms",   "#1de9c8", "RTT"), unsafe_allow_html=True)
-with c2: st.markdown(kpi_card("Jitter",       f"{current_jitter:.1f}",   "ms",   "#cef135", "JTR"), unsafe_allow_html=True)
-with c3: st.markdown(kpi_card("Download",     f"{current_download:.1f}", "Mbps", "#1de9c8", "DL"), unsafe_allow_html=True)
-with c4: st.markdown(kpi_card("Upload",       f"{current_upload:.1f}",   "Mbps", "#cef135", "UL"), unsafe_allow_html=True)
-with c5: st.markdown(kpi_card("Health Score", f"{health_score}",         "/100", hcolor,    "SYS"), unsafe_allow_html=True)
+with c1: st.markdown(kpi_card("Latency",      f"{current_latency:.1f}",  "ms",   "#2d6af0", "📡"), unsafe_allow_html=True)
+with c2: st.markdown(kpi_card("Jitter",       f"{current_jitter:.1f}",   "ms",   "#f472b6", "〰️"), unsafe_allow_html=True)
+with c3: st.markdown(kpi_card("Download",     f"{current_download:.1f}", "Mbps", "#22c55e", "⬇"), unsafe_allow_html=True)
+with c4: st.markdown(kpi_card("Upload",       f"{current_upload:.1f}",   "Mbps", "#f97316", "⬆"), unsafe_allow_html=True)
+with c5: st.markdown(kpi_card("Health Score", f"{health_score}",         "/100", hcolor,    "💚"), unsafe_allow_html=True)
 
 st.markdown(
     f'<div style="margin:0.5rem 0 0.9rem;">'
     f'{health_badge_html(health_score)}'
-    f'&nbsp;&nbsp;<span style="color:#4a6b50;font-size:0.7rem;font-family:\'IBM Plex Mono\',monospace;letter-spacing:0.5px;">'
-    f'NETWORK STATUS: <span style="color:#d6e8d0;">{outage_status.upper()}</span></span></div>',
+    f'&nbsp;&nbsp;<span style="color:#4a6080;font-size:0.88rem;'
+    f'font-family:\'IBM Plex Mono\',monospace;">'
+    f'Network status: <b style="color:#d1d9e6;">{outage_status}</b></span></div>',
     unsafe_allow_html=True
 )
 
@@ -1164,18 +1132,18 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
 ])
 
 # ============================================================
-# TAB 1 — OVERVIEW
+# TAB 1, OVERVIEW
 # ============================================================
 with tab1:
     st.markdown('<div class="card-title">Network Overview</div>', unsafe_allow_html=True)
 
     left, right = st.columns([2.2, 1])
     with left:
-        # Dual-period latency chart — the signature chart of the thesis
+        # Dual-period latency chart, the signature chart of the thesis
         st.plotly_chart(
             make_dual_period_chart(p1_df, p2_df, "ping_avg_rtt_ms",
-                                   "Latency — Both Collection Periods",
-                                   "Latency (ms)", height=380),
+                                   "Latency, Both Collection Periods",
+                                   "Latency (ms)", height=430),
             use_container_width=True
         )
 
@@ -1186,7 +1154,7 @@ with tab1:
         st.metric("Download", f"{download_forecast:.2f} Mbps")
         st.metric("Upload",   f"{upload_forecast:.2f} Mbps")
         st.markdown(
-            f'<div style="color:#4a6b50;font-size:0.75rem;margin-top:0.5rem;'
+            f'<div style="color:#4a6080;font-size:0.75rem;margin-top:0.5rem;'
             f'font-family:\'IBM Plex Mono\',monospace;">'
             f'Forecast for: {forecast_time.strftime("%Y-%m-%d %H:%M")}<br>'
             f'Model: {selected_model}</div>',
@@ -1218,16 +1186,16 @@ with tab1:
     st.markdown('</div>', unsafe_allow_html=True)
 
 # ============================================================
-# TAB 2 — HISTORICAL TRENDS
+# TAB 2, HISTORICAL TRENDS
 # ============================================================
 with tab2:
-    st.markdown('<div class="card-title">Historical Performance — Both Experiment Periods</div>',
+    st.markdown('<div class="card-title">Historical Performance, Both Experiment Periods</div>',
                 unsafe_allow_html=True)
 
     st.markdown(
-        f'<div style="color:#4a6b50;font-size:0.78rem;margin-bottom:0.8rem;'
+        f'<div style="color:#4a6080;font-size:0.78rem;margin-bottom:0.8rem;'
         f'font-family:\'IBM Plex Mono\',monospace;">'
-        f'<span style="color:{P1_COLOR};">Teal = Period 1 (Mar 7–28, 2026)</span>'
+        f'<span style="color:{P1_COLOR};">Blue = Period 1 (Mar 7–28, 2026)</span>'
         f'&nbsp;&nbsp;|&nbsp;&nbsp;'
         f'<span style="color:{P2_COLOR};">Green = Period 2 (Apr 20 – May 12, 2026)</span>'
         f'&nbsp;&nbsp;|&nbsp;&nbsp;'
@@ -1240,13 +1208,13 @@ with tab2:
     with col1:
         st.plotly_chart(
             make_dual_period_chart(p1_df, p2_df, "ping_jitter_ms",
-                                   "Jitter — Both Periods", "Jitter (ms)"),
+                                   "Jitter, Both Periods", "Jitter (ms)"),
             use_container_width=True
         )
     with col2:
         st.plotly_chart(
             make_dual_period_chart(p1_df, p2_df, "download_mbps",
-                                   "Download Speed — Both Periods", "Download (Mbps)"),
+                                   "Download Speed, Both Periods", "Download (Mbps)"),
             use_container_width=True
         )
 
@@ -1255,18 +1223,18 @@ with tab2:
     with col3:
         st.plotly_chart(
             make_dual_period_chart(p1_df, p2_df, "upload_mbps",
-                                   "Upload Speed — Both Periods", "Upload (Mbps)"),
+                                   "Upload Speed, Both Periods", "Upload (Mbps)"),
             use_container_width=True
         )
     with col4:
         st.plotly_chart(
             make_dual_period_chart(p1_df, p2_df, "packet_loss_percent",
-                                   "Packet Loss — Both Periods", "Packet Loss (%)"),
+                                   "Packet Loss, Both Periods", "Packet Loss (%)"),
             use_container_width=True
         )
 
     # Distribution comparison (box plots)
-    st.markdown('<div class="card-title" style="margin-top:0.5rem;">Distribution Comparison — Period 1 vs Period 2</div>',
+    st.markdown('<div class="card-title" style="margin-top:0.5rem;">Distribution Comparison, Period 1 vs Period 2</div>',
                 unsafe_allow_html=True)
     b1, b2 = st.columns(2)
     with b1:
@@ -1302,14 +1270,14 @@ with tab2:
     st.dataframe(pd.DataFrame(stats_rows), use_container_width=True)
 
 # ============================================================
-# TAB 3 — ISP COMPARISON
+# TAB 3, ISP COMPARISON
 # ============================================================
 with tab3:
-    st.markdown('<div class="card-title">ISP Comparison — Starlink vs Terrestrial Providers</div>',
+    st.markdown('<div class="card-title">ISP Comparison, Starlink vs Terrestrial Providers</div>',
                 unsafe_allow_html=True)
 
     st.markdown(
-        '<div style="color:#4a6b50;font-size:0.78rem;margin-bottom:0.8rem;'
+        '<div style="color:#4a6080;font-size:0.78rem;margin-bottom:0.8rem;'
         'font-family:\'IBM Plex Mono\',monospace;">'
         'Period 1 (Mar 7–28): Starlink vs OmanTel &nbsp;|&nbsp; '
         'Period 2 (Apr 20 – May 12): Starlink vs Awasr. '
@@ -1319,10 +1287,10 @@ with tab3:
 
     # --- PERIOD 1: Starlink vs OmanTel ---
     st.markdown(
-        f'<span class="period-tag" style="background:rgba(29,233,200,0.09);color:{P1_COLOR};'
+        f'<span class="period-tag" style="background:#0d2348;color:{P1_COLOR};'
         f'border:1px solid {P1_COLOR}44;">Period 1</span>'
-        f'<span style="color:#d6e8d0;margin-left:0.6rem;font-weight:700;">'
-        f'Starlink vs OmanTel — Mar 7 to Mar 28, 2026</span>',
+        f'<span style="color:#d1d9e6;margin-left:0.6rem;font-weight:700;">'
+        f'Starlink vs OmanTel, Mar 7 to Mar 28, 2026</span>',
         unsafe_allow_html=True
     )
 
@@ -1375,10 +1343,10 @@ with tab3:
 
     # --- PERIOD 2: Starlink vs Awasr ---
     st.markdown(
-        f'<span class="period-tag" style="background:rgba(206,241,53,0.09);color:{P2_COLOR};'
+        f'<span class="period-tag" style="background:#0a2318;color:{P2_COLOR};'
         f'border:1px solid {P2_COLOR}44;">Period 2</span>'
-        f'<span style="color:#d6e8d0;margin-left:0.6rem;font-weight:700;">'
-        f'Starlink vs Awasr — Apr 20 to May 12, 2026</span>',
+        f'<span style="color:#d1d9e6;margin-left:0.6rem;font-weight:700;">'
+        f'Starlink vs Awasr, Apr 20 to May 12, 2026</span>',
         unsafe_allow_html=True
     )
 
@@ -1427,10 +1395,10 @@ with tab3:
         st.info("Awasr data not found. Place Awasr_cleaned.csv at Cleaned/experiment_B/ or beside this script.")
 
 # ============================================================
-# TAB 4 — FORECASTING
+# TAB 4, FORECASTING
 # ============================================================
 with tab4:
-    st.markdown('<div class="card-title">Forecasting — Model trained on combined validated dataset</div>',
+    st.markdown('<div class="card-title">Forecasting, Model trained on combined validated dataset</div>',
                 unsafe_allow_html=True)
 
     st.plotly_chart(
@@ -1455,7 +1423,7 @@ with tab4:
     )
 
     st.markdown(
-        '<div style="color:#4a6b50;font-size:0.8rem;margin-top:0.4rem;'
+        '<div style="color:#4a6080;font-size:0.8rem;margin-top:0.4rem;'
         'font-family:\'IBM Plex Mono\',monospace;">'
         'Latency is the primary forecasting target. Download and upload forecasts '
         'are supporting operational estimates. All predictions use the combined validated '
@@ -1476,7 +1444,7 @@ with tab4:
         st.markdown('</div>', unsafe_allow_html=True)
 
 # ============================================================
-# TAB 5 — ALERTS & RECOMMENDATIONS
+# TAB 5, ALERTS & RECOMMENDATIONS
 # ============================================================
 with tab5:
     st.markdown('<div class="card-title">Alerts and Recommendations</div>', unsafe_allow_html=True)
@@ -1504,18 +1472,18 @@ with tab5:
         st.markdown('</div>', unsafe_allow_html=True)
 
 # ============================================================
-# TAB 6 — MODEL EVALUATION
+# TAB 6, MODEL EVALUATION
 # ============================================================
 with tab6:
-    st.markdown('<div class="card-title">Model Evaluation — Combined Forecast Dataset</div>',
+    st.markdown('<div class="card-title">Model Evaluation, Combined Forecast Dataset</div>',
                 unsafe_allow_html=True)
 
     model_table = make_model_comparison_table(forecast_df)
     st.dataframe(model_table, use_container_width=True)
 
     m1, m2 = st.columns(2)
-    m1.metric(f"{selected_model} — MAE",  f"{latency_result['mae']:.3f} ms")
-    m2.metric(f"{selected_model} — RMSE", f"{latency_result['rmse']:.3f} ms")
+    m1.metric(f"{selected_model}, MAE",  f"{latency_result['mae']:.3f} ms")
+    m2.metric(f"{selected_model}, RMSE", f"{latency_result['rmse']:.3f} ms")
 
     st.markdown('<div class="card">', unsafe_allow_html=True)
     st.markdown('<div class="card-title">Research Notes</div>', unsafe_allow_html=True)
