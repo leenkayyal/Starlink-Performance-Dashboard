@@ -870,10 +870,8 @@ dl_feat = build_download_upload_features(combined_clean, "download_mbps")
 ul_feat = build_download_upload_features(combined_clean, "upload_mbps")
 
 # Route any new raw rows into queues (best-effort)
-try:
-    classify_and_route_new_rows()
-except Exception:
-    pass
+# Live logger now writes directly to starlink_retrain_queue.csv.
+# Do not auto-route old raw rows here, because it can re-add old/bad timestamps.
 # Load most recent available row for live overlay
 latest_live_row, latest_live_source = load_latest_live_row()
 
@@ -953,7 +951,7 @@ if show_live:
             kpi_note = f"Live data (raw file), {_net} · {_ts}"
             kpi_note_color = "#22c55e"
         else:
-            kpi_note = f"Live overlay, retrain queue · most recent row · {_ts}"
+            kpi_note = f"Live overlay, retrain queue · most recent row · {q_latest}"
             kpi_note_color = "#eab308"
     else:
         display_row    = p2_df.iloc[-1]
