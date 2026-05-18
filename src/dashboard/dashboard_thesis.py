@@ -279,7 +279,7 @@ def check_login():
     if not st.session_state.authenticated:
         st.markdown("""
         <div class="login-hero">
-            <h1>Starlink Thesis Dashboard</h1>
+            <h1>Starlink Performance Monitor</h1>
             <p>Please log in to continue.</p>
         </div>
         """, unsafe_allow_html=True)
@@ -447,6 +447,20 @@ section[data-testid="stSidebar"], section[data-testid="stSidebar"] > div {
     background: linear-gradient(180deg, #173C4A 0%, #265868 58%, #5EA38F 125%) !important;
     border-right: 0 !important;
     box-shadow: 8px 0 34px rgba(24,59,74,0.20) !important;
+}
+
+/* stronger divider lines inside sidebar */
+[data-testid="stSidebar"] hr {
+    border: none !important;
+    height: 1px !important;
+    background: rgba(255,255,255,0.28) !important;
+    margin: 2.1rem 0 !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] hr {
+    border: none !important;
+    height: 1px !important;
+    background: rgba(255,255,255,0.28) !important;
 }
 [data-testid="stSidebar"] label,
 [data-testid="stSidebar"] [data-testid="stWidgetLabel"] p {
@@ -903,23 +917,43 @@ def render_pretty_table(df, max_height=None):
 # HELPERS, CHARTS
 # ============================================================
 def _apply_base(fig, title, height=360):
+    """
+    Shared Plotly styling.
+    The larger margins and darker axis-title colours prevent labels from becoming
+    pale/cut off in Streamlit columns, especially in ISP Comparison and Forecasting.
+    """
     layout = dict(BASE_LAYOUT)
-    layout["title"] = dict(text=title, font=dict(color="#183B4A", size=15, family="Space Grotesk"), x=0.02, xanchor="left")
+    layout["title"] = dict(
+        text=title,
+        font=dict(color="#183B4A", size=15, family="Space Grotesk"),
+        x=0.02,
+        xanchor="left"
+    )
     layout["height"] = height
-    layout["margin"] = dict(l=58, r=26, t=54, b=54)
+    layout["margin"] = dict(l=86, r=34, t=58, b=82)
+    layout["plot_bgcolor"] = "rgba(255,255,255,0.98)"
+    layout["paper_bgcolor"] = "rgba(0,0,0,0)"
+    layout["font"] = dict(color="#183B4A", family="IBM Plex Mono")
     fig.update_layout(**layout)
     fig.update_xaxes(
-        tickfont=dict(color=AXIS_CLR, size=11, family="IBM Plex Mono"),
-        title_font=dict(color=AXIS_CLR, size=12, family="IBM Plex Mono"),
+        tickfont=dict(color="#1F4D5C", size=11, family="IBM Plex Mono"),
+        title_font=dict(color="#183B4A", size=13, family="IBM Plex Mono"),
+        title_standoff=18,
         automargin=True,
         zeroline=False,
+        showline=False,
+        gridcolor="rgba(24,59,74,0.13)",
+        color="#1F4D5C"
     )
     fig.update_yaxes(
-        tickfont=dict(color=AXIS_CLR, size=11, family="IBM Plex Mono"),
-        title_font=dict(color=AXIS_CLR, size=13, family="IBM Plex Mono"),
-        title_standoff=12,
+        tickfont=dict(color="#1F4D5C", size=11, family="IBM Plex Mono"),
+        title_font=dict(color="#183B4A", size=13, family="IBM Plex Mono"),
+        title_standoff=22,
         automargin=True,
         zeroline=False,
+        showline=False,
+        gridcolor="rgba(24,59,74,0.13)",
+        color="#1F4D5C"
     )
     return fig
 
@@ -927,95 +961,158 @@ def make_dual_period_chart(df1, df2, col, title, y_label, height=370):
     """
     Two-panel subplot: Period 1 on the left, Period 2 on the right.
     Both panels share the same y-axis scale so values are directly comparable.
-    A styled divider column in the middle labels the gap period.
-    This avoids the 35%-wide empty dead zone that a single shared time axis
-    creates when two 21-day periods are separated by a 23-day gap.
+    A wider middle divider labels the 23-day gap without cutting the text.
     """
-    # Compute shared y-range across both periods so scales match exactly
     combined = pd.concat([df1[col].dropna(), df2[col].dropna()])
     y_min = combined.min() * 0.92
     y_max = combined.max() * 1.08
 
     fig = make_subplots(
-        rows=1, cols=3,
-        column_widths=[0.48, 0.04, 0.48],
+        rows=1,
+        cols=3,
+        column_widths=[0.45, 0.10, 0.45],
         shared_yaxes=True,
-        horizontal_spacing=0.0,
-        subplot_titles=["", "", ""]   # we draw our own labels
+        horizontal_spacing=0.025,
+        subplot_titles=["", "", ""]
     )
 
     # --- Period 1 (left panel) ---
     fig.add_trace(go.Scatter(
-        x=df1["timestamp"], y=df1[col],
-        mode="lines", name="Period 1  Mar 7–28",
+        x=df1["timestamp"],
+        y=df1[col],
+        mode="lines",
+        name="Period 1  Mar 7–28",
         line=dict(color=P1_COLOR, width=1.6),
-        fill="tozeroy", fillcolor="rgba(255,115,48,0.13)",
+        fill="tozeroy",
+        fillcolor="rgba(255,115,48,0.13)",
         showlegend=True
     ), row=1, col=1)
 
     # --- Period 2 (right panel) ---
     fig.add_trace(go.Scatter(
-        x=df2["timestamp"], y=df2[col],
-        mode="lines", name="Period 2  Apr 20 – May 12",
+        x=df2["timestamp"],
+        y=df2[col],
+        mode="lines",
+        name="Period 2  Apr 20 – May 12",
         line=dict(color=P2_COLOR, width=1.6),
-        fill="tozeroy", fillcolor="rgba(94,163,143,0.13)",
+        fill="tozeroy",
+        fillcolor="rgba(94,163,143,0.13)",
         showlegend=True
     ), row=1, col=3)
 
-    # --- Middle divider: single invisible scatter to anchor the panel ---
+    # --- Middle divider label ---
+    # cliponaxis=False prevents Plotly from cutting the text at subplot borders.
     fig.add_trace(go.Scatter(
-        x=[0.5], y=[(y_min + y_max) / 2],
+        x=[0.5],
+        y=[(y_min + y_max) / 2],
         mode="text",
         text=["23-day<br>gap"],
-        textfont=dict(color="#1F4D5C", size=11, family="IBM Plex Mono"),
-        showlegend=False,
-        xaxis="x2", yaxis="y"
+        textposition="middle center",
+        textfont=dict(
+            color="#1F4D5C",
+            size=12,
+            family="IBM Plex Mono"
+        ),
+        cliponaxis=False,
+        showlegend=False
     ), row=1, col=2)
 
     # Shared y-axis range applied to both outer panels
-    fig.update_yaxes(range=[y_min, y_max], gridcolor=GRID_CLR,
-                     color=AXIS_CLR, showline=False, title_text=y_label,
-                     title_font=dict(color=AXIS_CLR, size=13, family="IBM Plex Mono"),
-                     tickfont=dict(color=AXIS_CLR, size=11, family="IBM Plex Mono"),
-                     title_standoff=12, automargin=True, zeroline=False, row=1, col=1)
-    fig.update_yaxes(range=[y_min, y_max], gridcolor=GRID_CLR,
-                     color=AXIS_CLR, showline=False, showticklabels=False,
-                     tickfont=dict(color=AXIS_CLR, size=11, family="IBM Plex Mono"),
-                     automargin=True, zeroline=False, row=1, col=3)
+    fig.update_yaxes(
+        range=[y_min, y_max],
+        gridcolor=GRID_CLR,
+        color=AXIS_CLR,
+        showline=False,
+        title_text=y_label,
+        title_font=dict(color=AXIS_CLR, size=13, family="IBM Plex Mono"),
+        tickfont=dict(color=AXIS_CLR, size=11, family="IBM Plex Mono"),
+        title_standoff=12,
+        automargin=True,
+        zeroline=False,
+        row=1,
+        col=1
+    )
+
+    fig.update_yaxes(
+        range=[y_min, y_max],
+        gridcolor=GRID_CLR,
+        color=AXIS_CLR,
+        showline=False,
+        showticklabels=False,
+        tickfont=dict(color=AXIS_CLR, size=11, family="IBM Plex Mono"),
+        automargin=True,
+        zeroline=False,
+        row=1,
+        col=3
+    )
+
     fig.update_yaxes(visible=False, row=1, col=2)
 
-    fig.update_xaxes(gridcolor=GRID_CLR, color=AXIS_CLR, showline=False,
-                     tickfont=dict(color=AXIS_CLR, size=11, family="IBM Plex Mono"),
-                     automargin=True, nticks=4, zeroline=False, row=1, col=1)
-    fig.update_xaxes(gridcolor=GRID_CLR, color=AXIS_CLR, showline=False,
-                     tickfont=dict(color=AXIS_CLR, size=11, family="IBM Plex Mono"),
-                     automargin=True, nticks=4, zeroline=False, row=1, col=3)
-    fig.update_xaxes(visible=False, row=1, col=2)
+    fig.update_xaxes(
+        gridcolor=GRID_CLR,
+        color=AXIS_CLR,
+        showline=False,
+        tickfont=dict(color=AXIS_CLR, size=11, family="IBM Plex Mono"),
+        automargin=True,
+        nticks=4,
+        zeroline=False,
+        row=1,
+        col=1
+    )
+
+    fig.update_xaxes(
+        gridcolor=GRID_CLR,
+        color=AXIS_CLR,
+        showline=False,
+        tickfont=dict(color=AXIS_CLR, size=11, family="IBM Plex Mono"),
+        automargin=True,
+        nticks=4,
+        zeroline=False,
+        row=1,
+        col=3
+    )
+
+    fig.update_xaxes(
+        visible=False,
+        range=[0, 1],
+        fixedrange=True,
+        row=1,
+        col=2
+    )
 
     # Period label annotations above each panel
     fig.add_annotation(
         text="<b>Period 1</b>  Mar 7 – 28",
-        xref="paper", yref="paper",
-        x=0.24, y=1.025, showarrow=False,
+        xref="paper",
+        yref="paper",
+        x=0.225,
+        y=1.025,
+        showarrow=False,
         font=dict(color=P1_COLOR, size=12, family="IBM Plex Mono"),
         xanchor="center"
     )
+
     fig.add_annotation(
         text="<b>Period 2</b>  Apr 20 – May 12",
-        xref="paper", yref="paper",
-        x=0.76, y=1.025, showarrow=False,
+        xref="paper",
+        yref="paper",
+        x=0.775,
+        y=1.025,
+        showarrow=False,
         font=dict(color=P2_COLOR, size=12, family="IBM Plex Mono"),
         xanchor="center"
     )
 
     fig.update_layout(
-        title=dict(text=title, font=dict(color="#183B4A", size=13,
-                                         family="IBM Plex Mono")),
+        title=dict(
+            text=title,
+            font=dict(color="#183B4A", size=13, family="IBM Plex Mono")
+        ),
         height=height,
         plot_bgcolor=PLOT_BG,
         paper_bgcolor=PAPER_BG,
         font=dict(color=FONT_CLR, family="IBM Plex Mono"),
-        margin=dict(l=62, r=30, t=58, b=62),
+        margin=dict(l=62, r=38, t=58, b=62),
         legend=dict(
             bgcolor="rgba(255,255,255,0.88)",
             font=dict(color=FONT_CLR, size=11),
@@ -1028,6 +1125,7 @@ def make_dual_period_chart(df1, df2, col, title, y_label, height=370):
             borderwidth=1
         )
     )
+
     return fig
 
 def make_single_period_chart(df, col, title, y_label, color, height=360):
@@ -1048,13 +1146,43 @@ def make_actual_vs_predicted_chart(y_test, y_pred, points, title):
     if points < len(actual):
         actual    = actual.iloc[-points:]
         predicted = predicted.iloc[-points:]
+
     fig = go.Figure()
-    fig.add_trace(go.Scatter(y=actual,    mode="lines", name="Actual",
-                             line=dict(color="#FF7330", width=2)))
-    fig.add_trace(go.Scatter(y=predicted, mode="lines", name="Predicted",
-                             line=dict(color="#5EA38F", width=2, dash="dot")))
-    _apply_base(fig, title, 400)
-    fig.update_layout(xaxis_title="Test Time Steps", yaxis_title="Latency (ms)")
+    fig.add_trace(go.Scatter(
+        y=actual,
+        mode="lines",
+        name="Actual",
+        line=dict(color="#FF7330", width=2.2)
+    ))
+    fig.add_trace(go.Scatter(
+        y=predicted,
+        mode="lines",
+        name="Predicted",
+        line=dict(color="#5EA38F", width=2.2, dash="dot")
+    ))
+
+    _apply_base(fig, title, 440)
+    fig.update_layout(
+        xaxis_title="Test Time Steps",
+        yaxis_title="Latency (ms)",
+        margin=dict(l=92, r=38, t=62, b=92),
+        legend=dict(
+            bgcolor="rgba(255,255,255,0.92)",
+            font=dict(color="#183B4A", size=11, family="IBM Plex Mono"),
+            bordercolor="rgba(24,59,74,0.14)",
+            borderwidth=1
+        )
+    )
+    fig.update_xaxes(
+        title_font=dict(color="#183B4A", size=13, family="IBM Plex Mono"),
+        tickfont=dict(color="#1F4D5C", size=11, family="IBM Plex Mono"),
+        title_standoff=20
+    )
+    fig.update_yaxes(
+        title_font=dict(color="#183B4A", size=13, family="IBM Plex Mono"),
+        tickfont=dict(color="#1F4D5C", size=11, family="IBM Plex Mono"),
+        title_standoff=24
+    )
     return fig
 
 def make_health_gauge(score):
@@ -1086,19 +1214,55 @@ def make_health_gauge(score):
     return fig
 
 def make_isp_comparison_chart(df_sl, df_isp, isp_name, col, title, y_label):
-    """Side-by-side comparison of Starlink vs a terrestrial ISP for the same period."""
+    """Comparison of Starlink vs a terrestrial ISP with clearly readable labels."""
     fig = go.Figure()
     fig.add_trace(go.Scatter(
-        x=df_sl["timestamp"], y=df_sl[col], mode="lines", name="Starlink",
-        fill="tozeroy", fillcolor="rgba(255,115,48,0.12)"
+        x=df_sl["timestamp"],
+        y=df_sl[col],
+        mode="lines",
+        name="Starlink",
+        line=dict(color="#7EC8FF", width=1.7),
+        fill="tozeroy",
+        fillcolor="rgba(255,115,48,0.12)"
     ))
     fig.add_trace(go.Scatter(
-        x=df_isp["timestamp"], y=df_isp[col], mode="lines", name=isp_name,
-        line=dict(color="#5EA38F", width=1.6), fill="tozeroy",
+        x=df_isp["timestamp"],
+        y=df_isp[col],
+        mode="lines",
+        name=isp_name,
+        line=dict(color="#5EA38F", width=1.7),
+        fill="tozeroy",
         fillcolor="rgba(94,163,143,0.12)"
     ))
-    _apply_base(fig, title, 340)
-    fig.update_layout(yaxis_title=y_label, xaxis_title="Time")
+
+    _apply_base(fig, title, 390)
+    fig.update_layout(
+        xaxis_title="Time",
+        yaxis_title=y_label,
+        margin=dict(l=92, r=36, t=60, b=88),
+        legend=dict(
+            bgcolor="rgba(255,255,255,0.92)",
+            font=dict(color="#183B4A", size=11, family="IBM Plex Mono"),
+            bordercolor="rgba(24,59,74,0.14)",
+            borderwidth=1,
+            x=1.02,
+            y=1,
+            xanchor="left",
+            yanchor="top"
+        )
+    )
+    fig.update_xaxes(
+        title_font=dict(color="#183B4A", size=13, family="IBM Plex Mono"),
+        tickfont=dict(color="#1F4D5C", size=11, family="IBM Plex Mono"),
+        title_standoff=20,
+        automargin=True
+    )
+    fig.update_yaxes(
+        title_font=dict(color="#183B4A", size=13, family="IBM Plex Mono"),
+        tickfont=dict(color="#1F4D5C", size=11, family="IBM Plex Mono"),
+        title_standoff=24,
+        automargin=True
+    )
     return fig
 
 def make_scatter_weather(df, weather_col, metric_col, title):
@@ -1147,12 +1311,28 @@ def make_residual_chart(y_test, y_pred, title):
     residuals = np.array(y_test) - np.array(y_pred)
     fig = go.Figure()
     fig.add_trace(go.Scatter(
-        y=residuals, mode="lines", name="Residual",
-        line=dict(color="#5EA38F", width=1.4)
+        y=residuals,
+        mode="lines",
+        name="Residual",
+        line=dict(color="#5EA38F", width=1.6)
     ))
     fig.add_hline(y=0, line_dash="dash", line_color="#94A3B8", line_width=1)
-    _apply_base(fig, title, 300)
-    fig.update_layout(yaxis_title="Residual (ms)", xaxis_title="Test Steps")
+    _apply_base(fig, title, 340)
+    fig.update_layout(
+        yaxis_title="Residual (ms)",
+        xaxis_title="Test Steps",
+        margin=dict(l=92, r=38, t=60, b=88)
+    )
+    fig.update_xaxes(
+        title_font=dict(color="#183B4A", size=13, family="IBM Plex Mono"),
+        tickfont=dict(color="#1F4D5C", size=11, family="IBM Plex Mono"),
+        title_standoff=20
+    )
+    fig.update_yaxes(
+        title_font=dict(color="#183B4A", size=13, family="IBM Plex Mono"),
+        tickfont=dict(color="#1F4D5C", size=11, family="IBM Plex Mono"),
+        title_standoff=24
+    )
     return fig
 
 # ============================================================
