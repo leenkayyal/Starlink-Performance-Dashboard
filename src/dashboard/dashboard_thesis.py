@@ -36,7 +36,7 @@ st_autorefresh(interval=refresh_seconds * 1000, key="thesis_refresh")
 # ============================================================
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@500;700&family=Space+Grotesk:wght@700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 :root {
     --ink:#183B4A;
@@ -50,6 +50,7 @@ st.markdown("""
     --muted:#6B7B83;
 }
 
+/* MAIN LIGHT BACKGROUND */
 html, body, .stApp {
     background:
         radial-gradient(circle at 10% 8%, rgba(255,115,48,.13) 0, transparent 26%),
@@ -60,6 +61,7 @@ html, body, .stApp {
     font-family: Inter, sans-serif !important;
 }
 
+/* TOP STREAMLIT BAR */
 header[data-testid="stHeader"] {
     background: rgba(255,248,238,.88) !important;
     backdrop-filter: blur(14px) !important;
@@ -71,12 +73,14 @@ header[data-testid="stHeader"] {
     height:5px !important;
 }
 
+/* SAME SIZE / SHAPE AS THE DARK LOGIN SCREEN */
 .block-container {
     width: 100% !important;
     max-width: 100% !important;
-    padding-top: 7vh !important;
-    padding-left: 1.6rem !important;
-    padding-right: 1.6rem !important;
+    padding-top: 17vh !important;
+    padding-left: 5.5rem !important;
+    padding-right: 5.5rem !important;
+    padding-bottom: 3rem !important;
 }
 
 .main .block-container,
@@ -86,7 +90,7 @@ div[data-testid="stAppViewBlockContainer"] {
     max-width: 100% !important;
 }
 
-/* Full-width login area with no outer white square */
+/* NO OUTER CARD / NO WHITE TITLE BOX */
 div[data-testid="stVerticalBlock"] > div:has(.login-hero) {
     width: 100% !important;
     max-width: 100% !important;
@@ -100,117 +104,82 @@ div[data-testid="stVerticalBlock"] > div:has(.login-hero) {
     overflow: visible !important;
 }
 
-/* Hero now matches the dashboard style, without dark edges */
+/* TITLE AREA LIKE THE SCREENSHOT */
 .login-hero {
     width: 100% !important;
     max-width: none !important;
-    background: rgba(255,255,255,0.92) !important;
-    border: 1px solid #DDE7E2 !important;
-    border-top: 5px solid #265868 !important;
-    border-radius: 20px !important;
-    padding: 1.55rem 2rem !important;
-    margin: 0 0 1.15rem 0 !important;
-    box-shadow: 0 10px 28px rgba(24,59,74,0.08) !important;
-    position: relative !important;
-    overflow: hidden !important;
-    box-sizing: border-box !important;
-}
-
-.login-hero:before {
-    content:"";
-    position:absolute;
-    top:0;
-    left:0;
-    right:0;
-    height:5px;
-    background:linear-gradient(90deg,#183B4A,#265868,#3F7F78,#5EA38F);
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 0 1.35rem 0 !important;
+    box-shadow: none !important;
 }
 
 .login-hero h1 {
-    color:#183B4A !important;
-    margin:0 !important;
-    font:800 2.05rem/1.1 Space Grotesk, Inter, sans-serif !important;
-    letter-spacing:-.04em !important;
-    white-space: nowrap !important;
+    color: var(--ink) !important;
+    margin: 0 0 1.05rem 0 !important;
+    font-size: 2.25rem !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.04em !important;
+    line-height: 1.1 !important;
 }
 
 .login-hero p {
-    color:#6B7B83 !important;
-    margin:.65rem 0 0 !important;
-    font-weight:600 !important;
-    line-height:1.55 !important;
+    color: var(--ink) !important;
+    margin: 0 !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
 }
 
-.login-card-note {
-    display:none !important;
-}
-
-/* Inputs: no thick dark edge */
-.stTextInput input {
-    background: rgba(255,255,255,.96) !important;
-    border:1.5px solid rgba(24,59,74,.14) !important;
-    border-radius:16px !important;
-    color:var(--ink) !important;
-    box-shadow:0 6px 18px rgba(24,59,74,.05) !important;
-    padding:.85rem 1rem !important;
-}
-
-.stTextInput input:focus {
-    border-color:var(--orange) !important;
-    box-shadow:0 0 0 4px rgba(255,115,48,.13) !important;
-}
-
+/* LABELS */
 .stTextInput label p,
 [data-testid="stWidgetLabel"] p {
     color: var(--ink) !important;
-    font-weight:800 !important;
+    font-weight: 700 !important;
+    font-size: 0.9rem !important;
 }
 
-/* Password input wrapper and eye area */
+/* USERNAME INPUT */
+.stTextInput input {
+    background: rgba(255,255,255,.96) !important;
+    background-color: rgba(255,255,255,.96) !important;
+    border: 1.5px solid rgba(24,59,74,.18) !important;
+    border-radius: 8px !important;
+    color: var(--ink) !important;
+    height: 44px !important;
+    box-shadow: none !important;
+    padding: .65rem .9rem !important;
+}
+
+.stTextInput input:focus {
+    border-color: var(--orange) !important;
+    box-shadow: 0 0 0 2px rgba(255,115,48,.18) !important;
+}
+
+/* PASSWORD WRAPPER AND EYE ICON AREA */
 .stTextInput div[data-baseweb="input"] {
     background: rgba(255,255,255,.96) !important;
-    border-radius:16px !important;
-    border:1.5px solid rgba(24,59,74,.14) !important;
-    box-shadow:0 6px 18px rgba(24,59,74,.05) !important;
-    overflow:hidden !important;
+    background-color: rgba(255,255,255,.96) !important;
+    border: 1.5px solid rgba(24,59,74,.18) !important;
+    border-radius: 8px !important;
+    height: 44px !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
 }
 
 .stTextInput div[data-baseweb="input"] input {
-    border:0 !important;
-    box-shadow:none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    height: 42px !important;
+    background: transparent !important;
 }
 
 .stTextInput div[data-baseweb="input"]:focus-within {
-    border-color:var(--orange) !important;
-    box-shadow:0 0 0 4px rgba(255,115,48,.13) !important;
+    border-color: var(--orange) !important;
+    box-shadow: 0 0 0 2px rgba(255,115,48,.18) !important;
 }
 
-
-/* Keep inputs white even when typed, focused, or browser-autofilled */
-.stTextInput input,
-.stTextInput input:focus,
-.stTextInput input:active,
-.stTextInput input:hover,
-.stTextInput input:-webkit-autofill,
-.stTextInput input:-webkit-autofill:hover,
-.stTextInput input:-webkit-autofill:focus,
-.stTextInput input:-webkit-autofill:active {
-    background: #FFFFFF !important;
-    background-color: #FFFFFF !important;
-    color: var(--ink) !important;
-    -webkit-text-fill-color: var(--ink) !important;
-    caret-color: var(--ink) !important;
-    box-shadow: 0 6px 18px rgba(24,59,74,.05), 0 0 0 1000px #FFFFFF inset !important;
-}
-
-.stTextInput div[data-baseweb="input"],
-.stTextInput div[data-baseweb="input"]:focus-within,
-.stTextInput div[data-baseweb="base-input"] {
-    background: #FFFFFF !important;
-    background-color: #FFFFFF !important;
-}
-
-/* Remove black fill from the input rectangles and password eye area */
 .stTextInput div[data-baseweb="base-input"] {
     background: transparent !important;
 }
@@ -218,7 +187,7 @@ div[data-testid="stVerticalBlock"] > div:has(.login-hero) {
 .stTextInput div[data-baseweb="input"] > div,
 .stTextInput div[data-baseweb="input"] button,
 .stTextInput div[data-baseweb="input"] [role="button"] {
-    background: #FFFFFF !important;
+    background: transparent !important;
     color: var(--ink) !important;
     border: 0 !important;
     box-shadow: none !important;
@@ -229,31 +198,23 @@ div[data-testid="stVerticalBlock"] > div:has(.login-hero) {
     color: var(--ink) !important;
 }
 
-/* Slight spacing since note text is removed */
-.login-hero {
-    margin-bottom: 1.15rem !important;
+/* KEEP INPUTS WHITE AFTER TYPING / AUTOFILL */
+.stTextInput input,
+.stTextInput input:focus,
+.stTextInput input:active,
+.stTextInput input:hover,
+.stTextInput input:-webkit-autofill,
+.stTextInput input:-webkit-autofill:hover,
+.stTextInput input:-webkit-autofill:focus,
+.stTextInput input:-webkit-autofill:active {
+    background-color: rgba(255,255,255,.96) !important;
+    color: var(--ink) !important;
+    -webkit-text-fill-color: var(--ink) !important;
+    caret-color: var(--ink) !important;
+    box-shadow: 0 0 0 1000px rgba(255,255,255,.96) inset !important;
 }
 
-/* Login button matches dashboard colors */
-.stButton>button {
-    width:100%;
-    background:linear-gradient(135deg,#173C4A 0%,#265868 58%,#5EA38F 125%) !important;
-    color:#fff !important;
-    border:0 !important;
-    border-radius:16px !important;
-    padding:.82rem 1rem !important;
-    font-weight:900 !important;
-    box-shadow:0 14px 28px rgba(24,59,74,.22) !important;
-}
-
-.stButton>button:hover {
-    transform: translateY(-1px) !important;
-    box-shadow:0 18px 38px rgba(24,59,74,.28) !important;
-}
-
-
-
-/* Make login inputs and button use the full page width */
+/* FULL-WIDTH INPUTS */
 div[data-testid="stTextInput"],
 div[data-testid="stTextInput"] > div,
 div[data-testid="stTextInput"] input {
@@ -261,24 +222,47 @@ div[data-testid="stTextInput"] input {
     max-width: none !important;
 }
 
-.stButton,
-.stButton > button {
-    width: 100% !important;
+/* SMALL BUTTON LIKE THE DARK LOGIN SCREEN */
+.stButton {
+    width: auto !important;
     max-width: none !important;
 }
 
+.stButton > button {
+    width: auto !important;
+    max-width: none !important;
+    background: rgba(255,255,255,.75) !important;
+    color: var(--ink) !important;
+    border: 1px solid rgba(24,59,74,.25) !important;
+    border-radius: 8px !important;
+    padding: .45rem .85rem !important;
+    font-weight: 700 !important;
+    box-shadow: none !important;
+}
 
-
-/* Force the login page layout to span the full available width */
-div[data-testid="stForm"],
-div[data-testid="stVerticalBlock"],
-div[data-testid="stHorizontalBlock"] {
-    width: 100% !important;
-    max-width: 100% !important;
+.stButton > button:hover {
+    background: rgba(255,255,255,.95) !important;
+    border-color: var(--orange) !important;
+    color: var(--orange) !important;
+    transform: none !important;
+    box-shadow: none !important;
 }
 
 .stAlert {
-    border-radius:18px !important;
+    border-radius: 12px !important;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+    .block-container {
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+        padding-top: 12vh !important;
+    }
+
+    .login-hero h1 {
+        font-size: 1.85rem !important;
+    }
 }
 </style>
 """, unsafe_allow_html=True)
@@ -295,7 +279,8 @@ def check_login():
     if not st.session_state.authenticated:
         st.markdown("""
         <div class="login-hero">
-            <h1>Starlink Performance Monitor</h1>
+            <h1>Starlink Thesis Dashboard</h1>
+            <p>Please log in to continue.</p>
         </div>
         """, unsafe_allow_html=True)
         username = st.text_input("Username")
