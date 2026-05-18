@@ -21,7 +21,7 @@ except Exception:
 # PAGE CONFIG
 # ============================================================
 st.set_page_config(
-    page_title="Starlink AI Advisor",
+    page_title="Starlink Advisor",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -43,74 +43,866 @@ AI_FEATURES_FILE = "Models/starlink_latency_features.pkl"
 # ============================================================
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500;700&display=swap');
-html, body, [class*="css"], .stApp, .main, .block-container {
-    background-color: #05080f !important;
-    color: #dde3ed !important;
-    font-family: 'DM Sans', sans-serif !important;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap');
+
+:root {
+    --ink: #183B4A;
+    --ink-2: #265868;
+    --cream: #FFF8EE;
+    --paper: #FFFFFF;
+    --line: #E8DED0;
+    --muted: #6B7B83;
+    --orange: #FF7330;
+    --yellow: #FFC845;
+    --sage: #A7C983;
+    --teal: #5EA38F;
+    --success: #3D8B65;
+    --warning: #D99A20;
+    --danger: #D95B4F;
+}
+
+html, body, .stApp {
+    background:
+        radial-gradient(circle at 9% 7%, rgba(255,115,48,0.14) 0, transparent 25%),
+        radial-gradient(circle at 88% 5%, rgba(94,163,143,0.20) 0, transparent 28%),
+        radial-gradient(circle at 75% 92%, rgba(255,200,69,0.16) 0, transparent 28%),
+        linear-gradient(135deg, #FFF9EF 0%, #F6F9ED 43%, #EEF8F4 100%) fixed !important;
+    color: var(--ink) !important;
+    font-family: 'Inter', sans-serif !important;
+}
+[class*="css"], .main, .block-container {
+    color: var(--ink) !important;
+    font-family: 'Inter', sans-serif !important;
+    background: transparent !important;
 }
 .block-container {
-    padding-top: 3rem !important;
-    padding-left: 3rem !important;
-    padding-right: 3rem !important;
+    padding-top: 2.2rem !important;
+    padding-left: 2.4rem !important;
+    padding-right: 2.4rem !important;
     padding-bottom: 3rem !important;
     max-width: 100% !important;
 }
-section[data-testid="stSidebar"] { display: none !important; }
 
-h1, h2, h3 { color: #ffffff !important; }
-p, li, span { color: #dde3ed; }
-hr { border-color: #1e3050 !important; }
-
-div[data-baseweb="select"] > div,
-[data-testid="stMultiSelect"] > div > div,
-[data-testid="stNumberInput"] input {
-    background: #0c1423 !important;
-    border: 1px solid #1e3050 !important;
-    border-radius: 10px !important;
-    color: #dde3ed !important;
+h1, h2, h3 {
+    color: var(--ink) !important;
+    font-family: 'Space Grotesk', 'Inter', sans-serif !important;
+    letter-spacing: -0.03em !important;
 }
+p, li, span, label { color: var(--ink); }
+hr { border-color: rgba(24,59,74,0.12) !important; }
+
+/* top app bar */
+header[data-testid="stHeader"] {
+    background: rgba(255,248,238,0.86) !important;
+    backdrop-filter: blur(14px) !important;
+    border-bottom: 1px solid rgba(24,59,74,0.10) !important;
+}
+header[data-testid="stHeader"] * { color: var(--ink) !important; }
+[data-testid="stDecoration"] {
+    background: linear-gradient(90deg, #183B4A, #265868, #3F7F78, #5EA38F) !important;
+    height: 5px !important;
+}
+
+/* login and general panels */
+div[data-testid="stVerticalBlock"] > div:has(.login-hero) {
+    max-width: 520px !important;
+    margin: 7vh auto 0 auto !important;
+    background: rgba(255,255,255,0.88) !important;
+    border: 1px solid rgba(24,59,74,0.10) !important;
+    border-radius: 30px !important;
+    padding: 2.1rem 2.2rem 2.4rem !important;
+    box-shadow: 0 26px 70px rgba(24,59,74,0.18) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+div[data-testid="stVerticalBlock"] > div:has(.login-hero)::before,
+.card::before, .advisor-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 7px;
+    background: linear-gradient(90deg, #183B4A, #265868, #3F7F78, #5EA38F);
+}
+.login-hero {
+    background: linear-gradient(135deg, rgba(24,59,74,0.98), rgba(38,88,104,0.96));
+    color: #FFFFFF !important;
+    border-radius: 24px;
+    padding: 1.45rem 1.5rem;
+    margin-bottom: 1.2rem;
+    box-shadow: 0 18px 40px rgba(24,59,74,0.22);
+}
+.login-hero h1, .login-hero h2, .login-hero p { color: #FFFFFF !important; margin: 0 !important; }
+.login-chip {
+    display: inline-block;
+    margin-top: 0.75rem;
+    padding: 0.32rem 0.7rem;
+    border-radius: 999px;
+    background: rgba(255,200,69,0.18);
+    color: #FFE7A2 !important;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+/* sidebar */
+section[data-testid="stSidebar"], section[data-testid="stSidebar"] > div {
+    background: linear-gradient(180deg, #173C4A 0%, #265868 58%, #5EA38F 125%) !important;
+    border-right: 0 !important;
+    box-shadow: 8px 0 34px rgba(24,59,74,0.20) !important;
+}
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p {
+    color: rgba(255,255,255,0.90) !important;
+    font-size: 0.72rem !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+    font-family: 'IBM Plex Mono', monospace !important;
+}
+[data-testid="stSidebar"] p, [data-testid="stSidebar"] span, [data-testid="stSidebar"] li,
+[data-testid="stSidebar"] strong, [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
+    color: #FFFFFF !important;
+}
+
+/* inputs */
+.stTextInput input,
+[data-testid="stNumberInput"] input,
+div[data-baseweb="select"] > div,
+[data-testid="stMultiSelect"] > div > div {
+    background: rgba(255,255,255,0.96) !important;
+    border: 1.5px solid rgba(24,59,74,0.14) !important;
+    border-radius: 16px !important;
+    color: var(--ink) !important;
+    box-shadow: 0 6px 18px rgba(24,59,74,0.05) !important;
+}
+.stTextInput input:focus,
+[data-testid="stNumberInput"] input:focus,
+div[data-baseweb="select"] > div:focus-within,
+[data-testid="stMultiSelect"] > div > div:focus-within {
+    border-color: var(--orange) !important;
+    box-shadow: 0 0 0 4px rgba(255,115,48,0.13) !important;
+}
+[data-baseweb="popover"] { color: var(--ink) !important; }
+[data-baseweb="menu"] { background: #FFFFFF !important; }
+[data-baseweb="menu"] li { color: var(--ink) !important; }
+
+/* buttons */
 .stButton > button {
-    background: linear-gradient(135deg, #1d4ed8, #4f46e5) !important;
+    background: linear-gradient(135deg, #173C4A 0%, #265868 58%, #5EA38F 125%) !important;
     color: #ffffff !important;
-    border: none !important;
-    border-radius: 10px !important;
-    font-weight: 700 !important;
-    padding: 0.65rem 2rem !important;
+    border: 0 !important;
+    border-radius: 16px !important;
+    font-weight: 900 !important;
+    padding: 0.75rem 1.4rem !important;
+    box-shadow: 0 14px 28px rgba(24,59,74,0.24) !important;
+    transition: transform 0.15s ease, box-shadow 0.15s ease !important;
 }
 .stButton > button:hover {
-    background: linear-gradient(135deg, #2563eb, #6366f1) !important;
-    box-shadow: 0 4px 22px rgba(79,70,229,0.45) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 18px 38px rgba(24,59,74,0.32) !important;
 }
-.step-label {
-    font-size: 0.7rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: #4a7fc1;
-    margin-bottom: 0.6rem;
+
+/* KPI switch / toggles - clearer and fully visible */
+[data-testid="stToggle"] label,
+[data-testid="stToggle"] p,
+[data-testid="stWidgetLabel"] p {
+    color: var(--ink) !important;
+    font-weight: 800 !important;
 }
-.q-label {
-    font-size: 0.78rem;
-    font-weight: 800;
-    color: #4a7fc1;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    margin-bottom: 0.25rem;
-    margin-top: 1.2rem;
+[data-testid="stSidebar"] [data-testid="stToggle"] label,
+[data-testid="stSidebar"] [data-testid="stToggle"] p,
+[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p {
+    color: #FFFFFF !important;
+}
+[data-testid="stToggle"] [role="switch"] {
+    min-width: 48px !important;
+    height: 26px !important;
+    border: 2px solid rgba(24,59,74,0.15) !important;
+    box-shadow: inset 0 2px 6px rgba(24,59,74,0.14), 0 4px 10px rgba(24,59,74,0.10) !important;
+}
+[data-testid="stToggle"] [role="switch"][aria-checked="false"] {
+    background: #D9E4DF !important;
+}
+[data-testid="stToggle"] [role="switch"][aria-checked="true"] {
+    background: linear-gradient(135deg, #173C4A 0%, #265868 58%, #5EA38F 125%) !important;
+    border-color: rgba(94,163,143,0.55) !important;
+}
+[data-testid="stToggle"] [role="switch"] > div {
+    background: #FFFFFF !important;
+    box-shadow: 0 3px 10px rgba(24,59,74,0.24) !important;
+}
+
+/* sliders */
+[data-testid="stSlider"] [role="slider"] {
+    background: var(--orange) !important;
+    border-color: #FFFFFF !important;
+    box-shadow: 0 0 0 5px rgba(255,115,48,0.16) !important;
+}
+[data-testid="stSlider"] [data-testid="stThumbValue"] { color: var(--orange) !important; }
+
+/* cards and metrics */
+.card, .advisor-card, [data-testid="metric-container"], [data-testid="stDataFrame"] {
+    background: rgba(255,255,255,0.90) !important;
+    border: 1px solid rgba(24,59,74,0.10) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 18px 45px rgba(24,59,74,0.10) !important;
+    backdrop-filter: blur(12px) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+.card {
+    padding: 1.35rem 1.45rem !important;
+    margin-bottom: 0.8rem !important;
+}
+.card-title, .step-label, .q-label {
+    display: inline-block;
+    color: #FFFFFF !important;
+    background: linear-gradient(135deg, #173C4A 0%, #265868 58%, #5EA38F 125%) !important;
+    box-shadow: 0 10px 22px rgba(24,59,74,0.22) !important;
+    border-radius: 999px !important;
+    padding: 0.32rem 0.78rem !important;
+    font-size: 0.68rem !important;
+    font-weight: 900 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.10em !important;
+    font-family: 'IBM Plex Mono', monospace !important;
+    margin-bottom: 0.75rem !important;
+    border-left: none !important;
 }
 .advisor-card {
-    background: linear-gradient(135deg, #0c1423 0%, #080e1c 100%);
-    border: 1px solid #1e3050;
-    border-radius: 16px;
-    padding: 1.3rem 1.6rem;
-    margin-bottom: 1rem;
+    padding: 1.35rem 1.55rem !important;
+    margin-bottom: 1rem !important;
 }
-.small-note {
-    color:#64748b;
-    font-size:0.82rem;
-    line-height:1.65;
+.small-note { color: var(--muted) !important; font-size: 0.84rem; line-height: 1.65; }
+
+[data-testid="metric-container"] {
+    padding: 1.05rem !important;
+    border-top: 6px solid var(--teal) !important;
 }
+[data-testid="metric-container"] label,
+[data-testid="metric-container"] [data-testid="stMetricLabel"] p {
+    color: var(--muted) !important;
+    font-size: 0.66rem !important;
+    font-weight: 900 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.12em !important;
+    font-family: 'IBM Plex Mono', monospace !important;
+}
+[data-testid="metric-container"] [data-testid="stMetricValue"] div,
+[data-testid="metric-container"] [data-testid="stMetricValue"] {
+    color: var(--ink) !important;
+    font-size: 1.8rem !important;
+    font-weight: 900 !important;
+    font-family: 'Space Grotesk', 'IBM Plex Mono', monospace !important;
+}
+[data-testid="metric-container"] [data-testid="stMetricDelta"] {
+    color: var(--success) !important;
+    font-weight: 800 !important;
+}
+
+/* tabs */
+.stTabs [data-baseweb="tab-list"] {
+    background: rgba(255,255,255,0.82) !important;
+    border-radius: 999px !important;
+    padding: 6px !important;
+    border: 1px solid rgba(24,59,74,0.10) !important;
+    gap: 5px !important;
+    box-shadow: 0 10px 30px rgba(24,59,74,0.10) !important;
+}
+.stTabs [data-baseweb="tab"] {
+    color: var(--ink-2) !important;
+    font-weight: 900 !important;
+    border-radius: 999px !important;
+    padding: 0.62rem 1.2rem !important;
+    font-size: 0.82rem !important;
+    font-family: 'IBM Plex Mono', monospace !important;
+}
+.stTabs [data-baseweb="tab"]:hover { background: rgba(94,163,143,0.14) !important; color: var(--ink-2) !important; }
+.stTabs [aria-selected="true"] {
+    background: linear-gradient(135deg, var(--ink), var(--teal)) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 10px 22px rgba(24,59,74,0.24) !important;
+}
+.stTabs [data-baseweb="tab-highlight"], .stTabs [data-baseweb="tab-border"] { display: none !important; }
+[data-baseweb="tab-panel"] {
+    background: rgba(255,255,255,0.35) !important;
+    border-radius: 24px !important;
+    border: 1px solid rgba(255,255,255,0.40) !important;
+    padding: 1rem 0.5rem !important;
+}
+
+/* dataframe */
+[data-testid="stDataFrameResizable"], .dvn-scroller, [data-testid="stDataFrame"] canvas { background: #FFFFFF !important; }
+.stDataFrame thead th {
+    background: #FFF2DB !important;
+    color: var(--ink) !important;
+    font-weight: 900 !important;
+    font-family: 'IBM Plex Mono', monospace !important;
+    font-size: 0.75rem !important;
+}
+.stDataFrame tbody td { color: var(--ink) !important; background: #FFFFFF !important; }
+
+/* multiselect tags */
+[data-testid="stMultiSelect"] [data-baseweb="tag"] {
+    background: linear-gradient(135deg, rgba(24,59,74,0.10), rgba(94,163,143,0.16)) !important;
+    border: 1px solid rgba(94,163,143,0.35) !important;
+    color: var(--ink-2) !important;
+    border-radius: 999px !important;
+}
+[data-testid="stMultiSelect"] [data-baseweb="tag"] span { color: var(--ink-2) !important; font-weight: 800 !important; }
+
+/* alerts / status */
+.stAlert {
+    border-radius: 18px !important;
+    border: 1px solid rgba(24,59,74,0.10) !important;
+    box-shadow: 0 10px 25px rgba(24,59,74,0.08) !important;
+}
+.stSpinner > div { border-color: var(--orange) transparent transparent transparent !important; border-width: 3px !important; }
+[data-testid="stStatusWidget"], [data-testid="stStatusWidget"] svg { color: var(--orange) !important; fill: var(--orange) !important; stroke: var(--orange) !important; }
+.stProgress > div > div > div > div { background: linear-gradient(90deg, var(--orange), var(--yellow), var(--teal)) !important; }
+
+.stProgress > div > div > div > div { background: linear-gradient(90deg, #183B4A, #265868, #5EA38F) !important; }
+.stDownloadButton > button {
+    width: 100% !important;
+    background: linear-gradient(135deg, #173C4A 0%, #265868 58%, #5EA38F 125%) !important;
+    color: #FFFFFF !important;
+    border: 0 !important;
+    border-radius: 16px !important;
+    font-weight: 900 !important;
+    padding: 0.75rem 1.4rem !important;
+    box-shadow: 0 14px 28px rgba(24,59,74,0.22) !important;
+}
+.pretty-table-wrap {
+    background: rgba(255,255,255,0.92);
+    border: 1px solid rgba(24,59,74,0.10);
+    border-radius: 24px;
+    box-shadow: 0 18px 45px rgba(24,59,74,0.10);
+    padding: 0.35rem 0.55rem;
+    overflow-x: auto;
+    overflow-y: auto;
+    margin: 0.35rem 0 1rem 0;
+}
+.pretty-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+.pretty-table thead th {
+    background: #F1F8F5;
+    color: var(--ink);
+    font-weight: 900;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.82rem 0.78rem;
+    border-bottom: 1px solid rgba(24,59,74,0.10);
+    text-align: left;
+    white-space: nowrap;
+}
+.pretty-table tbody td {
+    color: var(--ink);
+    padding: 0.78rem 0.78rem;
+    border-bottom: 1px solid rgba(24,59,74,0.08);
+    background: rgba(255,255,255,0.94);
+    vertical-align: top;
+}
+.pretty-table tbody tr:nth-child(even) td { background: rgba(94,163,143,0.05); }
+.pretty-table tbody tr:hover td { background: rgba(255,200,69,0.10); }
+
+/* ── Advisor colorful dashboard polish ───────────────────── */
+.advisor-hero {
+    background:
+        radial-gradient(circle at 86% 18%, rgba(255,200,69,0.22) 0, transparent 20%),
+        radial-gradient(circle at 8% 80%, rgba(94,163,143,0.18) 0, transparent 26%),
+        linear-gradient(135deg, rgba(255,255,255,0.96), rgba(255,248,238,0.94) 45%, rgba(238,248,244,0.96));
+    border-radius: 24px;
+    padding: 1.6rem 2rem;
+    margin-bottom: 1.2rem;
+    border: 1px solid rgba(24,59,74,0.10);
+    border-top: 7px solid #265868;
+    box-shadow: 0 18px 45px rgba(24,59,74,0.10);
+    position: relative;
+    overflow: hidden;
+}
+.advisor-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 7px;
+    background: linear-gradient(90deg,#183B4A,#265868,#5EA38F,#A7C983,#FFC845,#FF7330);
+}
+.advisor-hero h1 {
+    margin: 0 !important;
+    font-size: 2.25rem !important;
+    line-height: 1.05 !important;
+    font-weight: 900 !important;
+}
+.advisor-hero .hero-sub {
+    color: #6B7B83 !important;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.82rem;
+    margin-top: 0.55rem;
+}
+.hero-chip {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(255,115,48,0.14), rgba(255,200,69,0.18));
+    color: #D85E24 !important;
+    border: 1px solid rgba(255,115,48,0.28);
+    border-radius: 999px;
+    padding: 0.35rem 0.8rem;
+    font-size: 0.72rem;
+    font-weight: 900;
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.step-card {
+    border-radius: 18px;
+    padding: 0.8rem 1rem;
+    text-align: center;
+    font-size: 0.82rem;
+    font-weight: 900;
+    font-family: 'IBM Plex Mono', monospace;
+    box-shadow: 0 12px 26px rgba(24,59,74,0.10);
+}
+.step-active {
+    background: linear-gradient(135deg,#FF7330 0%,#FFC845 52%,#5EA38F 120%);
+    color: #FFFFFF !important;
+    border: 0;
+}
+.step-done {
+    background: linear-gradient(135deg,#EAF7F2,#FFFFFF);
+    color: #3D8B65 !important;
+    border: 1px solid rgba(94,163,143,0.32);
+}
+.step-wait {
+    background: rgba(255,255,255,0.86);
+    color: #183B4A !important;
+    border: 1px solid rgba(24,59,74,0.10);
+}
+.condition-shell {
+    background:
+        radial-gradient(circle at 0% 0%, rgba(255,115,48,0.10), transparent 25%),
+        radial-gradient(circle at 100% 100%, rgba(94,163,143,0.12), transparent 28%),
+        rgba(255,255,255,0.48);
+    border: 1px solid rgba(24,59,74,0.08);
+    border-radius: 28px;
+    padding: 1.25rem;
+    box-shadow: 0 18px 45px rgba(24,59,74,0.08);
+}
+.q-label {
+    background: linear-gradient(135deg,#183B4A 0%,#265868 55%,#5EA38F 120%) !important;
+    box-shadow: 0 10px 22px rgba(24,59,74,0.18) !important;
+}
+.q-label.q-orange { background: linear-gradient(135deg,#FF7330,#FFC845) !important; }
+.q-label.q-sage { background: linear-gradient(135deg,#5EA38F,#A7C983) !important; }
+.q-label.q-yellow { background: linear-gradient(135deg,#D99A20,#FFC845) !important; }
+.card-title, .step-label {
+    background: linear-gradient(135deg,#173C4A 0%,#265868 58%,#5EA38F 125%) !important;
+    box-shadow: 0 10px 22px rgba(24,59,74,0.18) !important;
+}
+.stButton > button {
+    background: linear-gradient(135deg,#FF7330 0%,#FFC845 48%,#5EA38F 120%) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 16px 34px rgba(255,115,48,0.22) !important;
+}
+.stButton > button:hover {
+    box-shadow: 0 18px 42px rgba(94,163,143,0.28) !important;
+}
+.metric-pop {
+    transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+.metric-pop:hover {
+    transform: translateY(-2px);
+}
+[data-testid="stMultiSelect"] [data-baseweb="tag"] {
+    background: linear-gradient(135deg, rgba(94,163,143,0.18), rgba(167,201,131,0.20)) !important;
+    border: 1px solid rgba(94,163,143,0.42) !important;
+}
+[data-testid="stMultiSelect"] [data-baseweb="tag"] span {
+    color: #265868 !important;
+}
+.pretty-table-wrap {
+    background: rgba(255,255,255,0.92);
+    border: 1px solid rgba(24,59,74,0.10);
+    border-radius: 24px;
+    box-shadow: 0 18px 45px rgba(24,59,74,0.10);
+    padding: 0.35rem 0.55rem;
+    overflow-x: auto;
+    margin: 0.35rem 0 1rem 0;
+}
+.pretty-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+.pretty-table thead th {
+    background: #F1F8F5;
+    color: #183B4A;
+    font-weight: 900;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.82rem 0.78rem;
+    border-bottom: 1px solid rgba(24,59,74,0.10);
+    text-align: left;
+    white-space: nowrap;
+}
+.pretty-table tbody td {
+    color: #183B4A;
+    padding: 0.78rem 0.78rem;
+    border-bottom: 1px solid rgba(24,59,74,0.08);
+    background: rgba(255,255,255,0.94);
+}
+.pretty-table tbody tr:nth-child(even) td {
+    background: rgba(94,163,143,0.05);
+}
+
+
+/* ── Darker premium advisor redesign ─────────────────────── */
+html, body, .stApp {
+    background:
+        radial-gradient(circle at 18% 10%, rgba(255,115,48,0.10) 0, transparent 24%),
+        radial-gradient(circle at 88% 12%, rgba(94,163,143,0.14) 0, transparent 26%),
+        linear-gradient(135deg, #F9F2E8 0%, #EEF4EF 48%, #E7F2EF 100%) fixed !important;
+}
+
+/* Header: calmer and darker, less playful */
+.advisor-hero {
+    background:
+        linear-gradient(135deg, #173C4A 0%, #265868 56%, #3F7F78 100%) !important;
+    border-radius: 24px !important;
+    padding: 1.75rem 2rem !important;
+    margin-bottom: 1.25rem !important;
+    border: 1px solid rgba(255,255,255,0.18) !important;
+    border-top: 0 !important;
+    box-shadow: 0 22px 55px rgba(24,59,74,0.24) !important;
+}
+.advisor-hero::before {
+    height: 6px !important;
+    background: linear-gradient(90deg, #5EA38F, #A7C983, #FFC845, #FF7330) !important;
+}
+.advisor-hero h1 span,
+.advisor-hero h1 {
+    color: #FFFFFF !important;
+}
+.advisor-hero .hero-sub {
+    color: rgba(255,255,255,0.78) !important;
+}
+.hero-chip {
+    background: rgba(255,255,255,0.12) !important;
+    color: #FFFFFF !important;
+    border: 1px solid rgba(255,255,255,0.24) !important;
+}
+
+/* Main section shell: less empty, more dashboard-card */
+.condition-shell {
+    background:
+        linear-gradient(135deg, rgba(255,255,255,0.82), rgba(238,248,244,0.70)) !important;
+    border: 1px solid rgba(24,59,74,0.10) !important;
+    border-radius: 28px !important;
+    padding: 1.35rem 1.45rem 1.55rem !important;
+    box-shadow: 0 22px 55px rgba(24,59,74,0.12) !important;
+}
+
+/* Progress steps: darker selected, cleaner inactive */
+.step-card {
+    border-radius: 16px !important;
+    padding: 0.88rem 1rem !important;
+    box-shadow: 0 12px 28px rgba(24,59,74,0.10) !important;
+}
+.step-active {
+    background: linear-gradient(135deg, #173C4A 0%, #265868 62%, #5EA38F 120%) !important;
+    color: #FFFFFF !important;
+}
+.step-done {
+    background: linear-gradient(135deg, #3D8B65, #5EA38F) !important;
+    color: #FFFFFF !important;
+    border: 0 !important;
+}
+.step-wait {
+    background: rgba(255,255,255,0.90) !important;
+    color: #183B4A !important;
+    border: 1px solid rgba(24,59,74,0.12) !important;
+}
+
+/* Labels: unified darker look, with tiny colored left accent */
+.q-label, .card-title, .step-label {
+    background: linear-gradient(135deg, #173C4A 0%, #265868 60%, #3F7F78 100%) !important;
+    color: #FFFFFF !important;
+    border-radius: 14px !important;
+    padding: 0.42rem 0.82rem !important;
+    box-shadow: 0 10px 22px rgba(24,59,74,0.18) !important;
+}
+.q-label.q-orange,
+.q-label.q-yellow,
+.q-label.q-sage {
+    background: linear-gradient(135deg, #173C4A 0%, #265868 60%, #3F7F78 100%) !important;
+    position: relative !important;
+}
+.q-label.q-orange::before,
+.q-label.q-yellow::before,
+.q-label.q-sage::before {
+    content: "";
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-right: 0.55rem;
+    border-radius: 50%;
+    background: #FF7330;
+    box-shadow: 0 0 12px rgba(255,115,48,0.55);
+}
+.q-label.q-yellow::before { background: #FFC845; box-shadow: 0 0 12px rgba(255,200,69,0.55); }
+.q-label.q-sage::before { background: #A7C983; box-shadow: 0 0 12px rgba(167,201,131,0.55); }
+
+/* Inputs: more defined and less flat */
+.stTextInput input,
+[data-testid="stNumberInput"] input,
+div[data-baseweb="select"] > div,
+[data-testid="stMultiSelect"] > div > div {
+    background: rgba(255,255,255,0.98) !important;
+    border: 1.5px solid rgba(24,59,74,0.16) !important;
+    border-radius: 15px !important;
+    box-shadow: 0 10px 24px rgba(24,59,74,0.08) !important;
+}
+.stTextInput input:focus,
+[data-testid="stNumberInput"] input:focus,
+div[data-baseweb="select"] > div:focus-within,
+[data-testid="stMultiSelect"] > div > div:focus-within {
+    border-color: #5EA38F !important;
+    box-shadow: 0 0 0 4px rgba(94,163,143,0.16) !important;
+}
+
+/* Buttons: dark gradient, not candy colored */
+.stButton > button {
+    background: linear-gradient(135deg, #173C4A 0%, #265868 58%, #5EA38F 125%) !important;
+    color: #FFFFFF !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 16px 34px rgba(24,59,74,0.24) !important;
+}
+.stButton > button:hover {
+    box-shadow: 0 18px 44px rgba(24,59,74,0.32) !important;
+}
+
+/* Multi-select tags: clean dark teal chips */
+[data-testid="stMultiSelect"] [data-baseweb="tag"] {
+    background: linear-gradient(135deg, rgba(24,59,74,0.10), rgba(94,163,143,0.16)) !important;
+    border: 1px solid rgba(38,88,104,0.28) !important;
+}
+[data-testid="stMultiSelect"] [data-baseweb="tag"] span {
+    color: #183B4A !important;
+    font-weight: 900 !important;
+}
+
+/* Metric cards: more serious dashboard cards */
+.metric-pop,
+.advisor-card,
+.card,
+[data-testid="metric-container"] {
+    box-shadow: 0 18px 45px rgba(24,59,74,0.11) !important;
+}
+.metric-pop:hover {
+    transform: translateY(-2px);
+}
+
+/* Tables: match dashboard, not plain Streamlit */
+.pretty-table-wrap {
+    background: rgba(255,255,255,0.94) !important;
+    border: 1px solid rgba(24,59,74,0.10) !important;
+    border-radius: 22px !important;
+    box-shadow: 0 18px 45px rgba(24,59,74,0.10) !important;
+}
+.pretty-table thead th {
+    background: linear-gradient(135deg, #EEF8F4, #F7FBF8) !important;
+}
+
+
+/* Fix Step 3 number-input steppers and action buttons */
+.stButton > button,
+.stButton > button p,
+.stButton > button span,
+.stButton > button div {
+    color: #FFFFFF !important;
+}
+
+[data-testid="stNumberInput"] > div,
+[data-testid="stNumberInput"] div[data-baseweb="input"],
+[data-testid="stNumberInput"] div[data-baseweb="base-input"] {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+[data-testid="stNumberInput"] button {
+    background: rgba(255,255,255,0.98) !important;
+    color: #265868 !important;
+    border: 1.5px solid rgba(24,59,74,0.16) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 24px rgba(24,59,74,0.08) !important;
+}
+
+[data-testid="stNumberInput"] button:hover {
+    background: #EEF8F4 !important;
+    color: #173C4A !important;
+    border-color: rgba(94,163,143,0.45) !important;
+}
+
+[data-testid="stNumberInput"] button svg,
+[data-testid="stNumberInput"] button span,
+[data-testid="stNumberInput"] button p {
+    color: #265868 !important;
+    fill: #265868 !important;
+}
+
+[data-testid="stNumberInput"] input {
+    color: #183B4A !important;
+}
+
+
+
+
+/* Softer question label typography */
+.q-label,
+.q-label.q-orange,
+.q-label.q-yellow,
+.q-label.q-sage {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin-top: 0.45rem !important;
+    margin-bottom: 0.6rem !important;
+    color: #3D8B65 !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 1.02rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+    line-height: 1.35 !important;
+    display: block !important;
+}
+
+.q-label::before,
+.q-label.q-orange::before,
+.q-label.q-yellow::before,
+.q-label.q-sage::before {
+    content: none !important;
+    display: none !important;
+}
+
+
+/* Lighter placeholder look for unselected select boxes */
+div[data-baseweb="select"] input::placeholder {
+    color: #A7B1B7 !important;
+    opacity: 1 !important;
+}
+
+
+/* Softer borders for Step 3 number inputs */
+[data-testid="stNumberInput"] * {
+    outline: none !important;
+}
+
+[data-testid="stNumberInput"] div[data-baseweb="base-input"],
+[data-testid="stNumberInput"] div[data-baseweb="input"],
+[data-testid="stNumberInput"] > div {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+[data-testid="stNumberInput"] input {
+    border: 1px solid rgba(24,59,74,0.10) !important;
+    border-radius: 14px !important;
+    box-shadow: 0 8px 18px rgba(24,59,74,0.05) !important;
+}
+
+[data-testid="stNumberInput"] button {
+    border: 1px solid rgba(24,59,74,0.10) !important;
+    box-shadow: 0 8px 18px rgba(24,59,74,0.05) !important;
+}
+
+[data-testid="stNumberInput"] button + button {
+    margin-left: 4px !important;
+}
+
+
+/* Multi-select placeholder */
+[data-testid="stMultiSelect"] input::placeholder {
+    color: #A7B1B7 !important;
+    opacity: 1 !important;
+}
+[data-testid="stMultiSelect"] div[data-baseweb="select"] > div,
+[data-testid="stMultiSelect"] > div > div {
+    min-height: 48px !important;
+}
+
+
+/* More visible placeholders */
+div[data-baseweb="select"] input::placeholder,
+[data-testid="stMultiSelect"] input::placeholder,
+[data-testid="stMultiSelect"] div[role="combobox"] input::placeholder {
+    color: #8B959C !important;
+    opacity: 1 !important;
+}
+
+/* Slightly more spacing under question titles before the input boxes */
+.q-label,
+.q-label.q-orange,
+.q-label.q-yellow,
+.q-label.q-sage {
+    margin-bottom: 0.9rem !important;
+}
+
+/* Push the select / multiselect boxes a little lower */
+.stSelectbox,
+[data-testid="stMultiSelect"],
+[data-testid="stNumberInput"] {
+    margin-top: 0.18rem !important;
+}
+
+
+/* Stronger placeholder visibility for select and multiselect */
+[data-testid="stSelectbox"] div[data-baseweb="select"] [id*="placeholder"],
+[data-testid="stSelectbox"] div[data-baseweb="select"] [class*="placeholder"],
+[data-testid="stMultiSelect"] div[data-baseweb="select"] [id*="placeholder"],
+[data-testid="stMultiSelect"] div[data-baseweb="select"] [class*="placeholder"],
+[data-testid="stSelectbox"] div[data-baseweb="select"] input::placeholder,
+[data-testid="stMultiSelect"] div[data-baseweb="select"] input::placeholder {
+    color: #8A949B !important;
+    opacity: 1 !important;
+}
+
+/* Keep chosen values dark after selection */
+[data-testid="stSelectbox"] div[data-baseweb="select"] [class*="singleValue"],
+[data-testid="stMultiSelect"] div[data-baseweb="select"] [class*="singleValue"],
+[data-testid="stMultiSelect"] [data-baseweb="tag"] span {
+    color: #183B4A !important;
+}
+
+
+/* Gray manual placeholder overlays for empty select boxes */
+[data-testid="stSelectbox"],
+[data-testid="stMultiSelect"] {
+    position: relative !important;
+}
+
+
+/* Keep the multiselect field the same visual height as the other fields */
+[data-testid="stMultiSelect"] div[data-baseweb="select"] > div,
+[data-testid="stMultiSelect"] > div > div {
+    min-height: 40px !important;
+    height: 40px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -428,15 +1220,15 @@ def confidence_level(intervals, live_count=0, weather=None, location=None):
         condition_penalty += 1
 
     if live_count >= 4 and latency_uncertainty <= 8 and condition_penalty == 0:
-        return "High", "#10b981"
+        return "High", "#3D8B65"
 
     if live_count >= 2 and latency_uncertainty <= 10 and condition_penalty <= 1:
-        return "Medium", "#f59e0b"
+        return "Medium", "#D99A20"
 
     if latency_uncertainty <= 8 and condition_penalty == 0:
-        return "Medium", "#f59e0b"
+        return "Medium", "#D99A20"
 
-    return "Low", "#ef4444"
+    return "Low", "#D95B4F"
 
 def traffic_light(uc_name, lat, jitter, dl, ul):
     uc = USE_CASES[uc_name]
@@ -462,26 +1254,26 @@ def top_feature_importance(model, features, limit=6):
 # UI HELPERS
 # ============================================================
 def metric_card(label, value, unit, color, interval=None):
-    uncertainty = f"<div style='color:#64748b;font-size:0.72rem;margin-top:0.2rem;'>± {interval:.1f} {unit}</div>" if interval is not None and interval > 0 else ""
+    uncertainty = f"<div style='color:#6B7B83;font-size:0.74rem;margin-top:0.28rem;font-weight:700;'>± {interval:.1f} {unit}</div>" if interval is not None and interval > 0 else ""
     return f"""
-    <div style="background:{color}11;border:1px solid {color}33;border-top:3px solid {color};border-radius:12px;padding:0.9rem 1rem;text-align:center;">
-        <div style="color:#64748b;font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;">{label}</div>
-        <div style="color:#fff;font-size:1.6rem;font-weight:900;line-height:1.2;margin-top:0.2rem;">
-            {value}<span style="font-size:0.8rem;color:#94a3b8;font-weight:400;"> {unit}</span>
+    <div style="background:linear-gradient(145deg, rgba(255,255,255,0.95), {color}18);border:1px solid {color}55;border-top:7px solid {color};border-radius:24px;padding:1.0rem 1.08rem;text-align:center;box-shadow:0 16px 34px {color}20;position:relative;overflow:hidden;">
+        <div style="position:relative;color:#6B7B83;font-size:0.66rem;font-weight:900;text-transform:uppercase;letter-spacing:1.4px;font-family:'IBM Plex Mono',monospace;">{label}</div>
+        <div style="position:relative;color:#183B4A;font-size:1.85rem;font-weight:900;line-height:1.1;margin-top:0.25rem;font-family:'Space Grotesk','IBM Plex Mono',monospace;">
+            {value}<span style="font-size:0.82rem;color:#6B7B83;font-weight:700;"> {unit}</span>
         </div>
         {uncertainty}
     </div>"""
 
 def rating_card(color, uc_name, icon, desc, change_note=""):
-    bg = {"green":"#031a0e", "amber":"#171203", "red":"#1a0303"}[color]
-    border = {"green":"#10b981", "amber":"#f59e0b", "red":"#ef4444"}[color]
+    bg = {"green":"linear-gradient(135deg,#EEF8F4,#FFFFFF)", "amber":"linear-gradient(135deg,#FFF6D8,#FFFFFF)", "red":"linear-gradient(135deg,#FFF0EE,#FFFFFF)"}[color]
+    border = {"green":"#3D8B65", "amber":"#D99A20", "red":"#D95B4F"}[color]
     label = {"green":"Suitable", "amber":"Limited", "red":"Not Recommended"}[color]
-    change_html = f'<div style="color:#94a3b8;font-size:0.75rem;margin-top:0.2rem;">{change_note}</div>' if change_note else ""
+    change_html = f'<div style="color:#6B7B83;font-size:0.76rem;margin-top:0.25rem;">{change_note}</div>' if change_note else ""
     return (
-        f'<div style="background:{bg};border:1px solid {border}44;border-left:5px solid {border};border-radius:12px;padding:1rem 1.2rem;display:flex;align-items:center;gap:1rem;margin-bottom:0.5rem;">'
-        f'<div style="font-size:1.6rem;">{icon}</div>'
-        f'<div style="flex:1;"><div style="font-weight:700;color:#e2e8f0;">{uc_name}</div><div style="color:#64748b;font-size:0.8rem;margin-top:0.1rem;">{desc}</div>{change_html}</div>'
-        f'<div style="background:{border}22;border:1px solid {border}66;border-radius:999px;padding:0.3rem 0.9rem;color:{border};font-weight:800;font-size:0.82rem;white-space:nowrap;">{label}</div>'
+        f'<div style="background:{bg};border:1px solid {border}44;border-left:7px solid {border};border-radius:22px;padding:1rem 1.15rem;display:flex;align-items:center;gap:1rem;margin-bottom:0.65rem;box-shadow:0 12px 26px {border}18;">'
+        f'<div style="font-size:1.75rem;background:{border}18;border:1px solid {border}22;border-radius:16px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;">{icon}</div>'
+        f'<div style="flex:1;"><div style="font-weight:900;color:#183B4A;">{uc_name}</div><div style="color:#6B7B83;font-size:0.82rem;margin-top:0.15rem;line-height:1.45;">{desc}</div>{change_html}</div>'
+        f'<div style="background:{border}18;border:1px solid {border}55;border-radius:999px;padding:0.35rem 0.85rem;color:{border};font-weight:900;font-size:0.80rem;white-space:nowrap;">{label}</div>'
         f'</div>'
     )
 
@@ -490,16 +1282,53 @@ def trend_chart(values, label, color):
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=list(range(1, len(series) + 1)), y=series.values, mode="lines+markers", name="Measured", line=dict(color=color, width=2), marker=dict(size=6)))
     fig.update_layout(
-        title=dict(text=label, font=dict(color="#ffffff", size=13)),
+        title=dict(text=label, font=dict(color="#183B4A", size=13)),
         height=210,
-        plot_bgcolor="rgba(12,20,35,0.9)",
+        plot_bgcolor="rgba(255,255,255,0.97)",
         paper_bgcolor="rgba(0,0,0,0)",
-        font=dict(color="#94a3b8", family="DM Sans"),
-        xaxis=dict(gridcolor="rgba(255,255,255,0.04)", color="#64748b", title="Test #"),
-        yaxis=dict(gridcolor="rgba(255,255,255,0.04)", color="#64748b"),
+        font=dict(color="#253545", family="Inter"),
+        xaxis=dict(gridcolor="rgba(0,0,0,0.08)", color="#475569", title="Test #"),
+        yaxis=dict(gridcolor="rgba(0,0,0,0.08)", color="#475569"),
         margin=dict(l=10, r=10, t=38, b=10),
     )
     return fig
+
+
+def render_pretty_table(df, max_height=None):
+    if df is None or len(df) == 0:
+        st.info("No data available.")
+        return
+    html = df.copy().to_html(index=False, classes="pretty-table", border=0)
+    height_style = f"max-height:{max_height}px;" if max_height else ""
+    st.markdown(
+        f'<div class="pretty-table-wrap" style="{height_style}">{html}</div>',
+        unsafe_allow_html=True,
+    )
+
+
+def render_pretty_table(df, max_height=None):
+    if df is None or len(df) == 0:
+        st.info("No data available.")
+        return
+    html = df.copy().to_html(index=False, classes="pretty-table", border=0)
+    height_style = f"max-height:{max_height}px;overflow-y:auto;" if max_height else ""
+    st.markdown(
+        f'<div class="pretty-table-wrap" style="{height_style}">{html}</div>',
+        unsafe_allow_html=True,
+    )
+
+def overlay_placeholder(text, top="-3.4rem"):
+    st.markdown(
+        f"""
+        <div style="position:relative;margin-top:{top};margin-bottom:1.18rem;padding-left:0.95rem;
+                    color:#98A2A9;font-size:0.95rem;pointer-events:none;z-index:2;
+                    font-family:'Inter',sans-serif;line-height:1.25;min-height:1.2rem;
+                    display:flex;align-items:center;white-space:nowrap;">
+            {text}
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 # ============================================================
 # SESSION STATE
@@ -516,15 +1345,13 @@ saved_latency_model, saved_latency_features, saved_latency_loaded, saved_msg = l
 # HEADER
 # ============================================================
 st.markdown("""
-<div style="background:linear-gradient(135deg,#0d1f3c 0%,#0a0d1f 50%,#0d1f3c 100%);border-radius:16px;padding:2.4rem 3rem;margin-bottom:1.6rem;border:1px solid rgba(99,102,241,0.5);box-shadow:0 0 40px rgba(99,102,241,0.1);display:flex;justify-content:space-between;align-items:center;">
-    <div>
-        <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:#4a7fc1;margin-bottom:0.5rem;">Starlink AI Suitability Advisor · Oman</div>
-        <div style="font-size:2.25rem;font-weight:900;letter-spacing:-1px;line-height:1.1;background:linear-gradient(90deg,#60a5fa,#a78bfa,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Will Starlink work for you?</div>
-        <div style="color:#64748b;font-size:0.9rem;margin-top:0.5rem;">AI-enhanced recommendation using thesis data, multi-KPI forecasting, uncertainty, and live measurements.</div>
+<div style="background:#FFFFFF;border-radius:16px;padding:1.55rem 2.8rem;margin-top:0.85rem;margin-bottom:1.2rem;border:1px solid #DDE7E2;border-top:4px solid #265868;box-shadow:0 2px 12px rgba(24,59,74,0.08);position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#183B4A,#265868,#3F7F78,#5EA38F);pointer-events:none;"></div>
+    <div style="font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:800;line-height:1.1;letter-spacing:-0.8px;">
+        <span style="color:#253545;">Starlink </span><span style="color:#265868;">Advisor</span>
     </div>
-    <div style="text-align:right;">
-        <div style="background:linear-gradient(135deg,#2563eb,#7c3aed);padding:0.4rem 1rem;border-radius:999px;font-size:0.75rem;font-weight:800;color:#ffffff;margin-bottom:0.4rem;">GUtech AI Thesis Prototype</div>
-        <div style="color:#64748b;font-size:0.78rem;">Starlink · Muscat, Oman · 2026</div>
+    <div style="color:#6B7B83;font-size:0.84rem;margin-top:0.45rem;font-family:'IBM Plex Mono',monospace;">
+        AI suitability assessment · KPI forecasting · live measurements
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -536,11 +1363,9 @@ for i, (col, name) in enumerate(zip(cols, steps_labels)):
     n = i + 1
     active = n == st.session_state.step
     done = n < st.session_state.step
-    bg = "linear-gradient(135deg,#1d4ed8,#4f46e5)" if active else "#052e16" if done else "#0c1423"
-    tc = "#ffffff" if active else "#10b981" if done else "#334155"
-    border = "none" if active else "1px solid #10b98144" if done else "1px solid #1e3050"
+    cls = "step-active" if active else "step-done" if done else "step-wait"
     label = name if not done else "✓ " + name.split(". ", 1)[1]
-    col.markdown(f'<div style="background:{bg};border:{border};border-radius:10px;padding:0.65rem 1rem;text-align:center;font-size:0.82rem;font-weight:800;color:{tc};">{label}</div>', unsafe_allow_html=True)
+    col.markdown(f'<div class="step-card {cls}">{label}</div>', unsafe_allow_html=True)
 
 st.markdown("<div style='margin-top:1.4rem;'></div>", unsafe_allow_html=True)
 
@@ -551,23 +1376,37 @@ if st.session_state.step == 1:
     st.markdown("### Step 1, Your conditions")
     c1, c2 = st.columns(2)
     with c1:
-        st.markdown('<div class="q-label" style="margin-top:0;">1. Where are you located?</div>', unsafe_allow_html=True)
-        location = st.selectbox("loc", list(LOCATION_ADJ.keys()), label_visibility="collapsed", key="q_loc")
-        st.markdown('<div class="q-label">2. How clear is the sky view for the dish?</div>', unsafe_allow_html=True)
-        sky = st.selectbox("sky", list(SKY_ADJ.keys()), label_visibility="collapsed", key="q_sky")
-        st.markdown('<div class="q-label">3. What time of day will you mainly use it?</div>', unsafe_allow_html=True)
-        time_of_day = st.selectbox("time", list(TIME_ADJ.keys()), label_visibility="collapsed", key="q_time")
+        st.markdown('<div class="q-label q-orange" style="margin-top:0;">1. Where are you located?</div>', unsafe_allow_html=True)
+        location = st.selectbox("loc", list(LOCATION_ADJ.keys()), index=None, placeholder="City (Muscat or major urban area)", label_visibility="collapsed", key="q_loc")
+        if not location:
+            overlay_placeholder("City (Muscat or major urban area)")
+        st.markdown('<div class="q-label q-sage">2. How clear is the sky view for the dish?</div>', unsafe_allow_html=True)
+        sky = st.selectbox("sky", list(SKY_ADJ.keys()), index=None, placeholder="Completely clear, no obstructions", label_visibility="collapsed", key="q_sky")
+        if not sky:
+            overlay_placeholder("Completely clear, no obstructions")
+        st.markdown('<div class="q-label q-yellow">3. What time of day will you mainly use it?</div>', unsafe_allow_html=True)
+        time_of_day = st.selectbox("time", list(TIME_ADJ.keys()), index=None, placeholder="Morning (6 AM – 12 PM)", label_visibility="collapsed", key="q_time")
+        if not time_of_day:
+            overlay_placeholder("Morning (6 AM – 12 PM)")
     with c2:
-        st.markdown('<div class="q-label" style="margin-top:0;">4. What is the weather usually like?</div>', unsafe_allow_html=True)
-        weather = st.selectbox("weather", list(WEATHER_ADJ.keys()), label_visibility="collapsed", key="q_weather")
-        st.markdown('<div class="q-label">5. What is the usual temperature?</div>', unsafe_allow_html=True)
-        temp = st.selectbox("temp", list(TEMP_ADJ.keys()), label_visibility="collapsed", key="q_temp")
-        st.markdown('<div class="q-label">6. What will you use it for?</div>', unsafe_allow_html=True)
-        uses = st.multiselect("uses", list(USE_CASES.keys()), default=["Video calls / online meetings", "General browsing / social media"], label_visibility="collapsed", key="q_uses")
+        st.markdown('<div class="q-label q-sage" style="margin-top:0;">4. What is the weather usually like?</div>', unsafe_allow_html=True)
+        weather = st.selectbox("weather", list(WEATHER_ADJ.keys()), index=None, placeholder="Clear / sunny", label_visibility="collapsed", key="q_weather")
+        if not weather:
+            overlay_placeholder("Clear / sunny")
+        st.markdown('<div class="q-label q-yellow">5. What is the usual temperature?</div>', unsafe_allow_html=True)
+        temp = st.selectbox("temp", list(TEMP_ADJ.keys()), index=None, placeholder="Below 20°C", label_visibility="collapsed", key="q_temp")
+        if not temp:
+            overlay_placeholder("Below 20°C")
+        st.markdown('<div class="q-label q-orange">6. What will you use it for?</div>', unsafe_allow_html=True)
+        uses = st.multiselect("uses", list(USE_CASES.keys()), default=[], placeholder="e.g. Video calls, Streaming", label_visibility="collapsed", key="q_uses")
+        if not uses:
+            overlay_placeholder("e.g. Video calls, Streaming", top="-3.40rem")
 
     st.markdown("<div style='height:0.7rem'></div>", unsafe_allow_html=True)
     if st.button("Get AI Advisory Result →"):
-        if not uses:
+        if not all([location, sky, time_of_day, weather, temp]):
+            st.warning("Please choose all conditions first.")
+        elif not uses:
             st.warning("Please select at least one use case.")
         else:
             perf_rule = apply_conditions(base, location, sky, time_of_day, weather, temp)
@@ -593,6 +1432,7 @@ if st.session_state.step == 1:
             st.session_state.step = 2
             st.rerun()
 
+
 # ============================================================
 # STEP 2
 # ============================================================
@@ -605,8 +1445,8 @@ elif st.session_state.step == 2:
 
     if adv["models_loaded"]:
         st.markdown(f"""
-        <div class="advisor-card" style="border-left:4px solid #2563eb;">
-            <strong style="color:#60a5fa;">AI forecasting active</strong><br>
+        <div class="advisor-card" style="border-left:4px solid #5EA38F;background:#EEF8F4;">
+            <strong style="color:#3D8B65;">AI forecasting active</strong><br>
             Latency is forecast using the validated combined-dataset model (MAE 4.3 ms, RMSE 6.5 ms).
             Jitter, download, and upload are forecast using models trained on both experiment datasets.
             <br><br>
@@ -615,17 +1455,17 @@ elif st.session_state.step == 2:
         """, unsafe_allow_html=True)
     else:
         st.markdown("""
-        <div class="advisor-card" style="border-left:4px solid #ef4444;">
-            <strong style="color:#ef4444;">AI models not available</strong><br>
+        <div class="advisor-card" style="border-left:4px solid #D95B4F;">
+            <strong style="color:#D95B4F;">AI models not available</strong><br>
             The advisor is using rule-based fallback estimates only. Check that the cleaned datasets exist.
         </div>
         """, unsafe_allow_html=True)
 
     c1, c2, c3, c4 = st.columns(4)
-    c1.markdown(metric_card("Latency", f"{perf['latency']:.1f}", "ms", "#60a5fa", intervals.get("latency")), unsafe_allow_html=True)
-    c2.markdown(metric_card("Jitter", f"{perf['jitter']:.1f}", "ms", "#f472b6", intervals.get("jitter")), unsafe_allow_html=True)
-    c3.markdown(metric_card("Download", f"{perf['download']:.1f}", "Mbps", "#34d399", intervals.get("download")), unsafe_allow_html=True)
-    c4.markdown(metric_card("Upload", f"{perf['upload']:.1f}", "Mbps", "#fb923c", intervals.get("upload")), unsafe_allow_html=True)
+    c1.markdown(metric_card("Latency", f"{perf['latency']:.1f}", "ms", "#D95B24", intervals.get("latency")), unsafe_allow_html=True)
+    c2.markdown(metric_card("Jitter", f"{perf['jitter']:.1f}", "ms", "#D99A20", intervals.get("jitter")), unsafe_allow_html=True)
+    c3.markdown(metric_card("Download", f"{perf['download']:.1f}", "Mbps", "#8DB87A", intervals.get("download")), unsafe_allow_html=True)
+    c4.markdown(metric_card("Upload", f"{perf['upload']:.1f}", "Mbps", "#3F7F78", intervals.get("upload")), unsafe_allow_html=True)
 
     st.markdown("### Use case ratings")
     for uc_name, color in adv["ratings"].items():
@@ -637,17 +1477,17 @@ elif st.session_state.step == 2:
     if imp:
         imp_df = pd.DataFrame(imp, columns=["Feature", "Importance"])
         imp_df["Importance"] = imp_df["Importance"].round(4)
-        st.dataframe(imp_df, use_container_width=True)
-        st.caption("These are the strongest model inputs for the latency prediction. This can be discussed as model interpretability in the thesis.")
+        render_pretty_table(imp_df, max_height=320)
+        st.caption("Top model inputs for the latency prediction. This can be discussed as model interpretability in the thesis.")
     else:
-        st.caption("Feature importance is unavailable because the ML model did not load or does not expose importance values.")
+        st.caption("Feature importance unavailable — ML model not loaded.")
 
     st.markdown("### Model validation summary")
     if adv["model_metrics"]:
         rows = []
         for k, m in adv["model_metrics"].items():
             rows.append({"Target": k, "MAE": round(m["mae"], 3), "RMSE": round(m["rmse"], 3), "Residual Std": round(m["residual_std"], 3), "Test Rows": m["n_test"]})
-        st.dataframe(pd.DataFrame(rows), use_container_width=True)
+        render_pretty_table(pd.DataFrame(rows), max_height=320)
 
     b1, b2 = st.columns([1, 2])
     with b1:
@@ -691,7 +1531,7 @@ elif st.session_state.step == 3:
     if measurements:
         mdf = pd.DataFrame(measurements)
         mdf.index = [f"Test {i+1}" for i in range(len(mdf))]
-        st.dataframe(mdf.rename(columns={"latency":"Latency (ms)", "download":"Download (Mbps)", "upload":"Upload (Mbps)", "jitter":"Jitter (ms)"}), use_container_width=True)
+        render_pretty_table(mdf.rename(columns={"latency":"Latency (ms)", "download":"Download (Mbps)", "upload":"Upload (Mbps)", "jitter":"Jitter (ms)"}), max_height=320)
 
         perf_rule = adv["rule_perf"]
         live_pred, live_intervals = predict_all_kpis(perf_rule, adv["time"], adv["weather"], adv["temp"], models, features_map, model_metrics, live_measurements=measurements)
@@ -699,23 +1539,23 @@ elif st.session_state.step == 3:
 
         st.markdown("### AI forecast from your real measurements")
         c1, c2, c3, c4 = st.columns(4)
-        c1.markdown(metric_card("Next Latency", f"{live_pred['latency']:.1f}", "ms", "#60a5fa", live_intervals.get("latency")), unsafe_allow_html=True)
-        c2.markdown(metric_card("Next Jitter", f"{live_pred['jitter']:.1f}", "ms", "#f472b6", live_intervals.get("jitter")), unsafe_allow_html=True)
-        c3.markdown(metric_card("Next Download", f"{live_pred['download']:.1f}", "Mbps", "#34d399", live_intervals.get("download")), unsafe_allow_html=True)
-        c4.markdown(metric_card("Next Upload", f"{live_pred['upload']:.1f}", "Mbps", "#fb923c", live_intervals.get("upload")), unsafe_allow_html=True)
+        c1.markdown(metric_card("Next Latency", f"{live_pred['latency']:.1f}", "ms", "#D95B24", live_intervals.get("latency")), unsafe_allow_html=True)
+        c2.markdown(metric_card("Next Jitter", f"{live_pred['jitter']:.1f}", "ms", "#D99A20", live_intervals.get("jitter")), unsafe_allow_html=True)
+        c3.markdown(metric_card("Next Download", f"{live_pred['download']:.1f}", "Mbps", "#8DB87A", live_intervals.get("download")), unsafe_allow_html=True)
+        c4.markdown(metric_card("Next Upload", f"{live_pred['upload']:.1f}", "Mbps", "#3F7F78", live_intervals.get("upload")), unsafe_allow_html=True)
 
         st.markdown(f"""
-        <div class="advisor-card" style="border-left:4px solid {conf_color};">
+        <div class="advisor-card" style="border-left:4px solid {conf_color};background:{conf_color}0d;">
             <strong style="color:{conf_color};">Live forecast confidence: {conf}</strong><br>
-            Confidence improves as more measurements are added because the advisor can build real lag features instead of relying on synthetic lags.
+            <span style="color:#475569;">Confidence improves as you add more measurements — real lag features replace synthetic estimates.</span>
         </div>
         """, unsafe_allow_html=True)
 
         col1, col2 = st.columns(2)
         with col1:
-            st.plotly_chart(trend_chart([m["latency"] for m in measurements], "Measured Latency", "#60a5fa"), use_container_width=True)
+            st.plotly_chart(trend_chart([m["latency"] for m in measurements], "Measured Latency", "#265868"), use_container_width=True)
         with col2:
-            st.plotly_chart(trend_chart([m["download"] for m in measurements], "Measured Download", "#34d399"), use_container_width=True)
+            st.plotly_chart(trend_chart([m["download"] for m in measurements], "Measured Download", "#3F7F78"), use_container_width=True)
 
         st.markdown("### Updated use-case ratings")
         rank = {"red": 0, "amber": 1, "green": 2}
@@ -750,7 +1590,7 @@ elif st.session_state.step == 3:
 # ============================================================
 st.markdown("---")
 st.markdown("""
-<div style="color:#334155;font-size:0.75rem;text-align:center;padding-bottom:1rem;">
+<div style="color:#6B7B83;font-size:0.75rem;text-align:center;padding-bottom:1rem;">
     Based on Starlink data collected in Muscat, Oman · GUtech AI Thesis · Predictions are estimates, not guarantees
 </div>
 """, unsafe_allow_html=True)

@@ -22,13 +22,266 @@ except Exception:
 # PAGE CONFIG
 # ============================================================
 st.set_page_config(
-    page_title="Starlink Thesis Dashboard",
+    page_title="Starlink Performance Monitor",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
 refresh_seconds = 60
 st_autorefresh(interval=refresh_seconds * 1000, key="thesis_refresh")
+
+
+# ============================================================
+# EARLY LIGHT THEME FOR LOGIN SCREEN
+# ============================================================
+st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@500;700&family=Space+Grotesk:wght@700;800&display=swap');
+
+:root {
+    --ink:#183B4A;
+    --ink2:#265868;
+    --cream:#FFF8EE;
+    --paper:#FFFFFF;
+    --orange:#FF7330;
+    --yellow:#FFC845;
+    --sage:#A7C983;
+    --teal:#5EA38F;
+    --muted:#6B7B83;
+}
+
+html, body, .stApp {
+    background:
+        radial-gradient(circle at 10% 8%, rgba(255,115,48,.13) 0, transparent 26%),
+        radial-gradient(circle at 88% 4%, rgba(94,163,143,.20) 0, transparent 30%),
+        radial-gradient(circle at 75% 92%, rgba(255,200,69,.13) 0, transparent 28%),
+        linear-gradient(135deg,#FFF9EF 0%,#F6F9ED 45%,#EEF8F4 100%) fixed !important;
+    color: var(--ink) !important;
+    font-family: Inter, sans-serif !important;
+}
+
+header[data-testid="stHeader"] {
+    background: rgba(255,248,238,.88) !important;
+    backdrop-filter: blur(14px) !important;
+    border-bottom: 1px solid rgba(24,59,74,.08) !important;
+}
+
+[data-testid="stDecoration"] {
+    background: linear-gradient(90deg,var(--ink),var(--orange),var(--yellow),var(--sage),var(--teal)) !important;
+    height:5px !important;
+}
+
+.block-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-top: 7vh !important;
+    padding-left: 1.6rem !important;
+    padding-right: 1.6rem !important;
+}
+
+.main .block-container,
+section.main > div,
+div[data-testid="stAppViewBlockContainer"] {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Full-width login area with no outer white square */
+div[data-testid="stVerticalBlock"] > div:has(.login-hero) {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    overflow: visible !important;
+}
+
+/* Hero now matches the dashboard style, without dark edges */
+.login-hero {
+    width: 100% !important;
+    max-width: none !important;
+    background: rgba(255,255,255,0.92) !important;
+    border: 1px solid #DDE7E2 !important;
+    border-top: 5px solid #265868 !important;
+    border-radius: 20px !important;
+    padding: 1.55rem 2rem !important;
+    margin: 0 0 1.15rem 0 !important;
+    box-shadow: 0 10px 28px rgba(24,59,74,0.08) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+}
+
+.login-hero:before {
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    height:5px;
+    background:linear-gradient(90deg,#183B4A,#265868,#3F7F78,#5EA38F);
+}
+
+.login-hero h1 {
+    color:#183B4A !important;
+    margin:0 !important;
+    font:800 2.05rem/1.1 Space Grotesk, Inter, sans-serif !important;
+    letter-spacing:-.04em !important;
+    white-space: nowrap !important;
+}
+
+.login-hero p {
+    color:#6B7B83 !important;
+    margin:.65rem 0 0 !important;
+    font-weight:600 !important;
+    line-height:1.55 !important;
+}
+
+.login-card-note {
+    display:none !important;
+}
+
+/* Inputs: no thick dark edge */
+.stTextInput input {
+    background: rgba(255,255,255,.96) !important;
+    border:1.5px solid rgba(24,59,74,.14) !important;
+    border-radius:16px !important;
+    color:var(--ink) !important;
+    box-shadow:0 6px 18px rgba(24,59,74,.05) !important;
+    padding:.85rem 1rem !important;
+}
+
+.stTextInput input:focus {
+    border-color:var(--orange) !important;
+    box-shadow:0 0 0 4px rgba(255,115,48,.13) !important;
+}
+
+.stTextInput label p,
+[data-testid="stWidgetLabel"] p {
+    color: var(--ink) !important;
+    font-weight:800 !important;
+}
+
+/* Password input wrapper and eye area */
+.stTextInput div[data-baseweb="input"] {
+    background: rgba(255,255,255,.96) !important;
+    border-radius:16px !important;
+    border:1.5px solid rgba(24,59,74,.14) !important;
+    box-shadow:0 6px 18px rgba(24,59,74,.05) !important;
+    overflow:hidden !important;
+}
+
+.stTextInput div[data-baseweb="input"] input {
+    border:0 !important;
+    box-shadow:none !important;
+}
+
+.stTextInput div[data-baseweb="input"]:focus-within {
+    border-color:var(--orange) !important;
+    box-shadow:0 0 0 4px rgba(255,115,48,.13) !important;
+}
+
+
+/* Keep inputs white even when typed, focused, or browser-autofilled */
+.stTextInput input,
+.stTextInput input:focus,
+.stTextInput input:active,
+.stTextInput input:hover,
+.stTextInput input:-webkit-autofill,
+.stTextInput input:-webkit-autofill:hover,
+.stTextInput input:-webkit-autofill:focus,
+.stTextInput input:-webkit-autofill:active {
+    background: #FFFFFF !important;
+    background-color: #FFFFFF !important;
+    color: var(--ink) !important;
+    -webkit-text-fill-color: var(--ink) !important;
+    caret-color: var(--ink) !important;
+    box-shadow: 0 6px 18px rgba(24,59,74,.05), 0 0 0 1000px #FFFFFF inset !important;
+}
+
+.stTextInput div[data-baseweb="input"],
+.stTextInput div[data-baseweb="input"]:focus-within,
+.stTextInput div[data-baseweb="base-input"] {
+    background: #FFFFFF !important;
+    background-color: #FFFFFF !important;
+}
+
+/* Remove black fill from the input rectangles and password eye area */
+.stTextInput div[data-baseweb="base-input"] {
+    background: transparent !important;
+}
+
+.stTextInput div[data-baseweb="input"] > div,
+.stTextInput div[data-baseweb="input"] button,
+.stTextInput div[data-baseweb="input"] [role="button"] {
+    background: #FFFFFF !important;
+    color: var(--ink) !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+.stTextInput div[data-baseweb="input"] svg {
+    fill: var(--ink) !important;
+    color: var(--ink) !important;
+}
+
+/* Slight spacing since note text is removed */
+.login-hero {
+    margin-bottom: 1.15rem !important;
+}
+
+/* Login button matches dashboard colors */
+.stButton>button {
+    width:100%;
+    background:linear-gradient(135deg,#173C4A 0%,#265868 58%,#5EA38F 125%) !important;
+    color:#fff !important;
+    border:0 !important;
+    border-radius:16px !important;
+    padding:.82rem 1rem !important;
+    font-weight:900 !important;
+    box-shadow:0 14px 28px rgba(24,59,74,.22) !important;
+}
+
+.stButton>button:hover {
+    transform: translateY(-1px) !important;
+    box-shadow:0 18px 38px rgba(24,59,74,.28) !important;
+}
+
+
+
+/* Make login inputs and button use the full page width */
+div[data-testid="stTextInput"],
+div[data-testid="stTextInput"] > div,
+div[data-testid="stTextInput"] input {
+    width: 100% !important;
+    max-width: none !important;
+}
+
+.stButton,
+.stButton > button {
+    width: 100% !important;
+    max-width: none !important;
+}
+
+
+
+/* Force the login page layout to span the full available width */
+div[data-testid="stForm"],
+div[data-testid="stVerticalBlock"],
+div[data-testid="stHorizontalBlock"] {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.stAlert {
+    border-radius:18px !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ============================================================
 # LOGIN
@@ -40,8 +293,11 @@ def check_login():
         st.session_state.authenticated = False
         st.session_state.role = None
     if not st.session_state.authenticated:
-        st.markdown("## Starlink Thesis Dashboard")
-        st.markdown("Please log in to continue.")
+        st.markdown("""
+        <div class="login-hero">
+            <h1>Starlink Performance Monitor</h1>
+        </div>
+        """, unsafe_allow_html=True)
         username = st.text_input("Username")
         password = st.text_input("Password", type="password")
         if st.button("Login"):
@@ -99,138 +355,418 @@ THESIS_END   = PERIOD2_END
 # ============================================================
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Syne:wght@400;600;700;800&family=Space+Grotesk:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap');
 
-html, body, [class*="css"], .stApp, .main, .block-container {
-    background-color: #05080f !important;
-    color: #d1d9e6 !important;
-    font-family: 'Syne', sans-serif !important;
+:root {
+    --ink: #183B4A;
+    --ink-2: #265868;
+    --cream: #FFF8EE;
+    --paper: #FFFFFF;
+    --line: #E8DED0;
+    --muted: #6B7B83;
+    --orange: #FF7330;
+    --yellow: #FFC845;
+    --sage: #A7C983;
+    --teal: #5EA38F;
+    --success: #3D8B65;
+    --warning: #D99A20;
+    --danger: #D95B4F;
 }
 
+html, body, .stApp {
+    background:
+        radial-gradient(circle at 9% 7%, rgba(255,115,48,0.14) 0, transparent 25%),
+        radial-gradient(circle at 88% 5%, rgba(94,163,143,0.20) 0, transparent 28%),
+        radial-gradient(circle at 75% 92%, rgba(255,200,69,0.16) 0, transparent 28%),
+        linear-gradient(135deg, #FFF9EF 0%, #F6F9ED 43%, #EEF8F4 100%) fixed !important;
+    color: var(--ink) !important;
+    font-family: 'Inter', sans-serif !important;
+}
+[class*="css"], .main, .block-container {
+    color: var(--ink) !important;
+    font-family: 'Inter', sans-serif !important;
+    background: transparent !important;
+}
+.block-container {
+    padding-top: 2.2rem !important;
+    padding-left: 2.4rem !important;
+    padding-right: 2.4rem !important;
+    padding-bottom: 3rem !important;
+    max-width: 100% !important;
+}
+
+h1, h2, h3 {
+    color: var(--ink) !important;
+    font-family: 'Space Grotesk', 'Inter', sans-serif !important;
+    letter-spacing: -0.03em !important;
+}
+p, li, span, label { color: var(--ink); }
+hr { border-color: rgba(24,59,74,0.12) !important; }
+
+/* top app bar */
+header[data-testid="stHeader"] {
+    background: rgba(255,248,238,0.86) !important;
+    backdrop-filter: blur(14px) !important;
+    border-bottom: 1px solid rgba(24,59,74,0.10) !important;
+}
+header[data-testid="stHeader"] * { color: var(--ink) !important; }
+[data-testid="stDecoration"] {
+    background: linear-gradient(90deg, var(--ink), var(--orange), var(--yellow), var(--sage), var(--teal)) !important;
+    height: 5px !important;
+}
+
+/* login and general panels */
+div[data-testid="stVerticalBlock"] > div:has(.login-hero) {
+    max-width: 520px !important;
+    margin: 7vh auto 0 auto !important;
+    background: rgba(255,255,255,0.88) !important;
+    border: 1px solid rgba(24,59,74,0.10) !important;
+    border-radius: 30px !important;
+    padding: 2.1rem 2.2rem 2.4rem !important;
+    box-shadow: 0 26px 70px rgba(24,59,74,0.18) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+div[data-testid="stVerticalBlock"] > div:has(.login-hero)::before,
+.card::before, .advisor-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 7px;
+    background: linear-gradient(90deg, var(--ink), var(--orange), var(--yellow), var(--sage), var(--teal));
+}
+.login-hero {
+    background: linear-gradient(135deg, rgba(24,59,74,0.98), rgba(38,88,104,0.96));
+    color: #FFFFFF !important;
+    border-radius: 24px;
+    padding: 1.45rem 1.5rem;
+    margin-bottom: 1.2rem;
+    box-shadow: 0 18px 40px rgba(24,59,74,0.22);
+}
+.login-hero h1, .login-hero h2, .login-hero p { color: #FFFFFF !important; margin: 0 !important; }
+.login-chip {
+    display: inline-block;
+    margin-top: 0.75rem;
+    padding: 0.32rem 0.7rem;
+    border-radius: 999px;
+    background: rgba(255,200,69,0.18);
+    color: #FFE7A2 !important;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+/* sidebar */
 section[data-testid="stSidebar"], section[data-testid="stSidebar"] > div {
-    background: linear-gradient(180deg, #080c17 0%, #05080f 100%) !important;
-    border-right: 1px solid #0e1f3a !important;
+    background: linear-gradient(180deg, #173C4A 0%, #265868 58%, #5EA38F 125%) !important;
+    border-right: 0 !important;
+    box-shadow: 8px 0 34px rgba(24,59,74,0.20) !important;
 }
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p {
+    color: rgba(255,255,255,0.90) !important;
+    font-size: 0.72rem !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+    font-family: 'IBM Plex Mono', monospace !important;
+}
+[data-testid="stSidebar"] p, [data-testid="stSidebar"] span, [data-testid="stSidebar"] li,
+[data-testid="stSidebar"] strong, [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
+    color: #FFFFFF !important;
+}
+
+/* inputs */
+.stTextInput input,
+[data-testid="stNumberInput"] input,
+div[data-baseweb="select"] > div,
+[data-testid="stMultiSelect"] > div > div {
+    background: rgba(255,255,255,0.96) !important;
+    border: 1.5px solid rgba(24,59,74,0.14) !important;
+    border-radius: 16px !important;
+    color: var(--ink) !important;
+    box-shadow: 0 6px 18px rgba(24,59,74,0.05) !important;
+}
+.stTextInput input:focus,
+[data-testid="stNumberInput"] input:focus,
+div[data-baseweb="select"] > div:focus-within,
+[data-testid="stMultiSelect"] > div > div:focus-within {
+    border-color: var(--orange) !important;
+    box-shadow: 0 0 0 4px rgba(255,115,48,0.13) !important;
+}
+[data-baseweb="popover"] { color: var(--ink) !important; }
+[data-baseweb="menu"] { background: #FFFFFF !important; }
+[data-baseweb="menu"] li { color: var(--ink) !important; }
+
+/* buttons */
+.stButton > button {
+    background: linear-gradient(135deg, #173C4A 0%, #265868 58%, #5EA38F 125%) !important;
+    color: #ffffff !important;
+    border: 0 !important;
+    border-radius: 16px !important;
+    font-weight: 900 !important;
+    padding: 0.75rem 1.4rem !important;
+    box-shadow: 0 14px 28px rgba(24,59,74,0.24) !important;
+    transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+}
+.stButton > button:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 18px 38px rgba(24,59,74,0.32) !important;
+}
+
+.stDownloadButton > button {
+    width: 100% !important;
+    background: linear-gradient(135deg, #173C4A 0%, #265868 58%, #5EA38F 125%) !important;
+    color: #FFFFFF !important;
+    border: 0 !important;
+    border-radius: 16px !important;
+    font-weight: 900 !important;
+    padding: 0.75rem 1.4rem !important;
+    box-shadow: 0 14px 28px rgba(24,59,74,0.22) !important;
+    transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+}
+.stDownloadButton > button:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 18px 38px rgba(24,59,74,0.30) !important;
+}
+.stDownloadButton > button p,
+.stDownloadButton > button span {
+    color: #FFFFFF !important;
+}
+
+.pretty-table-wrap {
+    background: rgba(255,255,255,0.92);
+    border: 1px solid rgba(24,59,74,0.10);
+    border-radius: 24px;
+    box-shadow: 0 18px 45px rgba(24,59,74,0.10);
+    padding: 0.35rem 0.55rem;
+    overflow-x: auto;
+    overflow-y: auto;
+    margin: 0.35rem 0 1rem 0;
+}
+.pretty-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+.pretty-table thead th {
+    background: #F1F8F5;
+    color: var(--ink);
+    font-weight: 900;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.82rem 0.78rem;
+    border-bottom: 1px solid rgba(24,59,74,0.10);
+    text-align: left;
+    white-space: nowrap;
+}
+.pretty-table tbody td {
+    color: var(--ink);
+    padding: 0.78rem 0.78rem;
+    border-bottom: 1px solid rgba(24,59,74,0.08);
+    background: rgba(255,255,255,0.94);
+    vertical-align: top;
+}
+.pretty-table tbody tr:nth-child(even) td {
+    background: rgba(94,163,143,0.05);
+}
+.pretty-table tbody tr:hover td {
+    background: rgba(255,200,69,0.10);
+}
+
+/* KPI switch / toggles - clearer and fully visible */
+[data-testid="stToggle"] label,
+[data-testid="stToggle"] p,
+[data-testid="stWidgetLabel"] p {
+    color: var(--ink) !important;
+    font-weight: 800 !important;
+}
+[data-testid="stSidebar"] [data-testid="stToggle"] label,
+[data-testid="stSidebar"] [data-testid="stToggle"] p,
+[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p {
+    color: #FFFFFF !important;
+}
+[data-testid="stToggle"] [role="switch"] {
+    min-width: 48px !important;
+    height: 26px !important;
+    border: 2px solid rgba(24,59,74,0.15) !important;
+    box-shadow: inset 0 2px 6px rgba(24,59,74,0.14), 0 4px 10px rgba(24,59,74,0.10) !important;
+}
+[data-testid="stToggle"] [role="switch"][aria-checked="false"] {
+    background: #D9E4DF !important;
+}
+[data-testid="stToggle"] [role="switch"][aria-checked="true"] {
+    background: linear-gradient(135deg, #173C4A 0%, #265868 58%, #5EA38F 125%) !important;
+    border-color: rgba(94,163,143,0.55) !important;
+}
+[data-testid="stToggle"] [role="switch"] > div {
+    background: #FFFFFF !important;
+    box-shadow: 0 3px 10px rgba(24,59,74,0.24) !important;
+}
+
+/* sliders */
+[data-testid="stSlider"] [role="slider"] {
+    background: var(--orange) !important;
+    border-color: #FFFFFF !important;
+    box-shadow: 0 0 0 5px rgba(255,115,48,0.18) !important;
+}
+[data-testid="stSlider"] [data-testid="stThumbValue"] { color: var(--orange) !important; }
+
+/* cards and metrics */
+.card, .advisor-card, [data-testid="metric-container"], [data-testid="stDataFrame"] {
+    background: rgba(255,255,255,0.90) !important;
+    border: 1px solid rgba(24,59,74,0.10) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 18px 45px rgba(24,59,74,0.10) !important;
+    backdrop-filter: blur(12px) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+.card {
+    padding: 1.35rem 1.45rem !important;
+    margin-bottom: 0.8rem !important;
+}
+.card-title, .step-label, .q-label {
+    display: inline-block;
+    color: #FFFFFF !important;
+    background: linear-gradient(135deg, #173C4A 0%, #265868 58%, #5EA38F 125%) !important;
+    box-shadow: 0 10px 22px rgba(24,59,74,0.22) !important;
+    border-radius: 999px !important;
+    padding: 0.32rem 0.78rem !important;
+    font-size: 0.68rem !important;
+    font-weight: 900 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.10em !important;
+    font-family: 'IBM Plex Mono', monospace !important;
+    margin-bottom: 0.75rem !important;
+    border-left: none !important;
+}
+.advisor-card {
+    padding: 1.35rem 1.55rem !important;
+    margin-bottom: 1rem !important;
+}
+.small-note { color: var(--muted) !important; font-size: 0.84rem; line-height: 1.65; }
 
 [data-testid="metric-container"] {
-    background: linear-gradient(135deg, #091628 0%, #060d1e 100%) !important;
-    border: 1px solid #112240 !important;
-    border-top: 3px solid #2d6af0 !important;
-    border-radius: 10px !important;
-    padding: 1rem !important;
-    box-shadow: 0 0 18px rgba(45,106,240,0.12) !important;
+    padding: 1.05rem !important;
+    border-top: 6px solid var(--teal) !important;
 }
 [data-testid="metric-container"] label,
 [data-testid="metric-container"] [data-testid="stMetricLabel"] p {
-    color: #4a6080 !important;
-    font-size: 0.68rem !important;
-    font-weight: 700 !important;
+    color: var(--muted) !important;
+    font-size: 0.66rem !important;
+    font-weight: 900 !important;
     text-transform: uppercase !important;
-    letter-spacing: 1.4px !important;
+    letter-spacing: 0.12em !important;
     font-family: 'IBM Plex Mono', monospace !important;
 }
 [data-testid="metric-container"] [data-testid="stMetricValue"] div,
 [data-testid="metric-container"] [data-testid="stMetricValue"] {
-    color: #e8f0fe !important;
-    font-size: 1.75rem !important;
-    font-weight: 800 !important;
-    font-family: 'IBM Plex Mono', monospace !important;
+    color: var(--ink) !important;
+    font-size: 1.8rem !important;
+    font-weight: 900 !important;
+    font-family: 'Space Grotesk', 'IBM Plex Mono', monospace !important;
 }
 [data-testid="metric-container"] [data-testid="stMetricDelta"] {
-    color: #22c55e !important;
-    font-weight: 700 !important;
+    color: var(--success) !important;
+    font-weight: 800 !important;
 }
 
+/* tabs */
 .stTabs [data-baseweb="tab-list"] {
-    background: #080c17 !important;
-    border-radius: 10px !important;
-    padding: 4px !important;
-    border: 1px solid #0e1f3a !important;
-    gap: 3px !important;
+    background: rgba(255,255,255,0.82) !important;
+    border-radius: 999px !important;
+    padding: 6px !important;
+    border: 1px solid rgba(24,59,74,0.10) !important;
+    gap: 5px !important;
+    box-shadow: 0 10px 30px rgba(24,59,74,0.10) !important;
 }
 .stTabs [data-baseweb="tab"] {
-    color: #4a6080 !important;
-    font-weight: 700 !important;
-    border-radius: 7px !important;
-    padding: 7px 18px !important;
+    color: var(--ink-2) !important;
+    font-weight: 900 !important;
+    border-radius: 999px !important;
+    padding: 0.62rem 1.2rem !important;
     font-size: 0.82rem !important;
     font-family: 'IBM Plex Mono', monospace !important;
-    letter-spacing: 0.3px !important;
 }
-.stTabs [data-baseweb="tab"]:hover { color: #93c5fd !important; background: rgba(45,106,240,0.08) !important; }
+.stTabs [data-baseweb="tab"]:hover { background: rgba(255,200,69,0.20) !important; color: var(--orange) !important; }
 .stTabs [aria-selected="true"] {
-    background: linear-gradient(135deg, #1d4ed8, #4338ca) !important;
-    color: #ffffff !important;
-    box-shadow: 0 2px 14px rgba(29,78,216,0.35) !important;
+    background: linear-gradient(135deg, var(--ink), var(--teal)) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 10px 22px rgba(24,59,74,0.24) !important;
 }
-.stTabs [data-baseweb="tab-highlight"],
-.stTabs [data-baseweb="tab-border"] { display: none !important; }
-
-.card {
-    background: linear-gradient(135deg, #091628 0%, #060d1e 100%);
-    border-radius: 10px;
-    padding: 1.2rem 1.4rem;
-    border: 1px solid #112240;
-    box-shadow: 0 0 18px rgba(45,106,240,0.08);
-    margin-bottom: 0.5rem;
-}
-.card-title {
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: #4a6080;
-    text-transform: uppercase;
-    letter-spacing: 1.4px;
-    margin-bottom: 0.7rem;
-    font-family: 'IBM Plex Mono', monospace;
-}
-.badge {
-    display: inline-block;
-    padding: 0.25rem 0.8rem;
-    border-radius: 999px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    font-family: 'IBM Plex Mono', monospace;
-}
-.period-tag {
-    display: inline-block;
-    padding: 0.2rem 0.6rem;
-    border-radius: 4px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    font-family: 'IBM Plex Mono', monospace;
-    letter-spacing: 0.5px;
+.stTabs [data-baseweb="tab-highlight"], .stTabs [data-baseweb="tab-border"] { display: none !important; }
+[data-baseweb="tab-panel"] {
+    background: rgba(255,255,255,0.35) !important;
+    border-radius: 24px !important;
+    border: 1px solid rgba(255,255,255,0.40) !important;
+    padding: 1rem 0.5rem !important;
 }
 
-hr { border-color: #0e1f3a !important; }
+/* final coherence fixes */
+.badge { margin-right: 0.65rem !important; }
+.stTabs [aria-selected="true"] p,
+.stTabs [aria-selected="true"] span,
+.stTabs button[aria-selected="true"] *,
+.stTabs [data-baseweb="tab"][aria-selected="true"] * {
+    color: #FFFFFF !important;
+}
+.stTabs [data-baseweb="tab"] p { color: inherit !important; }
+[data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"] > div,
+[data-testid="stSidebar"] .stSlider,
+[data-testid="stSidebar"] .stToggle {
+    margin-bottom: 0.8rem !important;
+}
+.js-plotly-plot .plotly .modebar { background: rgba(255,255,255,0.72) !important; border-radius: 999px !important; }
 
-[data-testid="stSidebar"] label {
-    color: #4a6080 !important; font-size: 0.72rem !important;
-    font-weight: 700 !important; text-transform: uppercase !important;
-    letter-spacing: 0.8px !important; font-family: 'IBM Plex Mono', monospace !important;
+/* dataframe */
+[data-testid="stDataFrameResizable"], .dvn-scroller, [data-testid="stDataFrame"] canvas { background: #FFFFFF !important; }
+.stDataFrame thead th {
+    background: #FFF2DB !important;
+    color: var(--ink) !important;
+    font-weight: 900 !important;
+    font-family: 'IBM Plex Mono', monospace !important;
+    font-size: 0.75rem !important;
 }
-[data-testid="stSidebar"] strong { color: #d1d9e6 !important; }
-div[data-baseweb="select"] > div {
-    background: #080c17 !important; border: 1px solid #0e1f3a !important;
-    border-radius: 7px !important; color: #d1d9e6 !important;
+.stDataFrame tbody td { color: var(--ink) !important; background: #FFFFFF !important; }
+
+/* multiselect tags */
+[data-testid="stMultiSelect"] [data-baseweb="tag"] {
+    background: linear-gradient(135deg, rgba(255,115,48,0.14), rgba(255,200,69,0.16)) !important;
+    border: 1px solid rgba(255,115,48,0.35) !important;
+    color: var(--orange) !important;
+    border-radius: 999px !important;
 }
-p, li, span { color: #d1d9e6; }
-h1, h2, h3 { color: #e8f0fe !important; }
+[data-testid="stMultiSelect"] [data-baseweb="tag"] span { color: var(--orange) !important; font-weight: 800 !important; }
+
+/* alerts / status */
+.stAlert {
+    border-radius: 18px !important;
+    border: 1px solid rgba(24,59,74,0.10) !important;
+    box-shadow: 0 10px 25px rgba(24,59,74,0.08) !important;
+}
+.stSpinner > div { border-color: var(--orange) transparent transparent transparent !important; border-width: 3px !important; }
+[data-testid="stStatusWidget"], [data-testid="stStatusWidget"] svg { color: var(--orange) !important; fill: var(--orange) !important; stroke: var(--orange) !important; }
+.stProgress > div > div > div > div { background: linear-gradient(90deg, var(--orange), var(--yellow), var(--teal)) !important; }
 </style>
 """, unsafe_allow_html=True)
 
 # ============================================================
 # PLOT THEME
 # ============================================================
-PLOT_BG   = "rgba(9,22,40,0.85)"
+PLOT_BG   = "rgba(255,255,255,0.96)"
 PAPER_BG  = "rgba(0,0,0,0)"
-GRID_CLR  = "rgba(255,255,255,0.04)"
-AXIS_CLR  = "#4a6080"
-FONT_CLR  = "#d1d9e6"
+GRID_CLR  = "rgba(24,59,74,0.13)"
+AXIS_CLR  = "#1F4D5C"
+FONT_CLR  = "#183B4A"
 
-P1_COLOR  = "#2d6af0"   # blue  – Period 1
-P2_COLOR  = "#22c55e"   # green – Period 2
-P1_FILL   = "rgba(45,106,240,0.08)"
-P2_FILL   = "rgba(34,197,94,0.08)"
+P1_COLOR  = "#FF7330"   # orange – Period 1
+P2_COLOR  = "#5EA38F"   # teal – Period 2
+P1_FILL   = "rgba(255,115,48,0.12)"
+P2_FILL   = "rgba(94,163,143,0.12)"
 
 BASE_LAYOUT = dict(
     plot_bgcolor=PLOT_BG,
@@ -239,7 +775,7 @@ BASE_LAYOUT = dict(
     margin=dict(l=10, r=10, t=42, b=10),
     xaxis=dict(gridcolor=GRID_CLR, color=AXIS_CLR, showline=False),
     yaxis=dict(gridcolor=GRID_CLR, color=AXIS_CLR, showline=False),
-    legend=dict(bgcolor="rgba(0,0,0,0)", font=dict(color=FONT_CLR)),
+    legend=dict(bgcolor="rgba(255,255,255,0.92)", font=dict(color="#183B4A"), bordercolor="rgba(24,59,74,0.12)", borderwidth=1),
 )
 
 # ============================================================
@@ -331,16 +867,16 @@ def ai_insight(latency, jitter, download, upload):
 
 def health_badge_html(score):
     if score >= 85:
-        return ('<span class="badge" style="background:#052e16;color:#22c55e;'
-                'border:1px solid #22c55e33;">Excellent</span>')
+        return ('<span class="badge" style="background:#EEF8F4;color:#3D8B65;'
+                'border:1px solid #5EA38F66;">Excellent</span>')
     elif score >= 70:
-        return ('<span class="badge" style="background:#1c1a08;color:#eab308;'
-                'border:1px solid #eab30833;">Good</span>')
+        return ('<span class="badge" style="background:#FFF6D8;color:#B87A13;'
+                'border:1px solid #FFC84577;">Good</span>')
     elif score >= 50:
-        return ('<span class="badge" style="background:#1c0f05;color:#f97316;'
-                'border:1px solid #f9731633;">Fair</span>')
-    return ('<span class="badge" style="background:#1c0505;color:#ef4444;'
-            'border:1px solid #ef444433;">Poor</span>')
+        return ('<span class="badge" style="background:#FFF0E8;color:#D95B24;'
+                'border:1px solid #FF733077;">Fair</span>')
+    return ('<span class="badge" style="background:#FFF0EE;color:#D95B4F;'
+            'border:1px solid #D95B4F55;">Poor</span>')
 
 # ============================================================
 # HELPERS, KPI CARD
@@ -348,29 +884,58 @@ def health_badge_html(score):
 def kpi_card(label, value, unit, color, icon):
     return f"""
 <div style="
-    background:linear-gradient(135deg,{color}1a 0%,{color}0d 100%);
-    border:1px solid {color}33; border-top:3px solid {color};
-    border-radius:10px; padding:1rem 1.1rem;
-    box-shadow:0 4px 18px {color}1a;
+    background:linear-gradient(145deg, rgba(255,255,255,0.94), {color}18);
+    border:1px solid {color}55;
+    border-top:7px solid {color};
+    border-radius:24px;
+    padding:1.18rem 1.25rem;
+    box-shadow:0 18px 38px {color}22;
+    position:relative;
+    overflow:hidden;
 ">
-    <div style="color:{color};font-size:1.2rem;margin-bottom:0.15rem;">{icon}</div>
-    <div style="color:#4a6080;font-size:0.66rem;font-weight:700;text-transform:uppercase;
-                letter-spacing:1.4px;font-family:'IBM Plex Mono',monospace;">{label}</div>
-    <div style="color:#e8f0fe;font-size:1.8rem;font-weight:900;line-height:1.1;
-                margin-top:0.15rem;font-family:'IBM Plex Mono',monospace;">
-        {value}<span style="font-size:0.82rem;color:#4a6080;font-weight:500;
-        margin-left:3px;">{unit}</span>
+    <div style="position:relative;color:{color};font-size:1.45rem;margin-bottom:0.28rem;">{icon}</div>
+    <div style="position:relative;color:#6B7B83;font-size:0.64rem;font-weight:900;text-transform:uppercase;
+                letter-spacing:1.7px;font-family:'IBM Plex Mono',monospace;">{label}</div>
+    <div style="position:relative;color:#183B4A;font-size:2.0rem;font-weight:900;line-height:1.06;
+                margin-top:0.2rem;font-family:'Space Grotesk','IBM Plex Mono',monospace;">
+        {value}<span style="font-size:0.82rem;color:#6B7B83;font-weight:700;margin-left:4px;">{unit}</span>
     </div>
 </div>"""
+
+
+def render_pretty_table(df, max_height=None):
+    if df is None or len(df) == 0:
+        st.info("No data available.")
+        return
+    html = df.copy().to_html(index=False, classes="pretty-table", border=0)
+    height_style = f"max-height:{max_height}px;" if max_height else ""
+    st.markdown(
+        f'<div class="pretty-table-wrap" style="{height_style}">{html}</div>',
+        unsafe_allow_html=True,
+    )
 
 # ============================================================
 # HELPERS, CHARTS
 # ============================================================
 def _apply_base(fig, title, height=360):
     layout = dict(BASE_LAYOUT)
-    layout["title"] = dict(text=title, font=dict(color="#e8f0fe", size=13))
+    layout["title"] = dict(text=title, font=dict(color="#183B4A", size=15, family="Space Grotesk"), x=0.02, xanchor="left")
     layout["height"] = height
+    layout["margin"] = dict(l=58, r=26, t=54, b=54)
     fig.update_layout(**layout)
+    fig.update_xaxes(
+        tickfont=dict(color=AXIS_CLR, size=11, family="IBM Plex Mono"),
+        title_font=dict(color=AXIS_CLR, size=12, family="IBM Plex Mono"),
+        automargin=True,
+        zeroline=False,
+    )
+    fig.update_yaxes(
+        tickfont=dict(color=AXIS_CLR, size=11, family="IBM Plex Mono"),
+        title_font=dict(color=AXIS_CLR, size=13, family="IBM Plex Mono"),
+        title_standoff=12,
+        automargin=True,
+        zeroline=False,
+    )
     return fig
 
 def make_dual_period_chart(df1, df2, col, title, y_label, height=370):
@@ -388,7 +953,7 @@ def make_dual_period_chart(df1, df2, col, title, y_label, height=370):
 
     fig = make_subplots(
         rows=1, cols=3,
-        column_widths=[0.46, 0.08, 0.46],
+        column_widths=[0.48, 0.04, 0.48],
         shared_yaxes=True,
         horizontal_spacing=0.0,
         subplot_titles=["", "", ""]   # we draw our own labels
@@ -399,7 +964,7 @@ def make_dual_period_chart(df1, df2, col, title, y_label, height=370):
         x=df1["timestamp"], y=df1[col],
         mode="lines", name="Period 1  Mar 7–28",
         line=dict(color=P1_COLOR, width=1.6),
-        fill="tozeroy", fillcolor="rgba(45,106,240,0.10)",
+        fill="tozeroy", fillcolor="rgba(255,115,48,0.13)",
         showlegend=True
     ), row=1, col=1)
 
@@ -408,7 +973,7 @@ def make_dual_period_chart(df1, df2, col, title, y_label, height=370):
         x=df2["timestamp"], y=df2[col],
         mode="lines", name="Period 2  Apr 20 – May 12",
         line=dict(color=P2_COLOR, width=1.6),
-        fill="tozeroy", fillcolor="rgba(34,197,94,0.09)",
+        fill="tozeroy", fillcolor="rgba(94,163,143,0.13)",
         showlegend=True
     ), row=1, col=3)
 
@@ -417,54 +982,65 @@ def make_dual_period_chart(df1, df2, col, title, y_label, height=370):
         x=[0.5], y=[(y_min + y_max) / 2],
         mode="text",
         text=["23-day<br>gap"],
-        textfont=dict(color="#4a6080", size=9, family="IBM Plex Mono"),
+        textfont=dict(color="#1F4D5C", size=11, family="IBM Plex Mono"),
         showlegend=False,
         xaxis="x2", yaxis="y"
     ), row=1, col=2)
 
     # Shared y-axis range applied to both outer panels
     fig.update_yaxes(range=[y_min, y_max], gridcolor=GRID_CLR,
-                     color=AXIS_CLR, showline=False, title_text=y_label, row=1, col=1)
+                     color=AXIS_CLR, showline=False, title_text=y_label,
+                     title_font=dict(color=AXIS_CLR, size=13, family="IBM Plex Mono"),
+                     tickfont=dict(color=AXIS_CLR, size=11, family="IBM Plex Mono"),
+                     title_standoff=12, automargin=True, zeroline=False, row=1, col=1)
     fig.update_yaxes(range=[y_min, y_max], gridcolor=GRID_CLR,
-                     color=AXIS_CLR, showline=False, showticklabels=False, row=1, col=3)
+                     color=AXIS_CLR, showline=False, showticklabels=False,
+                     tickfont=dict(color=AXIS_CLR, size=11, family="IBM Plex Mono"),
+                     automargin=True, zeroline=False, row=1, col=3)
     fig.update_yaxes(visible=False, row=1, col=2)
 
-    fig.update_xaxes(gridcolor=GRID_CLR, color=AXIS_CLR, showline=False, row=1, col=1)
-    fig.update_xaxes(gridcolor=GRID_CLR, color=AXIS_CLR, showline=False, row=1, col=3)
+    fig.update_xaxes(gridcolor=GRID_CLR, color=AXIS_CLR, showline=False,
+                     tickfont=dict(color=AXIS_CLR, size=11, family="IBM Plex Mono"),
+                     automargin=True, nticks=4, zeroline=False, row=1, col=1)
+    fig.update_xaxes(gridcolor=GRID_CLR, color=AXIS_CLR, showline=False,
+                     tickfont=dict(color=AXIS_CLR, size=11, family="IBM Plex Mono"),
+                     automargin=True, nticks=4, zeroline=False, row=1, col=3)
     fig.update_xaxes(visible=False, row=1, col=2)
 
     # Period label annotations above each panel
     fig.add_annotation(
         text="<b>Period 1</b>  Mar 7 – 28",
         xref="paper", yref="paper",
-        x=0.22, y=1.06, showarrow=False,
-        font=dict(color=P1_COLOR, size=11, family="IBM Plex Mono"),
+        x=0.24, y=1.025, showarrow=False,
+        font=dict(color=P1_COLOR, size=12, family="IBM Plex Mono"),
         xanchor="center"
     )
     fig.add_annotation(
         text="<b>Period 2</b>  Apr 20 – May 12",
         xref="paper", yref="paper",
-        x=0.78, y=1.06, showarrow=False,
-        font=dict(color=P2_COLOR, size=11, family="IBM Plex Mono"),
+        x=0.76, y=1.025, showarrow=False,
+        font=dict(color=P2_COLOR, size=12, family="IBM Plex Mono"),
         xanchor="center"
     )
 
     fig.update_layout(
-        title=dict(text=title, font=dict(color="#e8f0fe", size=13,
+        title=dict(text=title, font=dict(color="#183B4A", size=13,
                                          family="IBM Plex Mono")),
         height=height,
         plot_bgcolor=PLOT_BG,
         paper_bgcolor=PAPER_BG,
         font=dict(color=FONT_CLR, family="IBM Plex Mono"),
-        margin=dict(l=10, r=10, t=65, b=90),
+        margin=dict(l=62, r=30, t=58, b=62),
         legend=dict(
-            bgcolor="rgba(0,0,0,0)",
+            bgcolor="rgba(255,255,255,0.88)",
             font=dict(color=FONT_CLR, size=11),
             orientation="h",
             yanchor="top",
-            y=-0.28,
+            y=-0.16,
             xanchor="center",
-            x=0.5
+            x=0.5,
+            bordercolor="rgba(24,59,74,0.10)",
+            borderwidth=1
         )
     )
     return fig
@@ -475,8 +1051,7 @@ def make_single_period_chart(df, col, title, y_label, color, height=360):
         x=df["timestamp"], y=df[col], mode="lines", name=col,
         line=dict(color=color, width=1.8),
         fill="tozeroy",
-        fillcolor=color.replace(")", ",0.08)").replace("rgb", "rgba")
-                  if "rgb" in color else f"rgba(45,106,240,0.08)"
+        fillcolor=("rgba(255,115,48,0.10)" if color == P1_COLOR else "rgba(94,163,143,0.10)" if color == P2_COLOR else "rgba(167,201,131,0.10)")
     ))
     _apply_base(fig, title, height)
     fig.update_layout(yaxis_title=y_label)
@@ -490,24 +1065,24 @@ def make_actual_vs_predicted_chart(y_test, y_pred, points, title):
         predicted = predicted.iloc[-points:]
     fig = go.Figure()
     fig.add_trace(go.Scatter(y=actual,    mode="lines", name="Actual",
-                             line=dict(color="#38bdf8", width=2)))
+                             line=dict(color="#FF7330", width=2)))
     fig.add_trace(go.Scatter(y=predicted, mode="lines", name="Predicted",
-                             line=dict(color="#f472b6", width=2, dash="dot")))
+                             line=dict(color="#5EA38F", width=2, dash="dot")))
     _apply_base(fig, title, 400)
     fig.update_layout(xaxis_title="Test Time Steps", yaxis_title="Latency (ms)")
     return fig
 
 def make_health_gauge(score):
-    bar_color = ("#22c55e" if score >= 85 else "#eab308" if score >= 70
-                 else "#f97316" if score >= 50 else "#ef4444")
+    bar_color = ("#3D8B65" if score >= 85 else "#D99A20" if score >= 70
+                 else "#FF7330" if score >= 50 else "#D95B4F")
     fig = go.Figure(go.Indicator(
         mode="gauge+number",
         value=score,
         number={"suffix": "/100", "font": {"size": 26, "color": bar_color,
                                             "family": "IBM Plex Mono"}},
         gauge={
-            "axis": {"range": [0, 100], "tickwidth": 1, "tickcolor": "#1e3a5f",
-                     "tickfont": {"color": "#4a6080", "size": 9}},
+            "axis": {"range": [0, 100], "tickwidth": 1, "tickcolor": "#E2E8F0",
+                     "tickfont": {"color": "#475569", "size": 9}},
             "bar":  {"color": bar_color, "thickness": 0.38},
             "bgcolor": "rgba(0,0,0,0)", "borderwidth": 0,
             "steps": [
@@ -522,7 +1097,7 @@ def make_health_gauge(score):
     ))
     fig.update_layout(height=240, margin=dict(l=20, r=20, t=28, b=8),
                       paper_bgcolor="rgba(0,0,0,0)",
-                      font={"color": "#d1d9e6", "family": "IBM Plex Mono"})
+                      font={"color": "#253545", "family": "IBM Plex Mono", "size": 12})
     return fig
 
 def make_isp_comparison_chart(df_sl, df_isp, isp_name, col, title, y_label):
@@ -530,12 +1105,12 @@ def make_isp_comparison_chart(df_sl, df_isp, isp_name, col, title, y_label):
     fig = go.Figure()
     fig.add_trace(go.Scatter(
         x=df_sl["timestamp"], y=df_sl[col], mode="lines", name="Starlink",
-        fill="tozeroy", fillcolor="rgba(45,106,240,0.12)"
+        fill="tozeroy", fillcolor="rgba(255,115,48,0.12)"
     ))
     fig.add_trace(go.Scatter(
         x=df_isp["timestamp"], y=df_isp[col], mode="lines", name=isp_name,
-        line=dict(color="#a78bfa", width=1.6), fill="tozeroy",
-        fillcolor="rgba(167,139,250,0.07)"
+        line=dict(color="#5EA38F", width=1.6), fill="tozeroy",
+        fillcolor="rgba(94,163,143,0.12)"
     ))
     _apply_base(fig, title, 340)
     fig.update_layout(yaxis_title=y_label, xaxis_title="Time")
@@ -565,17 +1140,22 @@ def make_box_comparison(df1, df2, col, title, y_label):
     """Box plot comparing distributions for both periods."""
     fig = go.Figure()
     fig.add_trace(go.Box(
-        y=df1[col].dropna(), name="Period 1  Mar 7–28",
+        y=df1[col].dropna(), name="P1 (Mar 7–28)",
         marker_color=P1_COLOR, line_color=P1_COLOR,
         fillcolor=P1_FILL, boxmean=True
     ))
     fig.add_trace(go.Box(
-        y=df2[col].dropna(), name="Period 2  Apr 20 – May 12",
+        y=df2[col].dropna(), name="P2 (Apr 20–May 12)",
         marker_color=P2_COLOR, line_color=P2_COLOR,
         fillcolor=P2_FILL, boxmean=True
     ))
     _apply_base(fig, title, 360)
-    fig.update_layout(yaxis_title=y_label, showlegend=True)
+    fig.update_layout(
+        yaxis_title=y_label,
+        showlegend=False,
+        margin=dict(l=58, r=24, t=54, b=72),
+        xaxis=dict(tickangle=0, tickfont=dict(color=AXIS_CLR, size=11, family="IBM Plex Mono"))
+    )
     return fig
 
 def make_residual_chart(y_test, y_pred, title):
@@ -583,9 +1163,9 @@ def make_residual_chart(y_test, y_pred, title):
     fig = go.Figure()
     fig.add_trace(go.Scatter(
         y=residuals, mode="lines", name="Residual",
-        line=dict(color="#f472b6", width=1.4)
+        line=dict(color="#5EA38F", width=1.4)
     ))
-    fig.add_hline(y=0, line_dash="dash", line_color="#4a6080", line_width=1)
+    fig.add_hline(y=0, line_dash="dash", line_color="#94A3B8", line_width=1)
     _apply_base(fig, title, 300)
     fig.update_layout(yaxis_title="Residual (ms)", xaxis_title="Test Steps")
     return fig
@@ -895,15 +1475,15 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("**Dataset periods**")
     st.markdown(
-        f'<span class="period-tag" style="background:#0d2348;color:{P1_COLOR};'
+        f'<span class="period-tag" style="background:rgba(232,83,28,0.1);color:{P1_COLOR};'
         f'border:1px solid {P1_COLOR}44;">P1</span> '
-        f'<span style="color:#4a6080;font-size:0.78rem;">Mar 7 – Mar 28, 2026</span>',
+        f'<span style="color:#253545;font-size:0.78rem;">Mar 7 – Mar 28, 2026</span>',
         unsafe_allow_html=True
     )
     st.markdown(
-        f'<span class="period-tag" style="background:#0a2318;color:{P2_COLOR};'
+        f'<span class="period-tag" style="background:rgba(141,184,122,0.15);color:{P2_COLOR};'
         f'border:1px solid {P2_COLOR}44;">P2</span> '
-        f'<span style="color:#4a6080;font-size:0.78rem;">Apr 20 – May 12, 2026</span>',
+        f'<span style="color:#253545;font-size:0.78rem;">Apr 20 – May 12, 2026</span>',
         unsafe_allow_html=True
     )
     st.markdown("---")
@@ -949,19 +1529,19 @@ if show_live:
                    else getattr(latest_live_row, "timestamp", ""))[:16]
         if latest_live_source == "raw":
             kpi_note = f"Live data (raw file), {_net} · {_ts}"
-            kpi_note_color = "#22c55e"
+            kpi_note_color = "#3D8B65"
         else:
             kpi_note = f"Live overlay, retrain queue · most recent row · {q_latest}"
-            kpi_note_color = "#eab308"
+            kpi_note_color = "#D99A20"
     else:
         display_row    = p2_df.iloc[-1]
         kpi_note       = "Live overlay: no post-thesis data found, showing last Period 2 row"
-        kpi_note_color = "#ef4444"
+        kpi_note_color = "#D95B4F"
 else:
     display_row    = p2_df.iloc[-1]
     kpi_note       = ("Showing last observation from Period 2 "
                       "(most recent validated clean dataset, May 12, 2026)")
-    kpi_note_color = "#4a6080"
+    kpi_note_color = "#6B7B83"
 
 current_latency  = safe_float(display_row, "ping_avg_rtt_ms")
 current_jitter   = safe_float(display_row, "ping_jitter_ms")
@@ -993,7 +1573,7 @@ wind_val     = _get(display_row, "wind_speed_mps")
 # ============================================================
 st.markdown(
     f'<div style="margin-bottom:-1.4rem;'
-    f'margin-top:-2rem;color:#4a6080;'
+    f'margin-top:-2rem;color:#6B7B83;font-weight:600;'
     f'font-size:0.72rem;font-family:\'IBM Plex Mono\',monospace;">'
     f'Last refresh: {pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S")}'
     f'</div>',
@@ -1001,92 +1581,42 @@ st.markdown(
 )
 
 _now_str = pd.Timestamp.now().strftime("%Y-%m-%d  %H:%M:%S")
+live_header_dot = ""
+if show_live:
+    live_header_dot = (
+        '<div style="position:absolute;top:50%;left:14px;transform:translateY(-50%);z-index:4;display:flex;align-items:center;justify-content:center;">'
+        '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;'
+        'background:#4ADE80;border:2px solid #F5FFF8;'
+        'box-shadow:0 0 0 4px rgba(74,222,128,0.16),0 0 10px rgba(74,222,128,0.58),0 0 18px rgba(74,222,128,0.34);"></span>'
+        '</div>'
+    )
 st.markdown(
-    f'<div style="background:linear-gradient(135deg,#0d1f3c 0%,#111830 40%,#0a1830 100%);'
-    f'border-radius:16px;padding:1.2rem 2.4rem 1.6rem 2.4rem;margin-bottom:0.5rem;'
-    f'border:1px solid rgba(45,106,240,0.3);'
-    f'box-shadow:0 0 40px rgba(45,106,240,0.10);'
+    f'<div style="background:#FFFFFF;'
+    f'border-radius:16px;padding:1.5rem 2.4rem 1.5rem 2.8rem;margin-bottom:0.8rem;'
+    f'border:1px solid #DDE7E2;'
+    f'border-top:4px solid #265868;'
+    f'box-shadow:0 2px 12px rgba(24,59,74,0.08);'
     f'position:relative;overflow:hidden;">'
 
-    f'<div style="position:absolute;inset:0;'
-    f'background-image:linear-gradient(rgba(61,127,255,0.04) 1px,transparent 1px),'
-    f'linear-gradient(90deg,rgba(61,127,255,0.04) 1px,transparent 1px);'
-    f'background-size:40px 40px;pointer-events:none;"></div>'
+    f'{live_header_dot}'
 
-    f'<div style="position:absolute;top:0;left:0;right:0;height:1px;'
-    f'background:linear-gradient(90deg,transparent,rgba(61,127,255,0.55),rgba(52,211,153,0.35),transparent);'
+    f'<div style="position:absolute;top:0;left:0;right:0;height:4px;'
+    f'background:linear-gradient(90deg,#183B4A,#265868,#3F7F78,#5EA38F);'
     f'pointer-events:none;"></div>'
 
-    f'<div style="display:flex;justify-content:space-between;align-items:flex-start;'
-    f'position:relative;z-index:1;">'
-
-    f'<div>'
-    f'<div style="font-family:\'JetBrains Mono\',monospace;font-size:0.62rem;'
-    f'color:#4d8fff;letter-spacing:2.5px;font-weight:600;margin-bottom:0.6rem;'
-    f'display:flex;align-items:center;gap:0.45rem;">'
-    f'<span style="display:inline-block;width:7px;height:7px;border-radius:50%;'
-    f'background:#22c55e;box-shadow:0 0 8px #22c55e;"></span>'
-    f'STARLINK INTELLIGENCE PLATFORM</div>'
-
     f'<div style="font-family:\'Space Grotesk\',sans-serif;font-size:2rem;'
-    f'font-weight:800;line-height:1.1;letter-spacing:-0.8px;margin-bottom:0.5rem;">'
-    f'<span style="color:#e2e8f8;">Performance </span>'
-    f'<span style="background:linear-gradient(90deg,#60a5fa,#34d399);'
-    f'-webkit-background-clip:text;-webkit-text-fill-color:transparent;'
-    f'background-clip:text;">Forecast System</span></div>'
-
-    f'<div style="font-family:\'JetBrains Mono\',monospace;font-size:0.75rem;'
-    f'color:#4a6080;letter-spacing:0.3px;">'
-    f'Network Monitoring &nbsp;&middot;&nbsp; Latency Forecasting &nbsp;&middot;&nbsp;'
-    f'Outage Detection &nbsp;&middot;&nbsp; Infrastructure Intelligence</div>'
-    f'</div>'
-
-    f'<div style="text-align:right;flex-shrink:0;margin-left:2rem;">'
-    f'<div style="background:linear-gradient(135deg,rgba(29,78,216,0.5),rgba(67,56,202,0.4));'
-    f'border:1px solid rgba(29,78,216,0.4);'
-    f'padding:0.32rem 0.9rem;border-radius:6px;'
-    f'font-size:0.68rem;font-weight:700;color:#93c5fd;'
-    f'letter-spacing:0.8px;margin-bottom:0.5rem;'
-    f'font-family:\'JetBrains Mono\',monospace;display:inline-block;">'
-    f'GUtech AI Thesis Prototype</div>'
-    f'<div style="font-family:\'JetBrains Mono\',monospace;font-size:0.7rem;'
-    f'color:#4a6080;margin-bottom:0.2rem;">Starlink · Muscat, Oman · 2026</div>'
-    f'<div style="font-family:\'JetBrains Mono\',monospace;font-size:0.65rem;'
-    f'color:#2a4060;">{_now_str}</div>'
-    f'</div>'
-
-    f'</div></div>',
+    f'font-weight:800;line-height:1.1;letter-spacing:-0.8px;">'
+    f'<span style="color:#253545;">Starlink </span>'
+    f'<span style="color:#265868;">Performance Monitor</span></div>'
+    f'</div>',
     unsafe_allow_html=True
 )
-
-# Dataset banner
-st.markdown(f"""
-<div style="
-    background:linear-gradient(90deg,#04200f,#062a14);
-    border:1px solid #22c55e22; border-left:4px solid #22c55e;
-    border-radius:9px; padding:0.65rem 1.1rem; margin-bottom:0.7rem;
-    display:flex; align-items:center; gap:0.8rem;
-">
-    <span style="font-size:1.1rem;">🛰️</span>
-    <div>
-        <span style="color:#22c55e;font-weight:700;font-size:0.82rem;
-                     font-family:'IBM Plex Mono',monospace;">
-            VALIDATED RESEARCH DATASET
-        </span>
-        <span style="color:#4a6080;font-size:0.8rem;margin-left:0.7rem;">
-            Period 1: Mar 7 – Mar 28 2026 &nbsp;|&nbsp;
-            Period 2: Apr 20 – May 12 2026 &nbsp;|&nbsp;
-            {len(p1_df):,} + {len(p2_df):,} = {len(p1_df)+len(p2_df):,} total rows &nbsp;|&nbsp;
-            Forecast dataset: {len(forecast_df):,} rows ({forecast_merge_status.replace("_"," ")})
-        </span>
-    </div>
-</div>
-""", unsafe_allow_html=True)
 
 # KPI source note
 st.markdown(f"""
 <div style="
-    background:rgba(255,255,255,0.025);border:1px solid #0e1f3a;
+    background:{kpi_note_color}0d;border:1px solid {kpi_note_color}33;
+    border-left:4px solid {kpi_note_color};
     border-radius:7px;padding:0.45rem 1rem;margin-bottom:0.7rem;
     font-size:0.78rem;color:{kpi_note_color};
     font-family:'IBM Plex Mono',monospace;
@@ -1097,21 +1627,21 @@ st.markdown(f"""
 # KPI CARDS
 # ============================================================
 c1, c2, c3, c4, c5 = st.columns(5)
-hcolor = ("#22c55e" if health_score >= 85 else "#eab308" if health_score >= 70
-          else "#f97316" if health_score >= 50 else "#ef4444")
+hcolor = ("#3D8B65" if health_score >= 85 else "#D99A20" if health_score >= 70
+          else "#FF7330" if health_score >= 50 else "#D95B4F")
 
-with c1: st.markdown(kpi_card("Latency",      f"{current_latency:.1f}",  "ms",   "#2d6af0", "📡"), unsafe_allow_html=True)
-with c2: st.markdown(kpi_card("Jitter",       f"{current_jitter:.1f}",   "ms",   "#f472b6", "〰️"), unsafe_allow_html=True)
-with c3: st.markdown(kpi_card("Download",     f"{current_download:.1f}", "Mbps", "#22c55e", "⬇"), unsafe_allow_html=True)
-with c4: st.markdown(kpi_card("Upload",       f"{current_upload:.1f}",   "Mbps", "#f97316", "⬆"), unsafe_allow_html=True)
+with c1: st.markdown(kpi_card("Latency",      f"{current_latency:.1f}",  "ms",   "#FF7330", "📡"), unsafe_allow_html=True)
+with c2: st.markdown(kpi_card("Jitter",       f"{current_jitter:.1f}",   "ms",   "#FFC845", "〰️"), unsafe_allow_html=True)
+with c3: st.markdown(kpi_card("Download",     f"{current_download:.1f}", "Mbps", "#A7C983", "⬇"), unsafe_allow_html=True)
+with c4: st.markdown(kpi_card("Upload",       f"{current_upload:.1f}",   "Mbps", "#5EA38F", "⬆"), unsafe_allow_html=True)
 with c5: st.markdown(kpi_card("Health Score", f"{health_score}",         "/100", hcolor,    "💚"), unsafe_allow_html=True)
 
 st.markdown(
     f'<div style="margin:0.5rem 0 0.9rem;">'
     f'{health_badge_html(health_score)}'
-    f'&nbsp;&nbsp;<span style="color:#4a6080;font-size:0.88rem;'
+    f'&nbsp;&nbsp;<span style="color:#6B7B83;font-size:0.88rem;'
     f'font-family:\'IBM Plex Mono\',monospace;">'
-    f'Network status: <b style="color:#d1d9e6;">{outage_status}</b></span></div>',
+    f'Network status: <b style="color:#183B4A;">{outage_status}</b></span></div>',
     unsafe_allow_html=True
 )
 
@@ -1146,13 +1676,12 @@ with tab1:
         )
 
     with right:
-        st.markdown('<div class="card">', unsafe_allow_html=True)
         st.markdown('<div class="card-title">Next 15-Minute Forecast</div>', unsafe_allow_html=True)
         st.metric("Latency",  f"{latency_forecast:.2f} ms")
         st.metric("Download", f"{download_forecast:.2f} Mbps")
         st.metric("Upload",   f"{upload_forecast:.2f} Mbps")
         st.markdown(
-            f'<div style="color:#4a6080;font-size:0.75rem;margin-top:0.5rem;'
+            f'<div style="color:#6B7B83;font-size:0.75rem;margin-top:0.5rem;'
             f'font-family:\'IBM Plex Mono\',monospace;">'
             f'Forecast for: {forecast_time.strftime("%Y-%m-%d %H:%M")}<br>'
             f'Model: {selected_model}</div>',
@@ -1164,24 +1693,18 @@ with tab1:
     with col_a:
         st.plotly_chart(make_health_gauge(health_score), use_container_width=True)
     with col_b:
-        st.markdown('<div class="card">', unsafe_allow_html=True)
         st.markdown('<div class="card-title">Recommended Usage</div>', unsafe_allow_html=True)
         for rec in recommendations:
             st.markdown(f"- {rec}")
-        st.markdown('</div>', unsafe_allow_html=True)
     with col_c:
-        st.markdown('<div class="card">', unsafe_allow_html=True)
         st.markdown('<div class="card-title">Latest Weather Context</div>', unsafe_allow_html=True)
         st.write(f"Condition: **{fmt_code(weather_code)}**")
         st.write(f"Temperature: **{fmt_temp(temp_val)}**")
         st.write(f"Humidity: **{fmt_humidity(hum_val)}**")
         st.write(f"Wind: **{fmt_wind(wind_val)}**")
-        st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown('<div class="card">', unsafe_allow_html=True)
     st.markdown('<div class="card-title">System Insight</div>', unsafe_allow_html=True)
     st.write(system_insight)
-    st.markdown('</div>', unsafe_allow_html=True)
 
 # ============================================================
 # TAB 2, HISTORICAL TRENDS
@@ -1191,7 +1714,7 @@ with tab2:
                 unsafe_allow_html=True)
 
     st.markdown(
-        f'<div style="color:#4a6080;font-size:0.78rem;margin-bottom:0.8rem;'
+        f'<div style="color:#334155;font-size:0.78rem;margin-bottom:0.8rem;'
         f'font-family:\'IBM Plex Mono\',monospace;">'
         f'<span style="color:{P1_COLOR};">Blue = Period 1 (Mar 7–28, 2026)</span>'
         f'&nbsp;&nbsp;|&nbsp;&nbsp;'
@@ -1265,7 +1788,7 @@ with tab2:
                     "Std Dev": round(s.std(), 2), "Min": round(s.min(), 2),
                     "Max": round(s.max(), 2), "Rows": len(s)
                 })
-    st.dataframe(pd.DataFrame(stats_rows), use_container_width=True)
+    render_pretty_table(pd.DataFrame(stats_rows), max_height=520)
 
 # ============================================================
 # TAB 3, ISP COMPARISON
@@ -1275,7 +1798,7 @@ with tab3:
                 unsafe_allow_html=True)
 
     st.markdown(
-        '<div style="color:#4a6080;font-size:0.78rem;margin-bottom:0.8rem;'
+        '<div style="color:#6B7B83;font-size:0.78rem;margin-bottom:0.8rem;'
         'font-family:\'IBM Plex Mono\',monospace;">'
         'Period 1 (Mar 7–28): Starlink vs OmanTel &nbsp;|&nbsp; '
         'Period 2 (Apr 20 – May 12): Starlink vs Awasr. '
@@ -1285,9 +1808,9 @@ with tab3:
 
     # --- PERIOD 1: Starlink vs OmanTel ---
     st.markdown(
-        f'<span class="period-tag" style="background:#0d2348;color:{P1_COLOR};'
+        f'<span class="period-tag" style="background:rgba(232,83,28,0.1);color:{P1_COLOR};'
         f'border:1px solid {P1_COLOR}44;">Period 1</span>'
-        f'<span style="color:#d1d9e6;margin-left:0.6rem;font-weight:700;">'
+        f'<span style="color:#183B4A;margin-left:0.6rem;font-weight:700;">'
         f'Starlink vs OmanTel, Mar 7 to Mar 28, 2026</span>',
         unsafe_allow_html=True
     )
@@ -1333,7 +1856,7 @@ with tab3:
                     "Difference":    round(p1_df[metric].mean() - om_p1[metric].mean(), 2)
                 })
         if isp_rows:
-            st.dataframe(pd.DataFrame(isp_rows), use_container_width=True)
+            render_pretty_table(pd.DataFrame(isp_rows), max_height=360)
     else:
         st.info("OmanTel data not found. Place omantel_clean.csv at Cleaned/experiment_A/ or beside this script.")
 
@@ -1341,9 +1864,9 @@ with tab3:
 
     # --- PERIOD 2: Starlink vs Awasr ---
     st.markdown(
-        f'<span class="period-tag" style="background:#0a2318;color:{P2_COLOR};'
+        f'<span class="period-tag" style="background:rgba(141,184,122,0.15);color:{P2_COLOR};'
         f'border:1px solid {P2_COLOR}44;">Period 2</span>'
-        f'<span style="color:#d1d9e6;margin-left:0.6rem;font-weight:700;">'
+        f'<span style="color:#183B4A;margin-left:0.6rem;font-weight:700;">'
         f'Starlink vs Awasr, Apr 20 to May 12, 2026</span>',
         unsafe_allow_html=True
     )
@@ -1388,7 +1911,7 @@ with tab3:
                     "Difference":    round(p2_df[metric].mean() - aw_p2[metric].mean(), 2)
                 })
         if isp_rows2:
-            st.dataframe(pd.DataFrame(isp_rows2), use_container_width=True)
+            render_pretty_table(pd.DataFrame(isp_rows2), max_height=360)
     else:
         st.info("Awasr data not found. Place Awasr_cleaned.csv at Cleaned/experiment_B/ or beside this script.")
 
@@ -1421,7 +1944,7 @@ with tab4:
     )
 
     st.markdown(
-        '<div style="color:#4a6080;font-size:0.8rem;margin-top:0.4rem;'
+        '<div style="color:#6B7B83;font-size:0.8rem;margin-top:0.4rem;'
         'font-family:\'IBM Plex Mono\',monospace;">'
         'Latency is the primary forecasting target. Download and upload forecasts '
         'are supporting operational estimates. All predictions use the combined validated '
@@ -1432,7 +1955,6 @@ with tab4:
     q_count, q_latest = retrain_queue_status()
     if q_count > 0:
         st.markdown("---")
-        st.markdown('<div class="card">', unsafe_allow_html=True)
         st.markdown('<div class="card-title">New Starlink Data Available for Retraining</div>',
                     unsafe_allow_html=True)
         st.write(f"**{q_count}** new Starlink rows collected after the thesis window.")
@@ -1454,7 +1976,6 @@ with tab5:
 
     col_a, col_b = st.columns(2)
     with col_a:
-        st.markdown('<div class="card">', unsafe_allow_html=True)
         st.markdown('<div class="card-title">Operational Interpretation</div>', unsafe_allow_html=True)
         st.write(
             f"Forecast-based health status is **{health_label}** with a score of "
@@ -1463,11 +1984,9 @@ with tab5:
         )
         st.markdown('</div>', unsafe_allow_html=True)
     with col_b:
-        st.markdown('<div class="card">', unsafe_allow_html=True)
         st.markdown('<div class="card-title">Suggested Use Cases Right Now</div>', unsafe_allow_html=True)
         for rec in recommendations:
             st.write(f"- {rec}")
-        st.markdown('</div>', unsafe_allow_html=True)
 
 # ============================================================
 # TAB 6, MODEL EVALUATION
@@ -1477,13 +1996,12 @@ with tab6:
                 unsafe_allow_html=True)
 
     model_table = make_model_comparison_table(forecast_df)
-    st.dataframe(model_table, use_container_width=True)
+    render_pretty_table(model_table, max_height=360)
 
     m1, m2 = st.columns(2)
     m1.metric(f"{selected_model}, MAE",  f"{latency_result['mae']:.3f} ms")
     m2.metric(f"{selected_model}, RMSE", f"{latency_result['rmse']:.3f} ms")
 
-    st.markdown('<div class="card">', unsafe_allow_html=True)
     st.markdown('<div class="card-title">Research Notes</div>', unsafe_allow_html=True)
     st.write(
         "Models were trained and evaluated on the combined validated Starlink dataset "
@@ -1511,7 +2029,7 @@ with tab6:
             }).sort_values("Importance", ascending=False).reset_index(drop=True)
             fig_fi = go.Figure(go.Bar(
                 x=fi_df["Importance"], y=fi_df["Feature"],
-                orientation="h", marker_color=P1_COLOR
+                orientation="h", marker_color="#265868"
             ))
             _apply_base(fig_fi, "Feature Importance (Random Forest)", 380)
             fig_fi.update_layout(yaxis=dict(autorange="reversed"))
