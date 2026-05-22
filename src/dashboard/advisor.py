@@ -903,6 +903,153 @@ div[data-baseweb="select"] input::placeholder,
     align-items: center !important;
 }
 
+
+/* Step 3 input mode selector, stable custom radio pills
+   Using st.radio on purpose because st.segmented_control can keep a dark
+   native BaseWeb layer on unselected buttons in some Streamlit versions. */
+[data-testid="stRadio"] {
+    margin-top: 0.25rem !important;
+    margin-bottom: 1.2rem !important;
+}
+
+.measurement-question {
+    color: #183B4A !important;
+    font-weight: 900 !important;
+    font-size: 1.05rem !important;
+    margin: 0.85rem 0 0.65rem 0 !important;
+    line-height: 1.35 !important;
+}
+
+/* Hide Streamlit's internal radio label completely.
+   The visible question is the normal .measurement-question sentence above. */
+[data-testid="stRadio"] > label,
+[data-testid="stRadio"] [data-testid="stWidgetLabel"] {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    overflow: hidden !important;
+}
+
+/* Only style the actual option group, not the hidden radio label */
+[data-testid="stRadio"] div[role="radiogroup"] {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    gap: 0.55rem !important;
+    width: fit-content !important;
+    background: rgba(255,255,255,0.92) !important;
+    border: 1px solid rgba(24,59,74,0.12) !important;
+    border-radius: 20px !important;
+    padding: 0.35rem !important;
+    box-shadow: 0 14px 32px rgba(24,59,74,0.10) !important;
+}
+
+[data-testid="stRadio"] div[role="radiogroup"] label {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 160px !important;
+    min-height: 50px !important;
+    padding: 0.7rem 1.25rem !important;
+    border-radius: 15px !important;
+    cursor: pointer !important;
+    border: 1px solid rgba(24,59,74,0.12) !important;
+    background: #FFFFFF !important;
+    color: #173C4A !important;
+    font-weight: 900 !important;
+    font-size: 0.92rem !important;
+    white-space: nowrap !important;
+    margin: 0 !important;
+    box-shadow: 0 5px 14px rgba(24,59,74,0.06) !important;
+    opacity: 1 !important;
+    overflow: hidden !important;
+    transition: all 0.16s ease !important;
+}
+
+[data-testid="stRadio"] div[role="radiogroup"] label:hover {
+    background: #EEF7F3 !important;
+    color: #173C4A !important;
+    border-color: rgba(94,163,143,0.40) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Hide the tiny radio circle only */
+[data-testid="stRadio"] div[role="radiogroup"] label > div:first-child {
+    display: none !important;
+}
+
+/* Force inactive option text to be dark and visible */
+[data-testid="stRadio"] div[role="radiogroup"] label p,
+[data-testid="stRadio"] div[role="radiogroup"] label span,
+[data-testid="stRadio"] div[role="radiogroup"] label div {
+    color: #173C4A !important;
+    fill: #173C4A !important;
+    font-weight: 900 !important;
+    margin: 0 !important;
+    opacity: 1 !important;
+    background: transparent !important;
+}
+
+/* Selected pill */
+[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) {
+    background: linear-gradient(135deg, #173C4A 0%, #265868 58%, #5EA38F 125%) !important;
+    color: #FFFFFF !important;
+    border-color: rgba(255,255,255,0.18) !important;
+    box-shadow: 0 12px 24px rgba(24,59,74,0.24) !important;
+}
+
+[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) p,
+[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) span,
+[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) div {
+    color: #FFFFFF !important;
+    fill: #FFFFFF !important;
+}
+
+/* File uploader, light theme */
+[data-testid="stFileUploader"] {
+    background: transparent !important;
+}
+[data-testid="stFileUploaderDropzone"],
+[data-testid="stFileUploader"] section,
+[data-testid="stFileUploader"] > div > div {
+    background: rgba(255,255,255,0.96) !important;
+    border: 1.5px dashed rgba(24,59,74,0.22) !important;
+    border-radius: 16px !important;
+    color: var(--ink) !important;
+    box-shadow: 0 6px 18px rgba(24,59,74,0.05) !important;
+}
+[data-testid="stFileUploaderDropzone"] * {
+    color: var(--ink) !important;
+    background: transparent !important;
+}
+[data-testid="stFileUploader"] section:hover,
+[data-testid="stFileUploaderDropzone"]:hover {
+    border-color: #5EA38F !important;
+    background: rgba(238,248,244,0.80) !important;
+}
+/* Uploaded file chip */
+[data-testid="stFileUploader"] [data-testid="stFileUploaderFile"],
+[data-testid="stFileUploader"] ul li,
+[data-testid="stFileUploader"] [class*="uploadedFile"] {
+    background: rgba(238,248,244,0.90) !important;
+    border: 1px solid rgba(94,163,143,0.35) !important;
+    border-radius: 12px !important;
+    color: var(--ink) !important;
+}
+[data-testid="stFileUploader"] [data-testid="stFileUploaderFile"] *,
+[data-testid="stFileUploader"] ul li *,
+[data-testid="stFileUploader"] [class*="uploadedFile"] * {
+    color: var(--ink) !important;
+    background: transparent !important;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -941,13 +1088,68 @@ TEMP_ADJ = {
     "30 – 40°C":                           {"lat": 2,  "dl": 0.97},
     "Above 40°C":                          {"lat": 5,  "dl": 0.93},
 }
+
+# ============================================================
+# CHANGE 1: USE_CASES, added threshold_src to each entry so
+# the UI can show where every number comes from.
+# dl_min for video calls corrected from 10 to 5 Mbps to match
+# Zoom/Teams actual requirements (validated in Tables 4.3/4.5).
+# ============================================================
 USE_CASES = {
-    "Video calls / online meetings":       {"icon":"📹","lat_max":50, "jitter_max":10,"dl_min":10,"ul_min":5,  "desc":"Needs low latency and stable jitter. Upload matters as much as download."},
-    "Live gaming":                         {"icon":"🎮","lat_max":40, "jitter_max":8, "dl_min":15,"ul_min":5,  "desc":"Very sensitive to latency spikes. The most demanding use case."},
-    "Streaming (Netflix, YouTube, etc.)":  {"icon":"📺","lat_max":100,"jitter_max":20,"dl_min":25,"ul_min":1,  "desc":"Mostly needs consistent download speed. Latency matters less here."},
-    "General browsing / social media":     {"icon":"🌐","lat_max":100,"jitter_max":25,"dl_min":5, "ul_min":1,  "desc":"Low requirements. Works in most conditions."},
-    "File uploads / cloud backup":         {"icon":"☁️","lat_max":150,"jitter_max":30,"dl_min":5, "ul_min":10, "desc":"Upload speed is the main factor here."},
-    "Remote work / VPN / company systems": {"icon":"💼","lat_max":60, "jitter_max":12,"dl_min":10,"ul_min":5,  "desc":"Needs reliable latency and a stable connection."},
+    "Video calls / online meetings": {
+        "icon": "📹",
+        "lat_max": 50,        # ITU-T G.114: 50 ms RTT = interactive threshold; Starlink exceeded this in ~5% of Exp A obs
+        "jitter_max": 10,     # ITU-T G.1010: ≤10 ms jitter for conversational video
+        "dl_min": 5,          # Zoom/Teams HD minimum ~3.8–4 Mbps; 5 Mbps gives headroom
+        "ul_min": 5,          # Symmetric: upload matters as much as download for bidirectional video
+        "desc": "Needs low latency (≤50 ms) and stable jitter (≤10 ms). Upload matters as much as download.",
+        "threshold_src": "ITU-T G.114 / G.1010 · Zoom & Teams requirements · validated in Tables 4.3, 4.5",
+    },
+    "Live gaming": {
+        "icon": "🎮",
+        "lat_max": 40,        # Below 40 ms is excellent for real-time input; Starlink Exp A was 95.5% compliant
+        "jitter_max": 8,      # Tighter than video calls; 8 ms is the observed median threshold
+        "dl_min": 15,
+        "ul_min": 5,
+        "desc": "Most latency-sensitive use case. Needs RTT ≤40 ms and jitter ≤8 ms.",
+        "threshold_src": "Empirical: Starlink Exp A 95.5% compliant (Table 4.3) · industry gaming standards",
+    },
+    "Streaming (Netflix, YouTube, etc.)": {
+        "icon": "📺",
+        "lat_max": 100,       # Buffered streaming tolerates higher latency
+        "jitter_max": 20,
+        "dl_min": 25,         # 4K streaming requires ~20–25 Mbps sustained (Netflix requirement)
+        "ul_min": 1,
+        "desc": "Needs consistent download speed (≥25 Mbps). Tolerates higher latency due to buffering.",
+        "threshold_src": "Netflix 4K requirement: 25 Mbps · validated in Tables 4.3, 4.5",
+    },
+    "General browsing / social media": {
+        "icon": "🌐",
+        "lat_max": 100,
+        "jitter_max": 25,
+        "dl_min": 5,
+        "ul_min": 1,
+        "desc": "Low requirements overall. Works reliably in most conditions.",
+        "threshold_src": "Low-demand application · both experiments: 100% compliant (Tables 4.3, 4.5)",
+    },
+    "File uploads / cloud backup": {
+        "icon": "☁️",
+        "lat_max": 150,       # ITU-T G.114 upper bound; upload throughput matters more than latency here
+        "jitter_max": 30,
+        "dl_min": 5,
+        "ul_min": 10,         # Awasr failed at 8% in Exp B due to P5 upload of 1.0 Mbps (Table 4.5)
+        "desc": "Upload speed is the primary constraint (≥10 Mbps). Latency is secondary.",
+        "threshold_src": "Empirical: Awasr failed at 8% in Exp B due to P5 upload of 1.0 Mbps (Table 4.5)",
+    },
+    "Remote work / VPN / company systems": {
+        "icon": "💼",
+        "lat_max": 60,        # VPN adds ~10–20 ms overhead; baseline needs headroom
+        "jitter_max": 12,
+        "dl_min": 10,
+        "ul_min": 5,
+        "desc": "Needs stable latency (≤60 ms) to absorb VPN overhead. Both speed directions matter.",
+        "threshold_src": "VPN overhead assumption ~15 ms · ITU-T G.114 interactive threshold",
+    },
 }
 
 # ============================================================
@@ -1209,35 +1411,80 @@ def predict_all_kpis(perf, time_of_day, weather, temp, models, features_map, met
     return predictions, intervals
 
 def confidence_level(intervals, live_count=0, weather=None, location=None):
+    """
+    Confidence reflects how reliable the forecast is.
+
+    Main driver: whether real measurements are present.
+    - No live measurements → the model uses synthetic lag features (rule-based estimates),
+      so predictions are less personalised. This is the primary reason for Low/Medium confidence.
+    - With real measurements → model uses actual lag features, confidence improves.
+
+    Secondary driver: conditions outside the training distribution.
+    - Desert / very remote area is out-of-distribution (Experiment A/B were in Muscat, Oman).
+    - Heavy rain is IN the training distribution (both experiments ran across all weather),
+      so it does NOT reduce confidence, the model has seen it.
+    - Sandstorm is rare but possible; treated as slightly out-of-distribution.
+    """
     latency_uncertainty = intervals.get("latency", 999)
 
-    condition_penalty = 0
+    # Only penalise conditions that are genuinely out of the training distribution
+    ood_penalty = 0
+    if location == "Desert / very remote area":
+        ood_penalty += 1          # Experiment A/B were urban/suburban Muscat
+    if weather == "Sandstorm / dust":
+        ood_penalty += 1          # Rare in training data; model has limited exposure
 
-    if weather in ("Heavy rain or thunderstorm", "Sandstorm / dust"):
-        condition_penalty += 1
-
-    if location in ("Desert / very remote area",):
-        condition_penalty += 1
-
-    if live_count >= 4 and latency_uncertainty <= 8 and condition_penalty == 0:
+    # High: real measurements + low model uncertainty + in-distribution conditions
+    if live_count >= 4 and latency_uncertainty <= 8 and ood_penalty == 0:
         return "High", "#3D8B65"
 
-    if live_count >= 2 and latency_uncertainty <= 10 and condition_penalty <= 1:
+    # Medium: some real measurements OR model uncertainty is low and in-distribution
+    if live_count >= 2 and latency_uncertainty <= 10 and ood_penalty == 0:
         return "Medium", "#D99A20"
 
-    if latency_uncertainty <= 8 and condition_penalty == 0:
+    if live_count == 0 and latency_uncertainty <= 8 and ood_penalty == 0:
+        # No live measurements but conditions are well-covered by training data
         return "Medium", "#D99A20"
 
+    # Low: no real measurements and/or out-of-distribution conditions
     return "Low", "#D95B4F"
 
+# ============================================================
+# CHANGE 2: traffic_light now returns (color, failures, passes)
+# so the UI can show exactly which thresholds were or were not met.
+# ============================================================
 def traffic_light(uc_name, lat, jitter, dl, ul):
     uc = USE_CASES[uc_name]
     score = 0
-    if lat > uc["lat_max"]: score += 2
-    if jitter > uc["jitter_max"]: score += 1
-    if dl < uc["dl_min"]: score += 2
-    if ul < uc["ul_min"]: score += 2
-    return "green" if score == 0 else "amber" if score <= 2 else "red"
+    failures = []
+    passes = []
+
+    if lat > uc["lat_max"]:
+        score += 2
+        failures.append(f"Latency {lat:.0f} ms exceeds the {uc['lat_max']} ms threshold")
+    else:
+        passes.append(f"Latency {lat:.0f} ms within the {uc['lat_max']} ms limit")
+
+    if jitter > uc["jitter_max"]:
+        score += 1
+        failures.append(f"Jitter {jitter:.0f} ms exceeds the {uc['jitter_max']} ms threshold")
+    else:
+        passes.append(f"Jitter {jitter:.0f} ms within the {uc['jitter_max']} ms limit")
+
+    if dl < uc["dl_min"]:
+        score += 2
+        failures.append(f"Download {dl:.0f} Mbps below the {uc['dl_min']} Mbps minimum")
+    else:
+        passes.append(f"Download {dl:.0f} Mbps meets the {uc['dl_min']} Mbps minimum")
+
+    if ul < uc["ul_min"]:
+        score += 2
+        failures.append(f"Upload {ul:.0f} Mbps below the {uc['ul_min']} Mbps minimum")
+    else:
+        passes.append(f"Upload {ul:.0f} Mbps meets the {uc['ul_min']} Mbps minimum")
+
+    color = "green" if score == 0 else "amber" if score <= 2 else "red"
+    return color, failures, passes
 
 def top_feature_importance(model, features, limit=6):
     if hasattr(model, "feature_importances_"):
@@ -1264,46 +1511,131 @@ def metric_card(label, value, unit, color, interval=None):
         {uncertainty}
     </div>"""
 
-def rating_card(color, uc_name, icon, desc, change_note=""):
+# ============================================================
+# CHANGE 3: rating_card now accepts failures, passes, and
+# threshold_src so each card shows which specific criteria
+# passed or failed, directly answering the supervisor's
+# question about how stability decisions are made.
+# ============================================================
+def rating_card(color, uc_name, icon, desc, failures=None, passes=None, threshold_src="", change_note=""):
     bg = {"green":"linear-gradient(135deg,#EEF8F4,#FFFFFF)", "amber":"linear-gradient(135deg,#FFF6D8,#FFFFFF)", "red":"linear-gradient(135deg,#FFF0EE,#FFFFFF)"}[color]
     border = {"green":"#3D8B65", "amber":"#D99A20", "red":"#D95B4F"}[color]
     label = {"green":"Suitable", "amber":"Limited", "red":"Not Recommended"}[color]
     change_html = f'<div style="color:#6B7B83;font-size:0.76rem;margin-top:0.25rem;">{change_note}</div>' if change_note else ""
+
+    breakdown_html = ""
+    if failures or passes:
+        items = ""
+        for f in (failures or []):
+            items += f'<div style="color:#D95B4F;font-size:0.75rem;margin-top:0.18rem;">&#x2715; {f}</div>'
+        for p in (passes or []):
+            items += f'<div style="color:#3D8B65;font-size:0.75rem;margin-top:0.18rem;">&#x2713; {p}</div>'
+        src_note = f'<div style="color:#6B7B83;font-size:0.68rem;margin-top:0.4rem;font-style:italic;">Sources: {threshold_src}</div>' if threshold_src else ""
+        breakdown_html = f'<div style="margin-top:0.5rem;padding-top:0.5rem;border-top:1px solid {border}33;">{items}{src_note}</div>'
+
     return (
-        f'<div style="background:{bg};border:1px solid {border}44;border-left:7px solid {border};border-radius:22px;padding:1rem 1.15rem;display:flex;align-items:center;gap:1rem;margin-bottom:0.65rem;box-shadow:0 12px 26px {border}18;">'
+        f'<div style="background:{bg};border:1px solid {border}44;border-left:7px solid {border};border-radius:22px;padding:1rem 1.15rem;margin-bottom:0.65rem;box-shadow:0 12px 26px {border}18;">'
+        f'<div style="display:flex;align-items:center;gap:1rem;">'
         f'<div style="font-size:1.75rem;background:{border}18;border:1px solid {border}22;border-radius:16px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;">{icon}</div>'
         f'<div style="flex:1;"><div style="font-weight:900;color:#183B4A;">{uc_name}</div><div style="color:#6B7B83;font-size:0.82rem;margin-top:0.15rem;line-height:1.45;">{desc}</div>{change_html}</div>'
         f'<div style="background:{border}18;border:1px solid {border}55;border-radius:999px;padding:0.35rem 0.85rem;color:{border};font-weight:900;font-size:0.80rem;white-space:nowrap;">{label}</div>'
+        f'</div>'
+        f'{breakdown_html}'
         f'</div>'
     )
 
 def trend_chart(values, label, color):
     series = pd.Series(values)
+    # Downsample to max 150 evenly-spaced points for readability
+    if len(series) > 150:
+        step = max(1, len(series) // 150)
+        series = series.iloc[::step].reset_index(drop=True)
+
+    x = list(range(1, len(series) + 1))
+    y = series.values
+    large = len(series) > 40
+
+    # Subtle fill colour = same hue but very transparent
+    fill_color = color.replace("#", "")
+    r = int(fill_color[0:2], 16)
+    g = int(fill_color[2:4], 16)
+    b = int(fill_color[4:6], 16)
+    fill_rgba = f"rgba({r},{g},{b},0.10)"
+
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=list(range(1, len(series) + 1)), y=series.values, mode="lines+markers", name="Measured", line=dict(color=color, width=2), marker=dict(size=6)))
+
+    # Filled area beneath the line
+    fig.add_trace(go.Scatter(
+        x=x, y=y,
+        mode="lines",
+        fill="tozeroy",
+        fillcolor=fill_rgba,
+        line=dict(color="rgba(0,0,0,0)", width=0),
+        showlegend=False,
+        hoverinfo="skip",
+    ))
+
+    # Main line
+    fig.add_trace(go.Scatter(
+        x=x, y=y,
+        mode="lines" if large else "lines+markers",
+        name="Measured",
+        line=dict(color=color, width=2),
+        marker=dict(size=5, color=color,
+                    line=dict(color="#FFFFFF", width=1.2)),
+        hovertemplate="Test %{x}<br><b>%{y:.1f}</b><extra></extra>",
+    ))
+
+    # Dotted median reference line
+    median_val = float(series.median())
+    fig.add_hline(
+        y=median_val,
+        line_dash="dot",
+        line_color="rgba(24,59,74,0.25)",
+        line_width=1.2,
+        annotation_text=f"median {median_val:.1f}",
+        annotation_position="top right",
+        annotation_font=dict(size=10, color="rgba(24,59,74,0.45)"),
+    )
+
     fig.update_layout(
-        title=dict(text=label, font=dict(color="#183B4A", size=13)),
-        height=210,
-        plot_bgcolor="rgba(255,255,255,0.97)",
-        paper_bgcolor="rgba(0,0,0,0)",
-        font=dict(color="#253545", family="Inter"),
-        xaxis=dict(gridcolor="rgba(0,0,0,0.08)", color="#475569", title="Test #"),
-        yaxis=dict(gridcolor="rgba(0,0,0,0.08)", color="#475569"),
-        margin=dict(l=10, r=10, t=38, b=10),
+        title=dict(
+            text=label,
+            font=dict(color="#183B4A", size=13, family="Space Grotesk, Inter, sans-serif"),
+            x=0.0, xanchor="left",
+        ),
+        height=250,
+        plot_bgcolor="rgba(255,255,255,0.0)",
+        paper_bgcolor="rgba(255,255,255,0.0)",
+        font=dict(color="#475569", family="Inter, sans-serif", size=11),
+        xaxis=dict(
+            gridcolor="rgba(24,59,74,0.07)",
+            zeroline=False,
+            showline=True,
+            linecolor="rgba(24,59,74,0.18)",
+            linewidth=1,
+            title=dict(text="Measurement #", font=dict(size=11, color="#475569", family="Inter")),
+            tickfont=dict(size=11, color="#253545", family="Inter"),
+            tickcolor="rgba(24,59,74,0.18)",
+        ),
+        yaxis=dict(
+            gridcolor="rgba(24,59,74,0.07)",
+            zeroline=False,
+            showline=True,
+            linecolor="rgba(24,59,74,0.18)",
+            linewidth=1,
+            tickfont=dict(size=11, color="#253545", family="Inter"),
+            tickcolor="rgba(24,59,74,0.18)",
+        ),
+        margin=dict(l=12, r=20, t=42, b=42),
+        showlegend=False,
+        hovermode="x unified",
+    )
+    # Wrap in a light card background
+    fig.update_layout(
+        paper_bgcolor="rgba(255,255,255,0.92)",
     )
     return fig
-
-
-def render_pretty_table(df, max_height=None):
-    if df is None or len(df) == 0:
-        st.info("No data available.")
-        return
-    html = df.copy().to_html(index=False, classes="pretty-table", border=0)
-    height_style = f"max-height:{max_height}px;" if max_height else ""
-    st.markdown(
-        f'<div class="pretty-table-wrap" style="{height_style}">{html}</div>',
-        unsafe_allow_html=True,
-    )
 
 
 def render_pretty_table(df, max_height=None):
@@ -1351,7 +1683,7 @@ st.markdown("""
         <span style="color:#253545;">Starlink </span><span style="color:#265868;">Advisor</span>
     </div>
     <div style="color:#6B7B83;font-size:0.84rem;margin-top:0.45rem;font-family:'IBM Plex Mono',monospace;">
-        AI suitability assessment · KPI forecasting · live measurements
+        A decision-support tool for Starlink performance and user suitability
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -1412,7 +1744,11 @@ if st.session_state.step == 1:
             perf_rule = apply_conditions(base, location, sky, time_of_day, weather, temp)
             predictions, intervals = predict_all_kpis(perf_rule, time_of_day, weather, temp, models, features_map, model_metrics)
             conf, conf_color = confidence_level(intervals, live_count=0, weather=weather, location=location)
-            ratings = {uc: traffic_light(uc, predictions["latency"], predictions["jitter"], predictions["download"], predictions["upload"]) for uc in uses}
+            # traffic_light now returns (color, failures, passes)
+            ratings = {
+                uc: traffic_light(uc, predictions["latency"], predictions["jitter"], predictions["download"], predictions["upload"])
+                for uc in uses
+            }
             st.session_state.advisory = {
                 "location": location,
                 "sky": sky,
@@ -1444,6 +1780,22 @@ elif st.session_state.step == 2:
     st.markdown("### Step 2, AI advisory result")
 
     if adv["models_loaded"]:
+        if adv["confidence"] == "Low":
+            conf_note = (
+                "<br><span style=\"color:#6B7B83;font-size:0.84rem;\">"
+                "No real measurements yet. The model is using estimated lag features. "
+                "Add your own speed test results in Step 3 to improve this."
+                "</span>"
+            )
+        elif adv["confidence"] == "Medium":
+            conf_note = (
+                "<br><span style=\"color:#6B7B83;font-size:0.84rem;\">"
+                "Based on training data patterns. Add more real measurements in Step 3 for a higher confidence forecast."
+                "</span>"
+            )
+        else:
+            conf_note = ""
+
         st.markdown(f"""
         <div class="advisor-card" style="border-left:4px solid #5EA38F;background:#EEF8F4;">
             <strong style="color:#3D8B65;">AI forecasting active</strong><br>
@@ -1451,6 +1803,7 @@ elif st.session_state.step == 2:
             Jitter, download, and upload are forecast using models trained on both experiment datasets.
             <br><br>
             <strong style="color:{adv['confidence_color']};">Forecast confidence: {adv['confidence']}</strong>
+            {conf_note}
         </div>
         """, unsafe_allow_html=True)
     else:
@@ -1468,26 +1821,56 @@ elif st.session_state.step == 2:
     c4.markdown(metric_card("Upload", f"{perf['upload']:.1f}", "Mbps", "#3F7F78", intervals.get("upload")), unsafe_allow_html=True)
 
     st.markdown("### Use case ratings")
-    for uc_name, color in adv["ratings"].items():
+    # Unpack (color, failures, passes) from ratings
+    for uc_name, (color, failures, passes) in adv["ratings"].items():
         uc = USE_CASES[uc_name]
-        st.markdown(rating_card(color, uc_name, uc["icon"], uc["desc"]), unsafe_allow_html=True)
+        st.markdown(rating_card(color, uc_name, uc["icon"], uc["desc"],
+                                failures=failures, passes=passes,
+                                threshold_src=uc.get("threshold_src", "")), unsafe_allow_html=True)
 
-    st.markdown("### Explainability")
-    imp = top_feature_importance(models.get("latency"), features_map.get("latency", []), limit=6) if adv["models_loaded"] else []
-    if imp:
-        imp_df = pd.DataFrame(imp, columns=["Feature", "Importance"])
-        imp_df["Importance"] = imp_df["Importance"].round(4)
-        render_pretty_table(imp_df, max_height=320)
-        st.caption("Top model inputs for the latency prediction. This can be discussed as model interpretability in the thesis.")
-    else:
-        st.caption("Feature importance unavailable — ML model not loaded.")
+    with st.expander("Technical details, model interpretability and validation", expanded=False):
+        st.markdown(
+            "<div class='small-note' style='margin-bottom:0.8rem;'>"
+            "This section is for thesis examination only. It shows which inputs most influence the latency "
+            "prediction and how accurately the models performed on held-out test data. "
+            "A normal user does not need this to interpret the advisory result."
+            "</div>", unsafe_allow_html=True,
+        )
+        st.markdown("**What influences the prediction most**")
+        imp = top_feature_importance(models.get("latency"), features_map.get("latency", []), limit=6) if adv["models_loaded"] else []
+        if imp:
+            name_map = {
+                "ping_avg_rtt_ms_lag_1": "Most recent latency reading",
+                "ping_avg_rtt_ms_lag_2": "Latency 2 readings ago",
+                "ping_avg_rtt_ms_lag_3": "Latency 3 readings ago",
+                "ping_avg_rtt_ms_lag_4": "Latency 4 readings ago",
+                "download_mbps_lag_1":   "Most recent download speed",
+                "download_mbps_lag_2":   "Download speed 2 readings ago",
+                "upload_mbps_lag_1":     "Most recent upload speed",
+                "ping_jitter_ms_lag_1":  "Most recent jitter reading",
+                "wind_speed_mps":        "Wind speed",
+                "temperature_c":         "Temperature",
+                "weather_code":          "Weather condition",
+                "humidity_percent":      "Humidity",
+                "hour":                  "Hour of day",
+                "day_of_week":           "Day of week",
+                "is_weekend":            "Weekend flag",
+            }
+            imp_df = pd.DataFrame([
+                {"Input": name_map.get(f, f), "Raw feature name": f, "Importance weight": round(v, 4)}
+                for f, v in imp
+            ])
+            render_pretty_table(imp_df, max_height=280)
+        else:
+            st.caption("Feature importance unavailable.")
 
-    st.markdown("### Model validation summary")
-    if adv["model_metrics"]:
-        rows = []
-        for k, m in adv["model_metrics"].items():
-            rows.append({"Target": k, "MAE": round(m["mae"], 3), "RMSE": round(m["rmse"], 3), "Residual Std": round(m["residual_std"], 3), "Test Rows": m["n_test"]})
-        render_pretty_table(pd.DataFrame(rows), max_height=320)
+        st.markdown("**Model validation metrics**")
+        if adv["model_metrics"]:
+            rows_v = []
+            for k, m in adv["model_metrics"].items():
+                rows_v.append({"Target": k, "MAE": round(m["mae"], 3), "RMSE": round(m["rmse"], 3), "Residual Std": round(m["residual_std"], 3), "Test Rows": m["n_test"]})
+            render_pretty_table(pd.DataFrame(rows_v), max_height=260)
+            st.caption("MAE = mean absolute error. RMSE = root mean squared error. Evaluated on 20% held-out test data.")
 
     b1, b2 = st.columns([1, 2])
     with b1:
@@ -1502,36 +1885,170 @@ elif st.session_state.step == 2:
 
 # ============================================================
 # STEP 3
+# CHANGE 4: replaced manual-only entry with two tabs.
+# "Upload CSV" lets users export from any speed test app and
+# upload the file directly, the advisor reads all rows at once.
+# "Enter manually" keeps the original number-input flow.
 # ============================================================
 elif st.session_state.step == 3:
     adv = st.session_state.advisory
     st.markdown("### Step 3, Live personalised forecast")
-    st.markdown("<div class='small-note'>Enter real speed-test measurements while connected to Starlink. The advisor will build real lag features from your sequence instead of repeating one synthetic estimate.</div>", unsafe_allow_html=True)
+    st.markdown(
+        "<div class='small-note'>Add your real Starlink speed test results. "
+        "The advisor replaces synthetic lag estimates with your actual measurements and re-runs the forecast. "
+        "Upload a CSV export from your speed test app, or enter readings manually.</div>",
+        unsafe_allow_html=True,
+    )
 
-    i1, i2, i3, i4 = st.columns(4)
-    in_lat = i1.number_input("Latency (ms)", min_value=0.0, max_value=500.0, value=0.0, step=0.5, key="in_lat")
-    in_dl = i2.number_input("Download (Mbps)", min_value=0.0, max_value=1000.0, value=0.0, step=1.0, key="in_dl")
-    in_ul = i3.number_input("Upload (Mbps)", min_value=0.0, max_value=500.0, value=0.0, step=1.0, key="in_ul")
-    in_jit = i4.number_input("Jitter (ms)", min_value=0.0, max_value=200.0, value=0.0, step=0.5, key="in_jit")
+    st.markdown("""
+    <style>
+    [data-testid="stRadio"] [data-baseweb="radio"] div {
+        background-color: #265868 !important;
+        border-color: #265868 !important;
+    }
+    [data-testid="stRadio"] label p {
+        color: #183B4A !important;
+        font-weight: 700 !important;
+        font-size: 0.92rem !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
-    ac, rc, _ = st.columns([1, 1, 3])
-    with ac:
-        if st.button("Add measurement"):
-            if in_lat > 0 and in_dl > 0 and in_ul >= 0:
-                st.session_state.measurements.append({"latency": in_lat, "download": in_dl, "upload": in_ul, "jitter": in_jit})
+    # Pretty segmented choice for Step 3.
+    # Streamlit's native radio circles can look tiny after custom CSS, so this uses
+    # st.segmented_control when available, with a styled radio fallback for older versions.
+    if "measurement_input_mode" not in st.session_state:
+        st.session_state["measurement_input_mode"] = "Upload CSV"
+
+    mode_options = ["Upload CSV", "Enter manually"]
+    current_mode = st.session_state.get("measurement_input_mode", "Upload CSV")
+    current_index = mode_options.index(current_mode) if current_mode in mode_options else 0
+
+    # IMPORTANT:
+    # I am using st.radio instead of st.segmented_control here.
+    # In some Streamlit versions, st.segmented_control keeps a hidden BaseWeb
+    # dark background on unselected options. CSS cannot override it reliably.
+    # st.radio gives us a stable DOM, so the custom pill styling stays light.
+    st.markdown(
+        "<div class='measurement-question'>How would you like to add measurements?</div>",
+        unsafe_allow_html=True,
+    )
+    csv_tab_selected = st.radio(
+        " ",
+        mode_options,
+        horizontal=True,
+        index=current_index,
+        key="measurement_input_mode_radio",
+        label_visibility="collapsed",
+    )
+
+    st.session_state["measurement_input_mode"] = csv_tab_selected
+
+    if csv_tab_selected == "Upload CSV":
+        st.markdown(
+            "<div class='small-note' style='margin-top:0.5rem;margin-bottom:0.6rem;'>"
+            "Export your speed test history as CSV from Speedtest.net or any speed test app. "
+            "The file needs columns for ping/latency, download, upload, and optionally jitter. "
+            "Column names are detected automatically."
+            "</div>",
+            unsafe_allow_html=True,
+        )
+        uploaded = st.file_uploader("Choose a CSV file", type=["csv"], key="csv_upload")
+        if uploaded is not None:
+            try:
+                raw = pd.read_csv(uploaded)
+                raw.columns = [c.strip().lower() for c in raw.columns]
+
+                # Priority-based detection: more specific patterns checked first.
+                # Each list is ordered from most to least specific so we pick the
+                # right column even when ambiguous names like ping_target are present.
+                priority = {
+                    "latency":  ["ping_avg_rtt_ms", "avg_rtt", "rtt_ms", "latency_ms",
+                                  "latency", "ping_ms", "speedtest_ping_ms", "ping_avg",
+                                  "ping"],
+                    "download": ["download_mbps", "download_speed_mbps", "dl_mbps",
+                                  "download_speed", "download", "dl"],
+                    "upload":   ["upload_mbps", "upload_speed_mbps", "ul_mbps",
+                                  "upload_speed", "upload", "ul"],
+                    "jitter":   ["ping_jitter_ms", "jitter_ms", "jitter"],
+                }
+
+                col_map = {}
+                for metric, patterns in priority.items():
+                    for pattern in patterns:
+                        for c in raw.columns:
+                            if pattern in c and c not in col_map.values():
+                                numeric_vals = pd.to_numeric(raw[c], errors="coerce").dropna()
+                                if len(numeric_vals) > 0:
+                                    col_map[metric] = c
+                                    break
+                        if metric in col_map:
+                            break
+
+                missing = [k for k in ["latency", "download", "upload"] if k not in col_map]
+                if missing:
+                    st.warning(
+                        f"Could not detect columns for: {', '.join(missing)}. "
+                        f"Columns found: {list(raw.columns)}. "
+                        f"Rename them to include 'ping_avg_rtt_ms'/'latency', 'download_mbps'/'download', "
+                        f"'upload_mbps'/'upload', and optionally 'jitter'."
+                    )
+                else:
+                    parsed = []
+                    for _, row in raw.iterrows():
+                        try:
+                            entry = {
+                                "latency":  float(row[col_map["latency"]]),
+                                "download": float(row[col_map["download"]]),
+                                "upload":   float(row[col_map["upload"]]),
+                                "jitter":   float(row[col_map["jitter"]]) if "jitter" in col_map else 0.0,
+                            }
+                            if (0 < entry["latency"] < 2000 and
+                                    entry["download"] > 0 and entry["download"] < 10000 and
+                                    0 <= entry["upload"] < 10000 and
+                                    0 <= entry["jitter"] < 2000):
+                                parsed.append(entry)
+                        except (ValueError, KeyError):
+                            continue
+                    if parsed:
+                        st.session_state.measurements = parsed
+                        # Do NOT call st.rerun() here, that would restart the page
+                        # before reaching the forecast section below.
+                        st.success(f"Loaded {len(parsed)} measurements from {uploaded.name}. Forecast is shown below.")
+                    else:
+                        st.warning("No valid rows found. Check that the columns contain numeric values.")
+            except Exception as e:
+                st.error(f"Could not read file: {e}")
+
+    else:  # Enter manually
+        i1, i2, i3, i4 = st.columns(4)
+        in_lat = i1.number_input("Latency (ms)", min_value=0.0, max_value=500.0, value=0.0, step=0.5, key="in_lat")
+        in_dl = i2.number_input("Download (Mbps)", min_value=0.0, max_value=1000.0, value=0.0, step=1.0, key="in_dl")
+        in_ul = i3.number_input("Upload (Mbps)", min_value=0.0, max_value=500.0, value=0.0, step=1.0, key="in_ul")
+        in_jit = i4.number_input("Jitter (ms)", min_value=0.0, max_value=200.0, value=0.0, step=0.5, key="in_jit")
+        ac, rc, _ = st.columns([1, 1, 3])
+        with ac:
+            if st.button("Add measurement"):
+                if in_lat > 0 and in_dl > 0 and in_ul >= 0:
+                    st.session_state.measurements.append({"latency": in_lat, "download": in_dl, "upload": in_ul, "jitter": in_jit})
+                    st.rerun()
+                else:
+                    st.warning("Enter at least latency and download before adding.")
+        with rc:
+            if st.button("Clear tests"):
+                st.session_state.measurements = []
                 st.rerun()
-            else:
-                st.warning("Enter at least latency and download before adding.")
-    with rc:
-        if st.button("Clear tests"):
-            st.session_state.measurements = []
-            st.rerun()
 
     measurements = st.session_state.measurements
     if measurements:
-        mdf = pd.DataFrame(measurements)
-        mdf.index = [f"Test {i+1}" for i in range(len(mdf))]
-        render_pretty_table(mdf.rename(columns={"latency":"Latency (ms)", "download":"Download (Mbps)", "upload":"Upload (Mbps)", "jitter":"Jitter (ms)"}), max_height=320)
+        # Show at most the last 10 rows in the table to avoid a huge HTML block
+        display_df = pd.DataFrame(measurements[-10:])
+        display_df.index = [f"Test {len(measurements) - len(display_df) + i + 1}" for i in range(len(display_df))]
+        if len(measurements) > 10:
+            st.markdown(f"<div class='small-note'>Showing last 10 of {len(measurements)} measurements loaded.</div>", unsafe_allow_html=True)
+        fmt_df = display_df.rename(columns={"latency":"Latency (ms)", "download":"Download (Mbps)", "upload":"Upload (Mbps)", "jitter":"Jitter (ms)"})
+        fmt_df = fmt_df.round(2)
+        render_pretty_table(fmt_df, max_height=320)
 
         perf_rule = adv["rule_perf"]
         live_pred, live_intervals = predict_all_kpis(perf_rule, adv["time"], adv["weather"], adv["temp"], models, features_map, model_metrics, live_measurements=measurements)
@@ -1545,12 +2062,13 @@ elif st.session_state.step == 3:
         c4.markdown(metric_card("Next Upload", f"{live_pred['upload']:.1f}", "Mbps", "#3F7F78", live_intervals.get("upload")), unsafe_allow_html=True)
 
         st.markdown(f"""
-        <div class="advisor-card" style="border-left:4px solid {conf_color};background:{conf_color}0d;">
+        <div class="advisor-card" style="border-left:4px solid {conf_color};background:{conf_color}0d;margin-top:1.4rem;">
             <strong style="color:{conf_color};">Live forecast confidence: {conf}</strong><br>
-            <span style="color:#475569;">Confidence improves as you add more measurements — real lag features replace synthetic estimates.</span>
+            <span style="color:#475569;">Confidence improves as you add more measurements, real lag features replace synthetic estimates.</span>
         </div>
         """, unsafe_allow_html=True)
 
+        st.markdown("<div style='height:0.6rem'></div>", unsafe_allow_html=True)
         col1, col2 = st.columns(2)
         with col1:
             st.plotly_chart(trend_chart([m["latency"] for m in measurements], "Measured Latency", "#265868"), use_container_width=True)
@@ -1561,14 +2079,20 @@ elif st.session_state.step == 3:
         rank = {"red": 0, "amber": 1, "green": 2}
         for uc_name in adv["uses"]:
             uc = USE_CASES[uc_name]
-            new_color = traffic_light(uc_name, live_pred["latency"], live_pred["jitter"], live_pred["download"], live_pred["upload"])
-            old_color = adv["ratings"][uc_name]
+            new_color, new_failures, new_passes = traffic_light(
+                uc_name, live_pred["latency"], live_pred["jitter"],
+                live_pred["download"], live_pred["upload"],
+            )
+            old_color, _, _ = adv["ratings"][uc_name]
             change = ""
             if new_color != old_color:
                 change = f"Changed from {old_color} estimated rating to {new_color} measured forecast rating."
                 if rank[new_color] > rank[old_color]:
                     change = f"Improved from {old_color} estimated rating to {new_color} measured forecast rating."
-            st.markdown(rating_card(new_color, uc_name, uc["icon"], uc["desc"], change), unsafe_allow_html=True)
+            st.markdown(rating_card(new_color, uc_name, uc["icon"], uc["desc"],
+                                    failures=new_failures, passes=new_passes,
+                                    threshold_src=uc.get("threshold_src", ""),
+                                    change_note=change), unsafe_allow_html=True)
     else:
         st.info("Add at least one measurement. Add 3–4 measurements for a stronger live forecast.")
 
