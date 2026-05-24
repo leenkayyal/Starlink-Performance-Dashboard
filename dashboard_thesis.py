@@ -2,6 +2,9 @@ import warnings
 warnings.filterwarnings("ignore")
 
 import os
+import hashlib
+import json
+import time
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -10,6 +13,7 @@ from streamlit_autorefresh import st_autorefresh
 from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error
+from datetime import datetime
 
 try:
     from xgboost import XGBRegressor
@@ -30,7 +34,36 @@ refresh_seconds = 60
 st_autorefresh(interval=refresh_seconds * 1000, key="thesis_refresh")
 
 # ======================
-# LOGIN / ACCESS CONTROL
+# FILE PATHS
+# ======================
+THESIS_CLEAN_FILE     = "Cleaned/starlink_clean_FIXED.csv"
+THESIS_FORECAST_FILE  = "Cleaned/starlink_forecast_v2.csv"
+RAW_FILE              = "Raw/starlink_data.csv"
+STARLINK_RETRAIN_FILE = "Cleaned/starlink_retrain_queue.csv"
+LIVE_MONITOR_FILE     = "Cleaned/live_monitor_only.csv"
+HASH_STORE_FILE       = "Cleaned/data_hashes.json"
+AUDIT_LOG_FILE        = "Cleaned/audit_log.txt"
+
+THESIS_START = pd.Timestamp("2026-03-07 01:00:00")
+THESIS_END   = pd.Timestamp("2026-03-28 11:00:00")
+
+SESSION_TIMEOUT = 15 * 60  # 15 minutes in seconds
+MAX_ATTEMPTS    = 3
+LOCKOUT_SECONDS = 300       # 5 minutes
+
+
+# ======================
+# SECURITY — AUDIT LOG
+# ======================
+def write_audit_log(event, username="unknown"):
+    os.makedirs(os.path.dirname(AUDIT_LOG_FILE), exist_ok=True)
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    with open(AUDIT_LOG_FILE, "a") as f:
+        f.write(f"[{timestamp}] USER={username} EVENT={event}\n")
+
+
+# ======================
+# SECURITY — LOGIN / ACCESS CONTROL
 # ======================
 from security_config import USERS
 
@@ -38,46 +71,192 @@ def check_login():
     if "authenticated" not in st.session_state:
         st.session_state.authenticated = False
         st.session_state.role = None
+        st.session_state.username = None
+        st.session_state.last_active = None
+        st.session_state.failed_attempts = {}
 
-    if not st.session_state.authenticated:
-        st.markdown("## Starlink Thesis Dashboard")
-        st.markdown("Please log in to continue.")
-        username = st.text_input("Username")
-        password = st.text_input("Password", type="password")
-        if st.button("Login"):
-            if username in USERS and USERS[username]["password"] == password:
-                st.session_state.authenticated = True
-                st.session_state.role = USERS[username]["role"]
-                st.rerun()
+    # Session timeout check
+    if st.session_state.authenticated:
+        elapsed = time.time() - st.session_state.last_active
+        if elapsed > SESSION_TIMEOUT:
+            write_audit_log("SESSION_TIMEOUT", st.session_state.username)
+            st.session_state.authenticated = False
+            st.session_state.role = None
+            st.session_state.username = None
+            st.session_state.last_active = None
+            st.warning("Your session expired after 15 minutes of inactivity. Please log in again.")
+        else:
+            st.session_state.last_active = time.time()
+            return
+
+    st.markdown("## Starlink Thesis Dashboard")
+    st.markdown("Please log in to continue.")
+    username = st.text_input("Username")
+    password = st.text_input("Password", type="password")
+
+    if st.button("Login"):
+        now = time.time()
+        attempts_info = st.session_state.failed_attempts.get(username, {"count": 0, "locked_until": 0})
+
+        if now < attempts_info["locked_until"]:
+            remaining = int(attempts_info["locked_until"] - now)
+            write_audit_log(f"LOGIN_BLOCKED lockout {remaining}s remaining", username)
+            st.error(f"Account locked. Try again in {remaining} seconds.")
+            st.stop()
+
+        if username in USERS and USERS[username]["password"] == password:
+            st.session_state.authenticated = True
+            st.session_state.role = USERS[username]["role"]
+            st.session_state.username = username
+            st.session_state.last_active = time.time()
+            st.session_state.failed_attempts.pop(username, None)
+            write_audit_log("LOGIN_SUCCESS", username)
+            st.rerun()
+        else:
+            attempts_info["count"] = attempts_info.get("count", 0) + 1
+            if attempts_info["count"] >= MAX_ATTEMPTS:
+                attempts_info["locked_until"] = now + LOCKOUT_SECONDS
+                write_audit_log(f"LOGIN_FAILED account locked after {MAX_ATTEMPTS} attempts", username)
+                st.error(f"Too many failed attempts. Account locked for {LOCKOUT_SECONDS // 60} minutes.")
             else:
-                st.error("Invalid username or password.")
-        st.stop()
+                remaining_attempts = MAX_ATTEMPTS - attempts_info["count"]
+                write_audit_log(f"LOGIN_FAILED attempt {attempts_info['count']}", username)
+                st.error(f"Invalid username or password. {remaining_attempts} attempt(s) remaining.")
+            st.session_state.failed_attempts[username] = attempts_info
+
+    st.stop()
 
 check_login()
 
+current_user  = st.session_state.username
+current_role  = st.session_state.role
+is_admin      = str(current_role).strip().lower() == "admin"
+is_supervisor = str(current_role).strip().lower() == "supervisor"
+is_guest      = str(current_role).strip().lower() == "guest"
+
 
 # ======================
-# FILE PATHS
+# SECURITY — SHA-256 DATA INTEGRITY
 # ======================
-# These two files contain ONLY the validated March 7–28 experiment data.
-# They are never overwritten by live logging.
-THESIS_CLEAN_FILE  = "Cleaned/starlink_clean_FIXED.csv"
-THESIS_FORECAST_FILE = "Cleaned/starlink_forecast_v2.csv"
+def compute_sha256(filepath):
+    h = hashlib.sha256()
+    with open(filepath, "rb") as f:
+        for chunk in iter(lambda: f.read(8192), b""):
+            h.update(chunk)
+    return h.hexdigest()
 
-# Raw file — used only to detect new Starlink rows for future retraining.
-# Non-Starlink rows are ignored completely.
-RAW_FILE = "Raw/starlink_data.csv"
 
-# Retraining-eligible Starlink rows accumulate here.
-# Only rows where network_type == "Starlink" are written here.
-STARLINK_RETRAIN_FILE = "Cleaned/starlink_retrain_queue.csv"
+def save_hashes(files):
+    hashes = {}
+    for fp in files:
+        if os.path.exists(fp):
+            hashes[fp] = compute_sha256(fp)
+    os.makedirs(os.path.dirname(HASH_STORE_FILE), exist_ok=True)
+    with open(HASH_STORE_FILE, "w") as f:
+        json.dump(hashes, f, indent=2)
 
-# Non-Starlink live rows go here for monitoring only — never used in model.
-LIVE_MONITOR_FILE = "Cleaned/live_monitor_only.csv"
 
-# Experiment date boundaries — anything outside this is NOT thesis data
-THESIS_START = pd.Timestamp("2026-03-07 01:00:00")
-THESIS_END   = pd.Timestamp("2026-03-28 11:00:00")
+def verify_hashes(files):
+    if not os.path.exists(HASH_STORE_FILE):
+        save_hashes(files)
+        return {fp: "OK" for fp in files if os.path.exists(fp)}
+    with open(HASH_STORE_FILE, "r") as f:
+        stored = json.load(f)
+    results = {}
+    for fp in files:
+        if not os.path.exists(fp):
+            results[fp] = "MISSING"
+        elif fp not in stored:
+            results[fp] = "NEW"
+        elif compute_sha256(fp) != stored[fp]:
+            results[fp] = "TAMPERED"
+        else:
+            results[fp] = "OK"
+    return results
+
+
+# ======================
+# SECURITY — API RESPONSE VALIDATION
+# ======================
+def validate_weather_row(row):
+    issues = []
+    try:
+        temp = float(row.get("temperature_c", np.nan))
+        if not (-5 <= temp <= 55):
+            issues.append(f"Temperature out of range: {temp} C")
+    except (TypeError, ValueError):
+        issues.append("Temperature is not a valid number")
+    try:
+        hum = float(row.get("humidity_percent", np.nan))
+        if not (0 <= hum <= 100):
+            issues.append(f"Humidity out of range: {hum}%")
+    except (TypeError, ValueError):
+        issues.append("Humidity is not a valid number")
+    try:
+        wind = float(row.get("wind_speed_mps", np.nan))
+        if not (0 <= wind <= 60):
+            issues.append(f"Wind speed out of range: {wind} m/s")
+    except (TypeError, ValueError):
+        issues.append("Wind speed is not a valid number")
+    valid_codes = {0,1,2,3,45,48,51,53,55,61,63,65,71,73,75,80,81,82,95,96,99}
+    try:
+        code = int(float(row.get("weather_code", -1)))
+        if code not in valid_codes:
+            issues.append(f"Unknown weather code: {code}")
+    except (TypeError, ValueError):
+        issues.append("Weather code is not a valid number")
+    return len(issues) == 0, issues
+
+
+def validate_speedtest_row(row):
+    issues = []
+    try:
+        lat = float(row.get("ping_avg_rtt_ms", np.nan))
+        if not (1 <= lat <= 2000):
+            issues.append(f"Latency out of range: {lat} ms")
+    except (TypeError, ValueError):
+        issues.append("Latency is not a valid number")
+    try:
+        jit = float(row.get("ping_jitter_ms", np.nan))
+        if not (0 <= jit <= 500):
+            issues.append(f"Jitter out of range: {jit} ms")
+    except (TypeError, ValueError):
+        issues.append("Jitter is not a valid number")
+    try:
+        dl = float(row.get("download_mbps", np.nan))
+        if not (0.1 <= dl <= 5000):
+            issues.append(f"Download speed out of range: {dl} Mbps")
+    except (TypeError, ValueError):
+        issues.append("Download speed is not a valid number")
+    try:
+        ul = float(row.get("upload_mbps", np.nan))
+        if not (0.1 <= ul <= 1000):
+            issues.append(f"Upload speed out of range: {ul} Mbps")
+    except (TypeError, ValueError):
+        issues.append("Upload speed is not a valid number")
+    return len(issues) == 0, issues
+
+
+def validate_latest_row(row):
+    if row is None:
+        return True, []
+    row_dict = row.to_dict() if hasattr(row, "to_dict") else dict(row)
+    w_ok, w_issues = validate_weather_row(row_dict)
+    s_ok, s_issues = validate_speedtest_row(row_dict)
+    all_issues = w_issues + s_issues
+    return len(all_issues) == 0, all_issues
+
+
+# ======================
+# RUN INTEGRITY CHECK ON STARTUP
+# ======================
+PROTECTED_FILES   = [THESIS_CLEAN_FILE, THESIS_FORECAST_FILE]
+integrity_results = verify_hashes(PROTECTED_FILES)
+
+tampered = [fp for fp, s in integrity_results.items() if s == "TAMPERED"]
+if tampered:
+    write_audit_log(f"INTEGRITY_ALERT tampered files: {tampered}", current_user)
+
 
 # ======================
 # STYLE
@@ -419,27 +598,15 @@ def fmt_code(v):
 # DATA SEPARATION LOGIC
 # ======================
 def classify_and_route_new_rows():
-    """
-    Reads the raw file and routes new rows:
-    - network_type == Starlink  →  starlink_retrain_queue.csv (eligible for retraining)
-    - anything else             →  live_monitor_only.csv      (display only, never model)
-    Returns the latest live row for KPI display (any network).
-    """
     if not os.path.exists(RAW_FILE):
         return None
-
     raw = pd.read_csv(RAW_FILE)
     raw["timestamp"] = pd.to_datetime(raw["timestamp"], format="mixed")
-
-    # Rows strictly after the thesis window
     new_rows = raw[raw["timestamp"] > THESIS_END].copy()
     if len(new_rows) == 0:
         return None
-
     starlink_new = new_rows[new_rows["network_type"].str.strip().str.lower() == "starlink"]
     other_new    = new_rows[new_rows["network_type"].str.strip().str.lower() != "starlink"]
-
-    # Write Starlink-eligible rows to retrain queue
     if len(starlink_new) > 0:
         if os.path.exists(STARLINK_RETRAIN_FILE):
             existing = pd.read_csv(STARLINK_RETRAIN_FILE)
@@ -448,8 +615,6 @@ def classify_and_route_new_rows():
         else:
             combined = starlink_new
         combined.to_csv(STARLINK_RETRAIN_FILE, index=False)
-
-    # Write non-Starlink rows to monitor-only file
     if len(other_new) > 0:
         if os.path.exists(LIVE_MONITOR_FILE):
             existing = pd.read_csv(LIVE_MONITOR_FILE)
@@ -458,14 +623,11 @@ def classify_and_route_new_rows():
         else:
             combined = other_new
         combined.to_csv(LIVE_MONITOR_FILE, index=False)
-
-    # Return the absolute latest row for live KPI display (any network)
     latest = new_rows.sort_values("timestamp").iloc[-1]
     return latest
 
 
 def retrain_queue_status():
-    """Returns info about Starlink rows queued for future retraining."""
     if not os.path.exists(STARLINK_RETRAIN_FILE):
         return 0, None
     df = pd.read_csv(STARLINK_RETRAIN_FILE)
@@ -477,17 +639,14 @@ def retrain_queue_status():
 # ======================
 @st.cache_data(ttl=60)
 def load_thesis_clean():
-    """Loads ONLY the validated March 7–28 Starlink dataset. Never mixed with live data."""
     df = pd.read_csv(THESIS_CLEAN_FILE)
     df["timestamp"] = pd.to_datetime(df["timestamp"])
-    # Hard filter — guarantee no data outside thesis window leaks in
     df = df[(df["timestamp"] >= THESIS_START) & (df["timestamp"] <= THESIS_END)]
     return df
 
 
 @st.cache_data(ttl=60)
 def load_thesis_forecast():
-    """Loads the feature-engineered dataset built from thesis data only."""
     return pd.read_csv(THESIS_FORECAST_FILE)
 
 
@@ -499,36 +658,29 @@ def build_metric_dataset(clean_df, target_col):
     if "was_estimated_row" in df.columns:
         df = df[df["was_estimated_row"] == False].copy()
     df = df.sort_values("timestamp").reset_index(drop=True)
-
     for c in ["ping_avg_rtt_ms","ping_jitter_ms","download_mbps","upload_mbps",
               "weather_code","temperature_c","humidity_percent","wind_speed_mps",target_col]:
         if c in df.columns:
             df[c] = pd.to_numeric(df[c], errors="coerce")
-
     if "ping_avg_rtt_ms" in df.columns: df = df[(df["ping_avg_rtt_ms"]>0)&(df["ping_avg_rtt_ms"]<500)]
     if "ping_jitter_ms"  in df.columns: df = df[(df["ping_jitter_ms"]>=0)&(df["ping_jitter_ms"]<100)]
     if "download_mbps"   in df.columns: df = df[(df["download_mbps"]>0)&(df["download_mbps"]<1000)]
     if "upload_mbps"     in df.columns: df = df[(df["upload_mbps"]>0)&(df["upload_mbps"]<500)]
-
     df["hour"]       = df["timestamp"].dt.hour
     df["day_of_week"]= df["timestamp"].dt.dayofweek
     df["is_weekend"] = df["day_of_week"].isin([5,6]).astype(int)
     df["hour_sin"]   = np.sin(2*np.pi*df["hour"]/24)
     df["hour_cos"]   = np.cos(2*np.pi*df["hour"]/24)
-
     for lag in range(1,5):
         df[f"{target_col}_lag_{lag}"] = df[target_col].shift(lag)
-
     if "ping_avg_rtt_ms" in df.columns: df["latency_lag_1"]     = df["ping_avg_rtt_ms"].shift(1)
     if "ping_jitter_ms"  in df.columns: df["jitter_lag_1"]      = df["ping_jitter_ms"].shift(1)
     if "download_mbps"   in df.columns: df["download_lag_1_ctx"]= df["download_mbps"].shift(1)
     if "upload_mbps"     in df.columns: df["upload_lag_1_ctx"]  = df["upload_mbps"].shift(1)
-
     df[f"{target_col}_roll_mean_3"] = df[target_col].rolling(3).mean()
     df[f"{target_col}_roll_std_3"]  = df[target_col].rolling(3).std()
     df["target"] = df[target_col].shift(-1)
     df = df.dropna().reset_index(drop=True)
-
     features = ["hour","day_of_week","is_weekend","hour_sin","hour_cos",
                 f"{target_col}_lag_1",f"{target_col}_lag_2",
                 f"{target_col}_lag_3",f"{target_col}_lag_4",
@@ -550,7 +702,6 @@ def train_model(df, model_name):
     X, y = prepare_xy(df)
     split = int(len(df)*0.8)
     Xtr, Xte, ytr, yte = X.iloc[:split], X.iloc[split:], y.iloc[:split], y.iloc[split:]
-
     if model_name == "Naive Baseline":
         lags = [c for c in Xte.columns if c.endswith("_lag_1")]
         y_pred = Xte[lags[0]].values
@@ -566,7 +717,6 @@ def train_model(df, model_name):
         model.fit(Xtr, ytr); y_pred = model.predict(Xte)
     else:
         raise ValueError("Unknown model.")
-
     return {"model":model,"X_test":Xte,"y_test":yte,"y_pred":y_pred,
             "mae":float(mean_absolute_error(yte,y_pred)),
             "rmse":float(np.sqrt(mean_squared_error(yte,y_pred)))}
@@ -605,6 +755,14 @@ def make_model_comparison_table(df):
 # SIDEBAR
 # ======================
 with st.sidebar:
+    st.markdown(f"Logged in as **{current_user}** `({current_role})`")
+    if st.button("Logout"):
+        write_audit_log("LOGOUT", current_user)
+        for key in ["authenticated", "role", "username", "last_active", "failed_attempts"]:
+            st.session_state.pop(key, None)
+        st.rerun()
+
+    st.markdown("---")
     st.markdown("### Controls")
 
     model_options = ["Naive Baseline","Linear Regression","Random Forest"]
@@ -622,7 +780,6 @@ with st.sidebar:
     st.markdown("Starlink Performance Analysis")
     st.markdown("Muscat, Oman · March 7–28 dataset")
 
-    # Retrain queue status
     q_count, q_latest = retrain_queue_status()
     if q_count > 0:
         st.markdown("---")
@@ -633,6 +790,34 @@ with st.sidebar:
         st.markdown("---")
         st.caption("No new Starlink data queued for retraining yet.")
 
+    # ---- DATA INTEGRITY ----
+    st.markdown("---")
+    st.markdown("### Data Integrity")
+    all_ok = all(v == "OK" for v in integrity_results.values())
+    if all_ok:
+        st.success("All CSV files verified")
+    else:
+        for fp, status in integrity_results.items():
+            fname = os.path.basename(fp)
+            if status == "OK":
+                st.success(f"{fname}: OK")
+            elif status == "TAMPERED":
+                st.error(f"{fname}: TAMPERED")
+            elif status == "MISSING":
+                st.warning(f"{fname}: MISSING")
+            else:
+                st.info(f"{fname}: {status}")
+
+    if is_admin:
+        if st.button("Reset hash baseline"):
+            save_hashes(PROTECTED_FILES)
+            write_audit_log("HASH_BASELINE_RESET", current_user)
+            st.success("Hashes updated.")
+    else:
+        st.caption("Hash reset available to admin only.")
+
+
+
 
 # ======================
 # LOAD THESIS DATA
@@ -642,10 +827,9 @@ thesis_forecast  = load_thesis_forecast()
 download_df, _   = build_metric_dataset(thesis_clean_df, "download_mbps")
 upload_df, _     = build_metric_dataset(thesis_clean_df, "upload_mbps")
 
-# Route any new raw rows to correct files (runs silently in background)
 latest_live_row = classify_and_route_new_rows()
+api_valid, api_issues = validate_latest_row(latest_live_row)
 
-# Train on thesis data only
 latency_result    = train_model(thesis_forecast, selected_model)
 latency_forecast  = predict_next_step(thesis_forecast, selected_model)
 download_forecast = predict_next_step(download_df, "Linear Regression")
@@ -656,17 +840,16 @@ if download_forecast <= 0:
 if upload_forecast <= 0:
     upload_forecast = float(thesis_clean_df["upload_mbps"].dropna().iloc[-1]) if "upload_mbps" in thesis_clean_df.columns else 0.0
 
-# Decide which row to show on KPI cards
 if show_live and latest_live_row is not None:
     display_row       = latest_live_row
     live_source_label = latest_live_row.get("network_type", "Unknown")
     is_live_starlink  = str(live_source_label).strip().lower() == "starlink"
-    kpi_note = ("🟢 Live Starlink data — consistent with research dataset"
+    kpi_note = ("Live Starlink data — consistent with research dataset"
                 if is_live_starlink
-                else f"🟡 Live monitor only ({live_source_label}) — not part of research dataset")
+                else f"Live monitor only ({live_source_label}) — not part of research dataset")
 else:
     display_row = thesis_clean_df.iloc[-1]
-    kpi_note    = "📊 Showing last observation from validated March 7–28 research dataset"
+    kpi_note    = "Showing last observation from validated March 7–28 research dataset"
 
 def safe_float(row, col):
     try: return float(row[col]) if col in row.index and pd.notna(row[col]) else 0.0
@@ -697,6 +880,9 @@ latest_wind         = weather_row.get("wind_speed_mps", np.nan) if hasattr(weath
 # HEADER
 # ======================
 st.caption(f"Last refresh: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}")
+
+if show_live and not api_valid and api_issues:
+    st.warning("API Validation Warning: Live data contains suspicious values — " + " | ".join(api_issues))
 
 st.markdown("""
 <div style="
@@ -729,7 +915,6 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Thesis dataset banner — always visible
 st.markdown("""
 <div style="
     background: linear-gradient(90deg, #052e16, #0d2818);
@@ -751,7 +936,6 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# KPI note (changes based on live toggle)
 st.markdown(f"""
 <div style="
     background:rgba(255,255,255,0.03); border:1px solid #1e2d3d;
@@ -795,15 +979,12 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
 with tab1:
     st.markdown('<div class="section-title">Network Overview</div>', unsafe_allow_html=True)
     left, right = st.columns([2, 1])
-
     with left:
         st.plotly_chart(
             make_time_chart(thesis_clean_df, "timestamp", "ping_avg_rtt_ms",
                             "Latency Over Time (Thesis Dataset — March 7–28)", "Latency (ms)",
                             color="#8b5cf6"),
-            use_container_width=True
-        )
-
+            use_container_width=True)
     with right:
         st.markdown('<div class="info-box">', unsafe_allow_html=True)
         st.markdown("### Current Forecast")
@@ -878,7 +1059,6 @@ with tab3:
         'Starlink experiment dataset exclusively.</div>',
         unsafe_allow_html=True)
 
-    # Show retrain queue info if available
     q_count, q_latest = retrain_queue_status()
     if q_count > 0:
         st.markdown("---")
@@ -916,40 +1096,56 @@ with tab4:
 
 # ---------- TAB 5: MODEL EVALUATION ----------
 with tab5:
-    st.markdown('<div class="section-title">Model Evaluation — Thesis Dataset</div>',
-                unsafe_allow_html=True)
+    if is_guest:
+        st.warning("Access restricted. This tab is not available to guest users.")
+    else:
+        st.markdown('<div class="section-title">Model Evaluation — Thesis Dataset</div>',
+                    unsafe_allow_html=True)
 
-    model_table = make_model_comparison_table(thesis_forecast)
-    st.dataframe(model_table, use_container_width=True)
+        model_table = make_model_comparison_table(thesis_forecast)
+        st.dataframe(model_table, use_container_width=True)
 
-    m1, m2 = st.columns(2)
-    m1.metric("Selected Model MAE",  f"{latency_result['mae']:.3f}")
-    m2.metric("Selected Model RMSE", f"{latency_result['rmse']:.3f}")
+        m1, m2 = st.columns(2)
+        m1.metric("Selected Model MAE",  f"{latency_result['mae']:.3f}")
+        m2.metric("Selected Model RMSE", f"{latency_result['rmse']:.3f}")
 
-    st.markdown('<div class="info-box">', unsafe_allow_html=True)
-    st.markdown("### Research Notes")
-    st.write(
-        "All models were trained and evaluated exclusively on the validated Starlink dataset "
-        "from March 7–28, 2026. The naive baseline serves as benchmark. Linear Regression was "
-        "selected as the final model due to the best balance of accuracy, stability, and "
-        "interpretability. More complex models did not add predictive value, confirming that "
-        "Starlink latency follows primarily linear patterns driven by recent history. All models "
-        "struggled to predict sudden latency spikes, which are caused by satellite handoffs and "
-        "environmental factors not captured in the available features."
-    )
-    st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('<div class="info-box">', unsafe_allow_html=True)
+        st.markdown("### Research Notes")
+        st.write(
+            "All models were trained and evaluated exclusively on the validated Starlink dataset "
+            "from March 7–28, 2026. The naive baseline serves as benchmark. Linear Regression was "
+            "selected as the final model due to the best balance of accuracy, stability, and "
+            "interpretability. More complex models did not add predictive value, confirming that "
+            "Starlink latency follows primarily linear patterns driven by recent history. All models "
+            "struggled to predict sudden latency spikes, which are caused by satellite handoffs and "
+            "environmental factors not captured in the available features."
+        )
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown("### Export Results")
-    st.download_button(
-        "Download Model Comparison CSV",
-        model_table.to_csv(index=False).encode("utf-8"),
-        "model_comparison_thesis.csv", "text/csv")
+        if is_admin:
+            st.markdown("### Export Results")
+            st.download_button(
+                "Download Model Comparison CSV",
+                model_table.to_csv(index=False).encode("utf-8"),
+                "model_comparison_thesis.csv", "text/csv")
 
-    pred_df = pd.DataFrame({
-        "actual": latency_result["y_test"].values,
-        "predicted": latency_result["y_pred"]
-    })
-    st.download_button(
-        "Download Latency Predictions CSV",
-        pred_df.to_csv(index=False).encode("utf-8"),
-        "latency_predictions_thesis.csv", "text/csv")
+            pred_df = pd.DataFrame({
+                "actual": latency_result["y_test"].values,
+                "predicted": latency_result["y_pred"]
+            })
+            st.download_button(
+                "Download Latency Predictions CSV",
+                pred_df.to_csv(index=False).encode("utf-8"),
+                "latency_predictions_thesis.csv", "text/csv")
+
+            st.markdown("---")
+            st.markdown("### Audit Log")
+            if os.path.exists(AUDIT_LOG_FILE):
+                with open(AUDIT_LOG_FILE, "r") as f:
+                    lines = f.readlines()
+                last_lines = lines[-20:] if len(lines) > 20 else lines
+                st.text("".join(last_lines))
+            else:
+                st.caption("No audit log entries yet.")
+        else:
+            st.caption("CSV export and audit log are available to admin only.")

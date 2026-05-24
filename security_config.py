@@ -1,7 +1,8 @@
 # Roles and credentials for login system
 USERS = {
-    "admin": {"password": "admin123", "role": "Admin"},
-    "viewer": {"password": "view456", "role": "Viewer"},
+    "admin": {"password": "admin123", "role": "admin"},
+    "supervisor": {"password": "super456", "role": "supervisor"},
+    "guest": {"password": "guest789", "role": "guest"},
 }
 
 # CSV files that will be integrity-checked with SHA-256
