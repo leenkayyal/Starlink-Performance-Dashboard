@@ -1,0 +1,5 @@
+Model,MAE,RMSE
+Naive Baseline,5.1355,11.5066
+Linear Regression (4 lags — original),4.691,11.3225
+Random Forest (4 lags — original),6.3482,12.5177
+Linear Regression (12 lags — extended),4.7309,11.4183

@@ -1,0 +1,38 @@
+Spike Classifier Report — threshold = 50.0 ms
+Spike rate: 1.7% | Train: 1572 | Test: 394
+============================================================
+
+Logistic Regression
+              precision    recall  f1-score   support
+
+      Normal       0.98      0.77      0.86       383
+       Spike       0.04      0.36      0.08        11
+
+    accuracy                           0.76       394
+   macro avg       0.51      0.57      0.47       394
+weighted avg       0.95      0.76      0.84       394
+
+
+Random Forest Classifier
+              precision    recall  f1-score   support
+
+      Normal       0.97      1.00      0.99       383
+       Spike       0.00      0.00      0.00        11
+
+    accuracy                           0.97       394
+   macro avg       0.49      0.50      0.49       394
+weighted avg       0.94      0.97      0.96       394
+
+
+XGBoost Classifier
+              precision    recall  f1-score   support
+
+      Normal       0.97      1.00      0.98       383
+       Spike       0.00      0.00      0.00        11
+
+    accuracy                           0.97       394
+   macro avg       0.49      0.50      0.49       394
+weighted avg       0.94      0.97      0.96       394
+
+
+Best spike F1-score: Logistic Regression (0.077)

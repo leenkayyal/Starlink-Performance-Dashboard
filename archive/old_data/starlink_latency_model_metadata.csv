@@ -1,0 +1,2 @@
+best_model_for_advisor,rows_combined,train_rows,test_rows,xgboost_included,note
+Linear Regression,4036,3228,808,False,XGBoost skipped in this run for speed; script can enable it locally.
