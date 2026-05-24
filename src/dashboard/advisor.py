@@ -2114,7 +2114,5 @@ elif st.session_state.step == 3:
 # ============================================================
 st.markdown("---")
 st.markdown("""
-<div style="color:#6B7B83;font-size:0.75rem;text-align:center;padding-bottom:1rem;">
-    Based on Starlink data collected in Muscat, Oman · GUtech AI Thesis · Predictions are estimates, not guarantees
-</div>
+
 """, unsafe_allow_html=True)
