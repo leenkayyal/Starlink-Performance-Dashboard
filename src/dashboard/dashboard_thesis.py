@@ -296,6 +296,19 @@ def check_login():
 
 check_login()
 
+loading_placeholder = st.empty()
+loading_placeholder.markdown("""
+<div class="loading-shell">
+    <div class="loading-row">
+        <div class="loading-spinner"></div>
+        <div>
+            <div class="loading-title">Loading dashboard data...</div>
+            <div class="loading-subtitle">Preparing charts, KPIs, and forecast results. Please wait a moment.</div>
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
 # ============================================================
 # FILE PATHS
 # ============================================================
@@ -750,6 +763,47 @@ div[data-baseweb="select"] > div:focus-within,
 .stSpinner > div { border-color: var(--orange) transparent transparent transparent !important; border-width: 3px !important; }
 [data-testid="stStatusWidget"], [data-testid="stStatusWidget"] svg { color: var(--orange) !important; fill: var(--orange) !important; stroke: var(--orange) !important; }
 .stProgress > div > div > div > div { background: linear-gradient(90deg, var(--orange), var(--yellow), var(--teal)) !important; }
+
+/* custom loading card */
+.loading-shell {
+    background: rgba(255,255,255,0.92);
+    border: 1px solid rgba(24,59,74,0.10);
+    border-radius: 22px;
+    box-shadow: 0 18px 45px rgba(24,59,74,0.10);
+    padding: 1rem 1.15rem;
+    margin: 0 0 1.15rem 0;
+}
+.loading-row {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+}
+.loading-spinner {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 3px solid rgba(24,59,74,0.14);
+    border-top-color: var(--orange);
+    border-right-color: var(--teal);
+    animation: thesisSpin 0.9s linear infinite;
+    flex: 0 0 auto;
+}
+.loading-title {
+    color: var(--ink);
+    font-weight: 800;
+    font-size: 0.98rem;
+    line-height: 1.2;
+    margin-bottom: 0.15rem;
+}
+.loading-subtitle {
+    color: var(--muted);
+    font-size: 0.83rem;
+    line-height: 1.45;
+}
+@keyframes thesisSpin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -1638,24 +1692,7 @@ with st.sidebar:
     )
 
     st.markdown("---")
-    st.markdown("**Dataset periods**")
-    st.markdown(
-        f'<span class="period-tag" style="background:rgba(232,83,28,0.1);color:{P1_COLOR};'
-        f'border:1px solid {P1_COLOR}44;">P1</span> '
-        f'<span style="color:#253545;font-size:0.78rem;">Mar 7 – Mar 28, 2026</span>',
-        unsafe_allow_html=True
-    )
-    st.markdown(
-        f'<span class="period-tag" style="background:rgba(141,184,122,0.15);color:{P2_COLOR};'
-        f'border:1px solid {P2_COLOR}44;">P2</span> '
-        f'<span style="color:#253545;font-size:0.78rem;">Apr 20 – May 12, 2026</span>',
-        unsafe_allow_html=True
-    )
-    st.markdown("---")
-    st.markdown("**GUtech AI Thesis · 2026**")
-    st.markdown("Starlink Performance Analysis")
-    st.markdown("Muscat, Oman")
-
+    st.caption("Study windows: P1 Mar 7–28, 2026 · P2 Apr 20–May 12, 2026")
     q_count, q_latest = retrain_queue_status()
     st.markdown("---")
     if q_count > 0:
@@ -1672,6 +1709,8 @@ latency_result    = train_model(forecast_df, selected_model)
 latency_forecast  = predict_next(forecast_df, selected_model)
 download_forecast = predict_next(dl_feat, "Linear Regression")
 upload_forecast   = predict_next(ul_feat, "Linear Regression")
+
+loading_placeholder.empty()
 
 # Fallback if feature builder returns 0
 _last_p2 = p2_df.iloc[-1]
@@ -1720,7 +1759,17 @@ recommendations = usage_recommendation(latency_forecast, current_jitter, downloa
 system_insight  = ai_insight(latency_forecast, current_jitter, download_forecast, upload_forecast)
 outage_status   = detect_outage(latency_forecast, download_forecast, upload_forecast)
 
-latest_time   = combined_clean["timestamp"].max()
+# The forecast label should describe the next interval after the latest row being shown.
+# In historical mode this is the final validated study row.
+# When the live KPI overlay is enabled, this is the latest logged row if available.
+try:
+    latest_time = pd.to_datetime(display_row["timestamp"], errors="coerce")
+except Exception:
+    latest_time = combined_clean["timestamp"].max()
+
+if pd.isna(latest_time):
+    latest_time = combined_clean["timestamp"].max()
+
 forecast_time = latest_time + pd.Timedelta(minutes=15)
 
 # Weather from display row
@@ -1772,7 +1821,11 @@ st.markdown(
     f'<div style="font-family:\'Space Grotesk\',sans-serif;font-size:2rem;'
     f'font-weight:800;line-height:1.1;letter-spacing:-0.8px;">'
     f'<span style="color:#253545;">Starlink </span>'
-    f'<span style="color:#265868;">Performance Monitor</span></div>'
+    f'<span style="color:#265868;">Performance Dashboard</span></div>'
+    f'<div style="margin-top:0.45rem;color:#6B7B83;font-size:0.9rem;line-height:1.45;'
+    f'font-family:\'Inter\',sans-serif;font-weight:500;">'
+    f'Historical performance analysis with short-term Starlink forecasting.'
+    f'</div>'
     f'</div>',
     unsafe_allow_html=True
 )
@@ -1787,6 +1840,7 @@ st.markdown(f"""
     font-family:'IBM Plex Mono',monospace;
 ">{kpi_note}</div>
 """, unsafe_allow_html=True)
+
 
 # ============================================================
 # KPI CARDS
@@ -1828,27 +1882,28 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
 # TAB 1, OVERVIEW
 # ============================================================
 with tab1:
-    st.markdown('<div class="card-title">Network Overview</div>', unsafe_allow_html=True)
+    st.markdown('<div class="card-title">Study Snapshot</div>', unsafe_allow_html=True)
 
     left, right = st.columns([2.2, 1])
     with left:
         # Dual-period latency chart, the signature chart of the thesis
         st.plotly_chart(
             make_dual_period_chart(p1_df, p2_df, "ping_avg_rtt_ms",
-                                   "Latency, Both Collection Periods",
+                                   "Latency Across the Collected Study Periods",
                                    "Latency (ms)", height=430),
             use_container_width=True
         )
 
     with right:
-        st.markdown('<div class="card-title">Next 15-Minute Forecast</div>', unsafe_allow_html=True)
+        st.markdown('<div class="card-title">Forecast: Next 15 Minutes</div>', unsafe_allow_html=True)
         st.metric("Latency",  f"{latency_forecast:.2f} ms")
         st.metric("Download", f"{download_forecast:.2f} Mbps")
         st.metric("Upload",   f"{upload_forecast:.2f} Mbps")
         st.markdown(
             f'<div style="color:#6B7B83;font-size:0.75rem;margin-top:0.5rem;'
             f'font-family:\'IBM Plex Mono\',monospace;">'
-            f'Forecast for: {forecast_time.strftime("%Y-%m-%d %H:%M")}<br>'
+            f'Next interval: {forecast_time.strftime("%Y-%m-%d %H:%M")}<br>'
+            f'Based on latest used row: {latest_time.strftime("%Y-%m-%d %H:%M")}<br>'
             f'Model: {selected_model}</div>',
             unsafe_allow_html=True
         )
@@ -1858,24 +1913,24 @@ with tab1:
     with col_a:
         st.plotly_chart(make_health_gauge(health_score), use_container_width=True)
     with col_b:
-        st.markdown('<div class="card-title">Recommended Usage</div>', unsafe_allow_html=True)
+        st.markdown('<div class="card-title">Recommended Use</div>', unsafe_allow_html=True)
         for rec in recommendations:
             st.markdown(f"- {rec}")
     with col_c:
-        st.markdown('<div class="card-title">Latest Weather Context</div>', unsafe_allow_html=True)
+        st.markdown('<div class="card-title">Weather at the Selected Row</div>', unsafe_allow_html=True)
         st.write(f"Condition: **{fmt_code(weather_code)}**")
         st.write(f"Temperature: **{fmt_temp(temp_val)}**")
         st.write(f"Humidity: **{fmt_humidity(hum_val)}**")
         st.write(f"Wind: **{fmt_wind(wind_val)}**")
 
-    st.markdown('<div class="card-title">System Insight</div>', unsafe_allow_html=True)
+    st.markdown('<div class="card-title">Plain-Language Interpretation</div>', unsafe_allow_html=True)
     st.write(system_insight)
 
 # ============================================================
 # TAB 2, HISTORICAL TRENDS
 # ============================================================
 with tab2:
-    st.markdown('<div class="card-title">Historical Performance, Both Experiment Periods</div>',
+    st.markdown('<div class="card-title">Collected Performance Trends</div>',
                 unsafe_allow_html=True)
 
     st.markdown(
@@ -1894,13 +1949,13 @@ with tab2:
     with col1:
         st.plotly_chart(
             make_dual_period_chart(p1_df, p2_df, "ping_jitter_ms",
-                                   "Jitter, Both Periods", "Jitter (ms)"),
+                                   "Jitter Across the Collected Periods", "Jitter (ms)"),
             use_container_width=True
         )
     with col2:
         st.plotly_chart(
             make_dual_period_chart(p1_df, p2_df, "download_mbps",
-                                   "Download Speed, Both Periods", "Download (Mbps)"),
+                                   "Download Speed Across the Collected Periods", "Download (Mbps)"),
             use_container_width=True
         )
 
@@ -1909,18 +1964,18 @@ with tab2:
     with col3:
         st.plotly_chart(
             make_dual_period_chart(p1_df, p2_df, "upload_mbps",
-                                   "Upload Speed, Both Periods", "Upload (Mbps)"),
+                                   "Upload Speed Across the Collected Periods", "Upload (Mbps)"),
             use_container_width=True
         )
     with col4:
         st.plotly_chart(
             make_dual_period_chart(p1_df, p2_df, "packet_loss_percent",
-                                   "Packet Loss, Both Periods", "Packet Loss (%)"),
+                                   "Packet Loss Across the Collected Periods", "Packet Loss (%)"),
             use_container_width=True
         )
 
     # Distribution comparison (box plots)
-    st.markdown('<div class="card-title" style="margin-top:0.5rem;">Distribution Comparison, Period 1 vs Period 2</div>',
+    st.markdown('<div class="card-title" style="margin-top:0.5rem;">How the Two Study Periods Compare</div>',
                 unsafe_allow_html=True)
     b1, b2 = st.columns(2)
     with b1:
@@ -1937,7 +1992,7 @@ with tab2:
         )
 
     # Per-period summary stats
-    st.markdown('<div class="card-title" style="margin-top:0.5rem;">Period Summary Statistics</div>',
+    st.markdown('<div class="card-title" style="margin-top:0.5rem;">Summary of the Collected Data</div>',
                 unsafe_allow_html=True)
     cols_of_interest = ["ping_avg_rtt_ms", "ping_jitter_ms", "download_mbps",
                         "upload_mbps", "packet_loss_percent"]
@@ -1959,7 +2014,7 @@ with tab2:
 # TAB 3, ISP COMPARISON
 # ============================================================
 with tab3:
-    st.markdown('<div class="card-title">ISP Comparison, Starlink vs Terrestrial Providers</div>',
+    st.markdown('<div class="card-title">Provider Comparison During the Same Study Windows</div>',
                 unsafe_allow_html=True)
 
     st.markdown(
@@ -2084,7 +2139,7 @@ with tab3:
 # TAB 4, FORECASTING
 # ============================================================
 with tab4:
-    st.markdown('<div class="card-title">Forecasting, Model trained on combined validated dataset</div>',
+    st.markdown('<div class="card-title">Next 15-Minute Forecast</div>',
                 unsafe_allow_html=True)
 
     st.plotly_chart(
@@ -2095,9 +2150,9 @@ with tab4:
     )
 
     f1, f2, f3 = st.columns(3)
-    f1.metric("Forecast Latency",  f"{latency_forecast:.2f} ms")
-    f2.metric("Forecast Download", f"{download_forecast:.2f} Mbps")
-    f3.metric("Forecast Upload",   f"{upload_forecast:.2f} Mbps")
+    f1.metric("Expected Latency",  f"{latency_forecast:.2f} ms")
+    f2.metric("Expected Download", f"{download_forecast:.2f} Mbps")
+    f3.metric("Expected Upload",   f"{upload_forecast:.2f} Mbps")
 
     # Residuals
     st.plotly_chart(
@@ -2111,9 +2166,10 @@ with tab4:
     st.markdown(
         '<div style="color:#6B7B83;font-size:0.8rem;margin-top:0.4rem;'
         'font-family:\'IBM Plex Mono\',monospace;">'
-        'Latency is the primary forecasting target. Download and upload forecasts '
-        'are supporting operational estimates. All predictions use the combined validated '
-        'dataset (Period 1 + Period 2).</div>',
+        'These values are not another historical summary. They are short-term estimates for the '
+        'next 15-minute interval after the latest measurement used by the dashboard. Latency is '
+        'the main forecasting target; download and upload are supporting operational estimates. '
+        'The model was trained on the combined validated study dataset (Period 1 + Period 2).</div>',
         unsafe_allow_html=True
     )
 
@@ -2132,7 +2188,7 @@ with tab4:
 # TAB 5, ALERTS & RECOMMENDATIONS
 # ============================================================
 with tab5:
-    st.markdown('<div class="card-title">Alerts and Recommendations</div>', unsafe_allow_html=True)
+    st.markdown('<div class="card-title">Usage Guidance Based on the Forecast</div>', unsafe_allow_html=True)
 
     for level, message in alerts:
         if level == "success":  st.success(message)
@@ -2141,15 +2197,15 @@ with tab5:
 
     col_a, col_b = st.columns(2)
     with col_a:
-        st.markdown('<div class="card-title">Operational Interpretation</div>', unsafe_allow_html=True)
+        st.markdown('<div class="card-title">What This Means Operationally</div>', unsafe_allow_html=True)
         st.write(
-            f"Forecast-based health status is **{health_label}** with a score of "
+            f"Based on the next 15-minute forecast, the expected health status is **{health_label}** with a score of "
             f"**{health_score}/100**. This combines predicted latency, forecast bandwidth, "
             f"and current jitter."
         )
         st.markdown('</div>', unsafe_allow_html=True)
     with col_b:
-        st.markdown('<div class="card-title">Suggested Use Cases Right Now</div>', unsafe_allow_html=True)
+        st.markdown('<div class="card-title">What Users Can Do Next</div>', unsafe_allow_html=True)
         for rec in recommendations:
             st.write(f"- {rec}")
 
@@ -2157,7 +2213,7 @@ with tab5:
 # TAB 6, MODEL EVALUATION
 # ============================================================
 with tab6:
-    st.markdown('<div class="card-title">Model Evaluation, Combined Forecast Dataset</div>',
+    st.markdown('<div class="card-title">Model Check on the Validated Study Dataset</div>',
                 unsafe_allow_html=True)
 
     model_table = make_model_comparison_table(forecast_df)
@@ -2167,7 +2223,7 @@ with tab6:
     m1.metric(f"{selected_model}, MAE",  f"{latency_result['mae']:.3f} ms")
     m2.metric(f"{selected_model}, RMSE", f"{latency_result['rmse']:.3f} ms")
 
-    st.markdown('<div class="card-title">Research Notes</div>', unsafe_allow_html=True)
+    st.markdown('<div class="card-title">Model Notes</div>', unsafe_allow_html=True)
     st.write(
         "Models were trained and evaluated on the combined validated Starlink dataset "
         "(Period 1: Mar 7–28 2026 + Period 2: Apr 20 – May 12 2026, "

@@ -762,8 +762,6 @@ div[data-baseweb="select"] > div:focus-within,
 }
 
 
-
-
 /* Softer question label typography */
 .q-label,
 .q-label.q-orange,
@@ -1155,7 +1153,7 @@ USE_CASES = {
 # ============================================================
 # DATA LOADING
 # ============================================================
-@st.cache_data(ttl=300)
+@st.cache_data(ttl=300, show_spinner=False)
 def load_clean_data():
     dfs = []
     for path in [PERIOD1_CLEAN_FILE, PERIOD2_CLEAN_FILE]:
@@ -1179,7 +1177,7 @@ def load_clean_data():
     ].copy()
     return df, True
 
-@st.cache_data(ttl=300)
+@st.cache_data(ttl=300, show_spinner=False)
 def load_base():
     df, ok = load_clean_data()
     if ok and len(df) > 0:
@@ -1192,7 +1190,7 @@ def load_base():
         }
     return {"latency": 38.0, "jitter": 6.5, "download": 145.0, "upload": 22.0, "loaded": False}
 
-@st.cache_resource
+@st.cache_resource(show_spinner=False)
 def load_saved_latency_model():
     try:
         model = joblib.load(AI_MODEL_FILE)
@@ -1283,7 +1281,7 @@ def make_supervised(df, target_col):
     out = df[available + ["target"]].dropna().reset_index(drop=True)
     return out, available
 
-@st.cache_data(ttl=300)
+@st.cache_data(ttl=300, show_spinner=False)
 def train_advisor_models():
     df, ok = load_clean_data()
     if not ok or len(df) < 50:
@@ -2109,12 +2107,3 @@ elif st.session_state.step == 3:
                     del st.session_state[k]
             st.rerun()
 
-# ============================================================
-# FOOTER
-# ============================================================
-st.markdown("---")
-st.markdown("""
-<div style="color:#6B7B83;font-size:0.75rem;text-align:center;padding-bottom:1rem;">
-    Based on Starlink data collected in Muscat, Oman · GUtech AI Thesis · Predictions are estimates, not guarantees
-</div>
-""", unsafe_allow_html=True)
