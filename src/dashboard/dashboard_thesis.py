@@ -2,6 +2,8 @@ import warnings
 warnings.filterwarnings("ignore")
 
 import os
+import hmac
+import hashlib
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -268,14 +270,53 @@ div[data-testid="stTextInput"] input {
 """, unsafe_allow_html=True)
 
 # ============================================================
-# LOGIN
+# SECURITY / LOGIN
 # ============================================================
-from security_config import USERS
+try:
+    from security_config import USERS
+except Exception as e:
+    st.error(
+        "Security configuration file was not found or could not be loaded. "
+        "Make sure security_config.py is beside this dashboard file."
+    )
+    st.exception(e)
+    st.stop()
+
+def _verify_password(saved_user, entered_password):
+    """
+    Supports the team's simple USERS structure and safer hashed variants.
+
+    Accepted examples inside security_config.py:
+    USERS = {
+        "admin": {"password": "1234", "role": "admin"},
+        "advisor": {"password_hash": "sha256$...", "role": "advisor"}
+    }
+    """
+    if not isinstance(saved_user, dict):
+        return False
+
+    # 1) Backward-compatible plain password check
+    if "password" in saved_user:
+        return hmac.compare_digest(str(saved_user.get("password", "")), str(entered_password))
+
+    # 2) Optional SHA-256 hash check: password_hash can be either "sha256$hash" or just the hash
+    if "password_hash" in saved_user:
+        saved_hash = str(saved_user.get("password_hash", ""))
+        entered_hash = hashlib.sha256(str(entered_password).encode("utf-8")).hexdigest()
+        if saved_hash.startswith("sha256$"):
+            saved_hash = saved_hash.split("sha256$", 1)[1]
+        return hmac.compare_digest(saved_hash, entered_hash)
+
+    return False
 
 def check_login():
     if "authenticated" not in st.session_state:
         st.session_state.authenticated = False
+    if "role" not in st.session_state:
         st.session_state.role = None
+    if "username" not in st.session_state:
+        st.session_state.username = None
+
     if not st.session_state.authenticated:
         st.markdown("""
         <div class="login-hero">
@@ -283,16 +324,27 @@ def check_login():
             <p>Please log in to continue.</p>
         </div>
         """, unsafe_allow_html=True)
+
         username = st.text_input("Username")
         password = st.text_input("Password", type="password")
+
         if st.button("Login"):
-            if username in USERS and USERS[username]["password"] == password:
+            user_record = USERS.get(username)
+            if user_record and _verify_password(user_record, password):
                 st.session_state.authenticated = True
-                st.session_state.role = USERS[username]["role"]
+                st.session_state.username = username
+                st.session_state.role = user_record.get("role", "user")
                 st.rerun()
             else:
                 st.error("Invalid username or password.")
+
         st.stop()
+
+def logout():
+    st.session_state.authenticated = False
+    st.session_state.username = None
+    st.session_state.role = None
+    st.rerun()
 
 check_login()
 
@@ -1679,6 +1731,14 @@ latest_live_row, latest_live_source = load_latest_live_row()
 # ============================================================
 with st.sidebar:
     st.markdown("### Controls")
+
+    current_user = st.session_state.get("username", "user")
+    current_role = st.session_state.get("role", "user")
+    st.caption(f"Logged in as **{current_user}** · Role: **{current_role}**")
+    if st.button("Logout", use_container_width=True):
+        logout()
+
+    st.markdown("---")
     model_options = ["Naive Baseline", "Linear Regression", "Random Forest"]
     if XGB_AVAILABLE: model_options.append("XGBoost")
     selected_model = st.selectbox("Forecast model", model_options, index=1)
