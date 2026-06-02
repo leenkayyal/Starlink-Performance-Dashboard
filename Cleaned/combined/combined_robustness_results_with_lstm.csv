@@ -1,0 +1,10 @@
+Setup,Model,MAE,RMSE,R2
+Lag 1-4,Naive Baseline,5.9457,9.0529,-0.9763
+Lag 1-4,Linear Regression,4.3367,6.466,-0.0082
+Lag 1-4,Random Forest,4.5213,6.5591,-0.0375
+Lag 1-4,XGBoost,4.6288,6.8265,-0.1237
+Lag 1-12,Naive Baseline,5.6258,8.7293,-0.8775
+Lag 1-12,Linear Regression,4.3022,6.6207,-0.08
+Lag 1-12,Random Forest,4.4957,6.5899,-0.07
+Lag 1-12,XGBoost,4.4916,6.6424,-0.0871
+LSTM sequence 12,LSTM,4.3687,6.4565,-0.0228
