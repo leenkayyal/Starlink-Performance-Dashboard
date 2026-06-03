@@ -49,3 +49,4 @@ htmlcov/
 # Local credentials (do not commit secrets)
 .env
 *.secret
+.DS_Store
