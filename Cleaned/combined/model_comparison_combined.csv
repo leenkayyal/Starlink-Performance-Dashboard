@@ -1,0 +1,4 @@
+Model,MAE,RMSE,R2
+Linear Regression,4.3367,6.466,-0.0082
+Random Forest,4.5213,6.5591,-0.0375
+Naive Baseline,5.9457,9.0529,-0.9763
