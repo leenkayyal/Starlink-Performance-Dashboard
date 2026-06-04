@@ -1,154 +1,169 @@
-# Starlink vs Terrestrial Broadband in Oman
+# Bachelor Thesis: AI-Based Internet Performance Analysis and Forecasting of Starlink Connectivity in Oman
 
-Empirical measurement and machine-learning forecasting of Starlink Gen 3 satellite internet performance in Muscat, Oman, compared against Omantel fibre and Awasr broadband. This repository contains the data, code, models, and written thesis for the project.
+**Author:** Leen Al Kayyal
+**Student ID:** 22-0024
+**Institution:** German University of Technology in Oman (GUtech)
+**Year:** 2026
 
-## Project at a glance
+## Project Overview
 
-Two field experiments were carried out at residential sites in Muscat. Each site ran a Starlink Gen 3 terminal alongside a terrestrial provider. Latency, jitter, packet loss, download and upload throughput, and weather context were logged every fifteen minutes through automated Python scripts. The pipeline cleans the raw measurements, builds a feature set with time-of-day features and lagged latency values, trains short-horizon forecasting models, and serves the results through a Streamlit dashboard and a Suitability Advisor.
+This repository contains the code, datasets, machine learning models, and dashboard files developed for the bachelor thesis project. The project analyzes Starlink internet performance in Muscat, Oman, compares it with terrestrial internet service providers, and uses machine learning to forecast short-term Starlink latency.
 
-| | Experiment A | Experiment B |
-| --- | --- | --- |
-| Site | Al Mawaleh | Al Hail South |
-| Satellite provider | Starlink Gen 3 (Data A) | Starlink Gen 3 (Data B) |
-| Terrestrial provider | Omantel fibre | Awasr broadband |
-| Collection window | 7 Mar - 28 Mar 2026 | 20 Apr - 12 May 2026 |
-| Cadence | 15 minutes | 15 minutes |
-| Raw rows (Starlink) | ~2,000 | 2,085 |
-| Raw rows (terrestrial) | ~1,500 | 21,620 (oversampled, aggregated to 15-min slots) |
+The repository includes scripts for data cleaning, feature engineering, model training, dashboard visualization, live monitoring, and the Starlink suitability advisor.
 
-Both experiments serve two different analytical purposes. The provider-comparison analysis treats each experiment independently. The Starlink latency forecasting model was first trained on Experiment A only (`starlink_forecast.csv`), then retrained on the combined feature set built from both experiments (`starlink_forecast_combined.csv`). Terrestrial provider data is never used as training input for the forecaster.
+## Repository Structure
 
-The current production model is a Linear Regression on four lagged latency values, with test-set MAE around 4.7 ms. Random Forest, XGBoost, an extended-lag LSTM, and a binary spike classifier were all evaluated as alternatives; their reports live under `results/`.
-
-## Repository layout
-
-```
-.
-├── README.md
-├── LICENSE
-├── requirements.txt
+```text
+Starlink-Performance-Dashboard/
 │
 ├── Raw/
-│   ├── experiment_A/        starlink_data.csv, omantel_data.csv
-│   └── experiment_B/        starlink_data2.csv, Awasr_data.csv
+│   ├── experiment_A/
+│   │   ├── omantel_data.csv
+│   │   └── starlink_data1.csv
+│   │
+│   └── experiment_B/
+│       ├── Awasr_data.csv
+│       └── starlink_data2.csv
 │
 ├── Cleaned/
-│   ├── experiment_A/        starlink_clean.csv, starlink_clean_FIXED.csv,
-│   │                        omantel_clean.csv, starlink_forecast.csv
-│   ├── experiment_B/        Starlink_2_cleaned.csv, Awasr_cleaned.csv,
-│   │                        starlink_2_forecast.csv
-│   ├── combined/            starlink_forecast_combined.csv  (training set for the final model)
-│   └── state/               starlink_retrain_queue.csv      (live retrain queue)
+│   ├── experiment_A/
+│   │   ├── omantel_clean.csv
+│   │   ├── starlink_clean_FIXED.csv
+│   │   └── starlink_predictions_experiment_A.csv
+│   │
+│   ├── experiment_B/
+│   │   ├── Awasr_cleaned.csv
+│   │   ├── Starlink_2_cleaned.csv
+│   │   └── starlink_2_forecast.csv
+│   │
+│   ├── combined/
+│   │   ├── starlink_forecast_combined.csv
+│   │   ├── starlink_predictions_combined.csv
+│   │   ├── model_comparison_combined.csv
+│   │   └── combined_robustness_results_with_lstm.csv
+│   │
+│   └── state/
+│       └── starlink_retrain_queue.csv
 │
-├── Models/                  starlink_latency_forecast_model.pkl,
-│                            starlink_latency_features.pkl,
-│                            starlink_latency_model_metadata.csv
-│
-├── results/                 Model comparison tables, confusion matrices, prediction CSVs,
-│                            and plots used in Chapter 4
-│
-├── data_reports/            Cleaning reports describing every drop, fix, and interpolation
-│                            for the Experiment B datasets
-│
-├── figures/                 Standalone figures used in the thesis chapters
-│
-├── logs/                    Run-time logs from the live logger (gitignored)
+├── Models/
+│   ├── starlink_latency_forecast_model.pkl
+│   ├── starlink_latency_features.pkl
+│   └── starlink_latency_model_metadata.csv
 │
 ├── src/
-│   ├── collection/          live_logger.py            cron-driven 15-minute logger
-│   ├── cleaning/            clean_both_datasets.py    raw → cleaned, Experiment B
-│   ├── features/            build_forecast_dataset.py time features + lags
-│   ├── models/              train_latency_model.py    LR / RF training on A, B, A+B
-│   │                        model_experiments.py      extended lags, LSTM, spike classifier
-│   ├── dashboard/           dashboard.py              live Starlink dashboard
-│   │                        dashboard_thesis.py       thesis-focused dashboard,
-│   │                                                  reads both experiments + combined
-│   │                        advisor.py                Suitability Advisor
-│   │                        security_config.py       login + CSV integrity manifest
-│   └── analysis/            compare_lr_features.py    before/after feature engineering
-│                            compare_xgboost_features.py
+│   ├── analysis/
+│   ├── cleaning/
+│   ├── collection/
+│   ├── dashboard/
+│   ├── features/
+│   └── models/
 │
-├── archive/                 Earlier iterations of every pipeline stage, kept for traceability
-│                            (do not run; paths inside refer to older filenames)
+├── archive/
+├── data_reports/
+├── results/
 │
-└── thesis/                  Chapter 1-4, Table of Contents, and an archived Chapter 3 draft
+├── .gitignore
+├── LICENSE
+├── README.md
+└── requirements.txt
 ```
 
-## How to run
+## Installation
 
-All commands assume the working directory is the project root, since every script uses paths relative to it.
+Install the required Python libraries using:
 
 ```bash
-# 1. Install dependencies
-python -m venv venv
-source venv/bin/activate          # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-
-# 2. Re-run the Experiment B cleaning pipeline (Experiment A clean files are already in Cleaned/experiment_A/)
-python src/cleaning/clean_both_datasets.py
-
-# 3. Build the feature set for Experiment B
-python src/features/build_forecast_dataset.py
-
-# 4. Train the latency model on Experiment A only, on Experiment B only, and on the combined set
-python src/models/train_latency_model.py
-
-# 5. Run the extended experiments: long lag window, LSTM, spike classifier
-python src/models/model_experiments.py
-
-# 6. Live dashboard (rolling-window view, advisor, model evaluation tab)
-streamlit run src/dashboard/dashboard.py
-
-# 7. Thesis dashboard (uses Experiment A, Experiment B, and the combined dataset)
-streamlit run src/dashboard/dashboard_thesis.py
-
-# 8. Suitability Advisor
-streamlit run src/dashboard/advisor.py
-
-# 9. Schedule the live logger every 15 minutes
-crontab -e
-# */15 * * * * /path/to/venv/bin/python /path/to/src/collection/live_logger.py
 ```
 
-## Datasets
+If `requirements.txt` is not used, install the main required libraries manually:
 
-Every cleaned row carries three audit flags so analysis can ignore interpolated values when needed: `had_empty_measurement_in_raw`, `was_missing_timestamp_row`, `was_estimated_row`. Full cleaning reports for Experiment B are in `data_reports/`.
+```bash
+pip install pandas numpy scikit-learn xgboost joblib streamlit plotly streamlit-autorefresh requests
+```
 
-Experiment A (Starlink + Omantel)
-* `Raw/experiment_A/starlink_data.csv` raw 15-min Starlink measurements
-* `Raw/experiment_A/omantel_data.csv` raw 15-min Omantel measurements
-* `Cleaned/experiment_A/starlink_clean.csv` initial cleaned version
-* `Cleaned/experiment_A/starlink_clean_FIXED.csv` canonical clean file used by the dashboards and the advisor
-* `Cleaned/experiment_A/omantel_clean.csv` cleaned Omantel measurements
-* `Cleaned/experiment_A/starlink_forecast.csv` feature-engineered training set (hour, day-of-week, lags 1-4)
+## Running the Project
 
-Experiment B (Starlink + Awasr)
-* `Raw/experiment_B/starlink_data2.csv` raw 15-min Starlink measurements
-* `Raw/experiment_B/Awasr_data.csv` raw 15-min Awasr measurements (oversampled, aggregated to 15-min slots during cleaning)
-* `Cleaned/experiment_B/Starlink_2_cleaned.csv`
-* `Cleaned/experiment_B/Awasr_cleaned.csv`
-* `Cleaned/experiment_B/starlink_2_forecast.csv` feature-engineered training set
+### 1. Data Collection
 
-Combined
-* `Cleaned/combined/starlink_forecast_combined.csv` Experiment A + Experiment B feature sets concatenated chronologically, used for the final model retrain
+The live logger collects Starlink performance measurements and appends new observations to the retraining queue.
 
-State
-* `Cleaned/state/starlink_retrain_queue.csv` rows captured by the live logger that are eligible for future retraining (Starlink only)
+```bash
+python src/collection/live_logger.py
+```
 
-## Model
+### 2. Data Cleaning
 
-* `Models/starlink_latency_forecast_model.pkl` Linear Regression on four lags (final model)
-* `Models/starlink_latency_features.pkl` ordered feature names expected by the model
-* `Models/starlink_latency_model_metadata.csv` training split sizes and model choice
+The cleaning script processes the raw Starlink and terrestrial ISP datasets.
 
-`train_latency_model.py` loads `experiment_A/starlink_forecast.csv` and `experiment_B/starlink_2_forecast.csv`, evaluates Linear Regression and Random Forest on each dataset individually and on the concatenated set, and saves the model that wins on combined-set MAE plus the matching feature list. Run order recorded in the metadata CSV.
+```bash
+python src/cleaning/clean_both_datasets.py
+```
 
-## Reproducibility notes
+### 3. Feature Engineering
 
-* Ping target was Cloudflare DNS (1.1.1.1). Weather context was pulled from Open-Meteo. Speedtest used `speedtest-cli`.
-* Both sites are residential subscribers in Muscat. Starlink uses inter-satellite-link routing because there is no Starlink gateway in Oman as of the measurement period; that routing variability is the main driver of latency spikes in the Starlink data and is discussed in Chapter 4.
-* The dataset is too small for deep models to outperform Linear Regression. The thesis discusses why, and `results/spike_classifier_report.txt` shows that rare spikes are not predictable from the current feature set without Starlink routing telemetry.
+The feature engineering script builds the forecasting dataset used for machine learning.
 
-## Author
+```bash
+python src/features/build_forecast_dataset.py
+```
 
-Leen Kayal. Thesis submitted in 2026.
+### 4. Model Training
+
+Train the Experiment A model:
+
+```bash
+python src/models/train_latency_model_A.py
+```
+
+Train the combined dataset model:
+
+```bash
+python src/models/train_latency_model_combined.py
+```
+
+### 5. Dashboard
+
+Run the Streamlit dashboard:
+
+```bash
+streamlit run src/dashboard/dashboard_thesis.py
+```
+
+## Dashboard and Advisor
+
+The dashboard presents the cleaned data, ISP comparison results, forecasting results, live monitoring output, model evaluation, and advisor module.
+
+The advisor is included as a dashboard tab. It uses the trained Linear Regression model saved in the `Models/` folder to estimate short-term Starlink latency and provide a simple suitability recommendation for different user needs.
+
+## Security and Access Control
+
+The `security_config.py` file defines role-based access profiles for the dashboard. The role profiles include:
+
+| Role               | Access                  |
+| ------------------ | ----------------------- |
+| Network Manager    | Full dashboard access   |
+| Prospective User   | Advisor access          |
+| Technical Reviewer | Model evaluation access |
+
+The security implementation is maintained in the `security-login-roles` branch.
+
+## Branch Structure
+
+| Branch                 | Description                                                                                                                                     |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `main`                 | Main thesis codebase, including data processing, model training, dashboard, and advisor files                                                   |
+| `security-login-roles` | Backup branch created during development; the security features were later integrated into the main branch and retained here as a fallback copy |
+
+## Key Findings
+
+- Starlink showed stable median latency across both experiments in Muscat.
+- Starlink latency generally remained suitable for the tested application categories.
+- Terrestrial ISPs showed stronger upload instability compared with Starlink in the collected datasets.
+- Latency spikes were difficult to predict because they appeared irregular and were likely affected by network routing or satellite-side factors.
+- Linear Regression was selected as the final forecasting model because it provided the best balance of accuracy, stability, and interpretability.
+- The dashboard and advisor provide a practical way to visualize the results and explain Starlink suitability to non-technical users.
+
+## Thesis Reference
+
+Leen Al Kayyal, _AI-Based Internet Performance Analysis and Forecasting of Starlink Connectivity in Oman_, Bachelor Thesis, German University of Technology in Oman, 2026.
