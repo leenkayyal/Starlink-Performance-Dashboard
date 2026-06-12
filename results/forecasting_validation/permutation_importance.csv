@@ -1,0 +1,12 @@
+feature,importance_MAE_ms
+ping_avg_rtt_ms_lag_1,0.1426
+day_of_week,0.0913
+ping_avg_rtt_ms_lag_3,0.0282
+ping_avg_rtt_ms_lag_2,0.0229
+hour,0.0188
+jitter_lag_1,0.0083
+is_weekend,0.0007
+download_lag_1,0.0004
+upload_lag_1,0.0
+weather_code,-0.0
+ping_avg_rtt_ms_lag_4,-0.0031

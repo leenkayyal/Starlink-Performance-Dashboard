@@ -1796,10 +1796,6 @@ elif st.session_state.step == 2:
 
         st.markdown(f"""
         <div class="advisor-card" style="border-left:4px solid #5EA38F;background:#EEF8F4;">
-            <strong style="color:#3D8B65;">AI forecasting active</strong><br>
-            Latency is forecast using the validated combined-dataset model (MAE 4.3 ms, RMSE 6.5 ms).
-            Jitter, download, and upload are forecast using models trained on both experiment datasets.
-            <br><br>
             <strong style="color:{adv['confidence_color']};">Forecast confidence: {adv['confidence']}</strong>
             {conf_note}
         </div>

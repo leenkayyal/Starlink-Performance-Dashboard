@@ -14,6 +14,7 @@ timestamp,network_type,ping_target,ping_avg_rtt_ms,ping_jitter_ms,packet_loss_pe
 2026-03-07 04:00:00,Starlink,1.1.1.1,25.12,3.73,0.0,25.19,145.88,30.2,OmanTel,Seeb,25.6,54.0,3.03,0.0,0.0,False,False,False
 2026-03-07 04:15:00,Starlink,1.1.1.1,26.52,4.73,0.0,25.54,229.95,32.97,GSL Networks,Muscat,25.5,55.0,3.03,0.0,0.0,False,False,False
 2026-03-07 04:30:00,Starlink,1.1.1.1,24.66,2.63,0.0,24.56,220.39,40.18,OmanTel,Muscat,25.4,56.0,3.03,0.0,0.0,False,False,False
+2026-03-07 04:45:00,Starlink,1.1.1.1,36.54,10.55,0.0,26.48,139.41,24.05,OmanTel,Muscat,25.35,56.5,3.03,0.0,0.0,False,True,True
 2026-03-07 05:00:00,Starlink,1.1.1.1,48.42,18.47,0.0,28.41,58.43,7.91,Awasr,Muscat,25.3,57.0,3.03,0.0,0.0,False,False,False
 2026-03-07 05:15:00,Starlink,1.1.1.1,28.26,4.61,0.0,24.82,127.99,50.46,OmanTel,Seeb,25.3,58.0,3.03,0.0,0.0,False,False,False
 2026-03-07 05:30:00,Starlink,1.1.1.1,32.06,8.51,0.0,31.79,238.28,30.19,OMREN,Seeb,25.2,58.0,3.03,0.0,0.0,False,False,False
@@ -266,6 +267,7 @@ timestamp,network_type,ping_target,ping_avg_rtt_ms,ping_jitter_ms,packet_loss_pe
 2026-03-09 19:15:00,Starlink,1.1.1.1,23.9,3.35,0.0,26.61,202.63,24.84,OMREN,Seeb,25.8,69.0,1.14,0.0,1.0,False,False,False
 2026-03-09 19:30:00,Starlink,1.1.1.1,26.5,4.08,0.0,25.23,286.55,45.51,OmanTel,Muscat,25.8,69.0,1.31,0.0,1.0,False,False,False
 2026-03-09 19:45:00,Starlink,1.1.1.1,28.06,6.33,0.0,24.14,161.99,36.0,OmanTel,Seeb,25.8,69.0,1.5,0.0,1.0,False,False,False
+2026-03-09 20:00:00,Starlink,1.1.1.1,26.42,4.7,0.0,26.04,252.88,46.59,OmanTel,Seeb,25.85,66.5,1.8,0.0,1.0,False,True,True
 2026-03-09 20:15:00,Starlink,1.1.1.1,24.78,3.06,0.0,27.94,343.76,57.19,Ooredoo Oman,Seeb,25.9,64.0,2.11,0.0,1.0,False,False,False
 2026-03-09 20:30:00,Starlink,1.1.1.1,28.72,4.96,0.0,47.35,263.31,45.76,Awasr,Muscat,25.9,64.0,2.0,0.0,1.0,False,False,False
 2026-03-09 20:45:00,Starlink,1.1.1.1,32.66,5.57,0.0,31.99,347.18,42.54,OmanTel,Muscat,25.9,64.0,1.89,0.0,1.0,False,False,False
@@ -304,6 +306,7 @@ timestamp,network_type,ping_target,ping_avg_rtt_ms,ping_jitter_ms,packet_loss_pe
 2026-03-10 05:00:00,Starlink,1.1.1.1,30.52,4.08,0.0,28.88,235.42,33.54,OmanTel,Seeb,24.8,83.0,1.94,0.0,0.0,False,False,False
 2026-03-10 05:15:00,Starlink,1.1.1.1,24.38,4.22,0.0,25.11,328.66,46.97,OmanTel,Muscat,24.8,83.0,1.94,0.0,0.0,False,False,False
 2026-03-10 05:30:00,Starlink,1.1.1.1,28.28,6.59,0.0,29.36,223.09,32.32,OMREN,Seeb,24.7,84.0,1.92,0.0,0.0,False,False,False
+2026-03-10 05:45:00,Starlink,1.1.1.1,26.1,4.61,0.0,26.59,218.5,26.46,OMREN,Seeb,24.7,84.0,1.92,0.0,0.0,False,True,True
 2026-03-10 06:00:00,Starlink,1.1.1.1,23.92,2.63,0.0,23.82,213.92,20.61,GSL Networks,Muscat,24.7,84.0,1.92,0.0,0.0,False,False,False
 2026-03-10 06:15:00,Starlink,1.1.1.1,25.18,3.76,0.0,30.84,280.18,43.56,OmanTel,Muscat,24.6,84.0,1.92,0.0,0.0,False,False,False
 2026-03-10 06:30:00,Starlink,1.1.1.1,26.94,3.04,0.0,30.54,309.64,21.01,Awasr,Muscat,24.6,85.0,1.92,0.0,0.0,False,False,False
@@ -384,6 +387,7 @@ timestamp,network_type,ping_target,ping_avg_rtt_ms,ping_jitter_ms,packet_loss_pe
 2026-03-11 01:15:00,Starlink,1.1.1.1,26.9,4.18,0.0,25.23,303.76,26.65,OmanTel,Muscat,25.4,77.0,2.83,0.0,2.0,False,False,False
 2026-03-11 01:30:00,Starlink,1.1.1.1,28.98,5.47,0.0,36.16,332.64,39.62,Ooredoo Oman,Muscat,25.3,77.0,2.81,0.0,2.0,False,False,False
 2026-03-11 01:45:00,Starlink,1.1.1.1,25.46,4.27,0.0,25.31,281.21,23.63,Awasr,Muscat,25.4,82.0,5.83,0.0,2.0,False,False,False
+2026-03-11 02:00:00,Starlink,1.1.1.1,25.27,3.71,0.0,24.66,270.41,29.65,Awasr,Muscat,25.35,81.5,5.92,0.0,2.0,False,True,True
 2026-03-11 02:15:00,Starlink,1.1.1.1,25.08,3.14,0.0,24.02,259.62,35.67,OmanTel,Seeb,25.3,81.0,6.0,0.0,3.0,False,False,False
 2026-03-11 02:30:00,Starlink,1.1.1.1,23.22,1.98,0.0,23.95,246.37,38.7,OmanTel,Seeb,25.3,81.0,6.0,0.0,3.0,False,False,False
 2026-03-11 02:45:00,Starlink,1.1.1.1,24.34,2.96,0.0,28.47,176.56,39.49,OmanTel,Seeb,25.2,80.0,6.0,0.0,3.0,False,False,False
@@ -781,6 +785,7 @@ timestamp,network_type,ping_target,ping_avg_rtt_ms,ping_jitter_ms,packet_loss_pe
 2026-03-15 04:45:00,Starlink,1.1.1.1,27.42,3.37,0.0,25.33,328.89,29.92,Awasr,Muscat,25.5,81.0,0.61,0.0,3.0,False,False,False
 2026-03-15 05:00:00,Starlink,1.1.1.1,38.75,9.91,4.0,24.43,308.55,39.7,OmanTel,Muscat,25.5,81.0,0.61,0.0,3.0,False,False,False
 2026-03-15 05:15:00,Starlink,1.1.1.1,29.56,5.61,0.0,25.1,206.63,34.83,OmanTel,Seeb,25.5,81.0,0.5,0.0,3.0,False,False,False
+2026-03-15 05:30:00,Starlink,1.1.1.1,30.82,5.35,0.0,23.22,184.25,37.33,OmanTel,Seeb,25.5,81.0,0.5,0.0,3.0,False,True,True
 2026-03-15 05:45:00,Starlink,1.1.1.1,32.08,5.08,0.0,21.34,161.87,39.83,OmanTel,Muscat,25.5,81.0,0.5,0.0,3.0,False,False,False
 2026-03-15 06:00:00,Starlink,1.1.1.1,25.26,3.51,0.0,25.27,274.92,58.44,OmanTel,Muscat,25.5,81.0,0.56,0.0,3.0,False,False,False
 2026-03-15 06:15:00,Starlink,1.1.1.1,28.74,5.43,0.0,25.11,101.31,36.03,OmanTel,Seeb,25.5,81.0,0.44,0.0,3.0,False,False,False
@@ -796,6 +801,7 @@ timestamp,network_type,ping_target,ping_avg_rtt_ms,ping_jitter_ms,packet_loss_pe
 2026-03-15 08:45:00,Starlink,1.1.1.1,35.76,4.65,0.0,51.02,316.43,29.49,OmanTel,Muscat,26.4,73.0,0.44,0.0,0.0,False,False,False
 2026-03-15 09:00:00,Starlink,1.1.1.1,29.12,4.65,0.0,28.07,193.72,48.0,OmanTel,Seeb,26.5,72.0,0.53,0.0,0.0,False,False,False
 2026-03-15 09:15:00,Starlink,1.1.1.1,26.48,3.31,0.0,26.76,345.36,40.57,OmanTel,Muscat,26.7,69.0,0.64,0.0,0.0,False,False,False
+2026-03-15 09:30:00,Starlink,1.1.1.1,27.53,3.3,0.0,28.82,276.56,45.97,OmanTel,Muscat,26.95,65.0,0.78,0.0,0.0,False,True,True
 2026-03-15 09:45:00,Starlink,1.1.1.1,28.58,3.29,0.0,30.88,207.77,51.36,OmanTel,Seeb,27.2,61.0,0.92,0.0,0.0,False,False,False
 2026-03-15 10:00:00,Starlink,1.1.1.1,30.86,3.08,0.0,32.37,245.24,32.51,GSL Networks,Muscat,27.4,58.0,1.03,0.0,0.0,False,False,False
 2026-03-15 10:15:00,Starlink,1.1.1.1,25.34,3.53,0.0,23.15,79.2,33.46,OmanTel,Seeb,27.6,56.0,1.31,0.0,0.0,False,False,False
@@ -928,6 +934,7 @@ timestamp,network_type,ping_target,ping_avg_rtt_ms,ping_jitter_ms,packet_loss_pe
 2026-03-16 18:00:00,Starlink,1.1.1.1,29.2,6.2,0.0,28.2,166.72,46.99,OmanTel,Muscat,27.5,65.0,1.03,0.0,0.0,False,False,False
 2026-03-16 18:15:00,Starlink,1.1.1.1,26.98,3.98,0.0,32.31,95.34,27.17,OmanTel,Seeb,27.4,66.0,0.89,0.0,0.0,False,False,False
 2026-03-16 18:30:00,Starlink,1.1.1.1,29.38,4.24,0.0,22.87,121.27,27.76,OmanTel,Seeb,27.3,67.0,0.81,0.0,0.0,False,False,False
+2026-03-16 18:45:00,Starlink,1.1.1.1,29.93,5.46,0.0,23.41,145.23,33.91,OmanTel,Seeb,27.2,67.5,0.73,0.0,0.0,False,True,True
 2026-03-16 19:00:00,Starlink,1.1.1.1,30.48,6.69,0.0,23.94,169.2,40.07,OmanTel,Seeb,27.1,68.0,0.64,0.0,0.0,False,False,False
 2026-03-16 19:15:00,Starlink,1.1.1.1,28.22,3.51,0.0,28.42,134.06,30.98,OmanTel,Seeb,27.1,68.0,0.64,0.0,0.0,False,False,False
 2026-03-16 19:30:00,Starlink,1.1.1.1,27.5,4.76,0.0,30.32,183.07,38.5,OmanTel,Muscat,27.0,68.0,0.64,0.0,0.0,False,False,False
@@ -1002,6 +1009,7 @@ timestamp,network_type,ping_target,ping_avg_rtt_ms,ping_jitter_ms,packet_loss_pe
 2026-03-17 12:45:00,Starlink,1.1.1.1,27.18,3.86,0.0,30.81,256.39,36.43,OMREN,Seeb,30.1,53.0,4.47,0.0,1.0,False,False,False
 2026-03-17 13:00:00,Starlink,1.1.1.1,26.72,3.71,0.0,25.22,251.93,8.1,Awasr,Muscat,29.7,55.0,4.75,0.0,1.0,False,False,False
 2026-03-17 13:15:00,Starlink,1.1.1.1,28.14,4.47,0.0,30.91,233.05,33.61,OmanTel,Muscat,29.7,55.0,4.56,0.0,1.0,False,False,False
+2026-03-17 13:30:00,Starlink,1.1.1.1,29.14,5.23,0.0,29.63,158.93,32.35,OmanTel,Muscat,30.8,48.5,4.53,0.0,0.0,False,True,True
 2026-03-17 13:45:00,Starlink,1.1.1.1,30.14,6.0,0.0,28.36,84.81,31.09,OmanTel,Seeb,31.9,42.0,4.5,0.0,0.0,False,False,False
 2026-03-17 14:00:00,Starlink,1.1.1.1,28.72,6.84,0.0,24.55,264.37,39.56,OmanTel,Muscat,31.9,42.0,4.44,0.0,1.0,False,False,False
 2026-03-17 14:15:00,Starlink,1.1.1.1,28.88,4.92,0.0,23.89,325.69,51.98,OmanTel,Muscat,31.7,43.0,4.5,0.0,1.0,False,False,False
@@ -1109,6 +1117,7 @@ timestamp,network_type,ping_target,ping_avg_rtt_ms,ping_jitter_ms,packet_loss_pe
 2026-03-18 15:45:00,Starlink,1.1.1.1,32.9,6.41,0.0,30.75,265.02,41.07,Ooredoo Oman,Seeb,28.7,57.0,1.25,0.0,3.0,False,False,False
 2026-03-18 16:00:00,Starlink,1.1.1.1,24.82,3.41,0.0,25.11,174.65,22.48,OmanTel,Muscat,28.7,57.0,1.33,0.0,2.0,False,False,False
 2026-03-18 16:15:00,Starlink,1.1.1.1,30.12,5.71,0.0,27.54,203.92,28.2,GSL Networks,Muscat,28.4,60.0,1.72,0.0,2.0,False,False,False
+2026-03-18 16:30:00,Starlink,1.1.1.1,27.43,4.42,0.0,25.89,245.05,22.23,GSL Networks,Muscat,28.05,65.0,2.23,0.0,2.0,False,True,True
 2026-03-18 16:45:00,Starlink,1.1.1.1,24.74,3.14,0.0,24.25,286.17,16.25,Awasr,Muscat,27.7,70.0,2.75,0.0,2.0,False,False,False
 2026-03-18 17:00:00,Starlink,1.1.1.1,32.32,5.47,0.0,21.43,358.01,43.41,GSL Networks,Muscat,27.5,73.0,3.06,0.0,3.0,False,False,False
 2026-03-18 17:15:00,Starlink,1.1.1.1,34.0,7.94,0.0,24.24,132.34,42.89,OmanTel,Seeb,27.3,75.0,2.97,0.0,3.0,False,False,False
@@ -1285,6 +1294,7 @@ timestamp,network_type,ping_target,ping_avg_rtt_ms,ping_jitter_ms,packet_loss_pe
 2026-03-20 12:00:00,Starlink,1.1.1.1,26.94,6.06,0.0,28.68,282.37,41.13,OmanTel,Muscat,26.5,81.0,2.69,0.0,2.0,False,False,False
 2026-03-20 12:15:00,Starlink,1.1.1.1,26.5,3.57,0.0,25.74,337.93,47.82,OmanTel,Seeb,26.6,80.0,2.89,0.0,2.0,False,False,False
 2026-03-20 12:30:00,Starlink,1.1.1.1,26.16,3.49,0.0,25.16,342.63,62.53,OmanTel,Seeb,26.6,79.0,3.06,0.0,2.0,False,False,False
+2026-03-20 12:45:00,Starlink,1.1.1.1,27.22,5.08,0.0,29.04,304.57,47.62,OmanTel,Seeb,26.65,78.5,3.23,0.0,2.0,False,True,True
 2026-03-20 13:00:00,Starlink,1.1.1.1,28.28,6.67,0.0,32.91,266.51,32.71,OmanTel,Seeb,26.7,78.0,3.39,0.0,2.0,False,False,False
 2026-03-20 13:15:00,Starlink,1.1.1.1,31.78,7.22,0.0,31.55,250.8,20.69,Awasr,Muscat,26.8,78.0,3.53,0.0,2.0,False,False,False
 2026-03-20 13:30:00,Starlink,1.1.1.1,27.2,6.27,0.0,31.1,182.1,9.38,Awasr,Muscat,26.8,78.0,3.67,0.0,2.0,False,False,False
@@ -1319,6 +1329,7 @@ timestamp,network_type,ping_target,ping_avg_rtt_ms,ping_jitter_ms,packet_loss_pe
 2026-03-20 20:45:00,Starlink,1.1.1.1,28.0,3.71,0.0,25.12,309.47,56.48,OmanTel,Muscat,27.9,55.0,3.56,0.0,3.0,False,False,False
 2026-03-20 21:00:00,Starlink,1.1.1.1,29.46,6.96,0.0,36.48,308.64,45.31,OmanTel,Seeb,28.0,52.0,3.06,0.0,3.0,False,False,False
 2026-03-20 21:15:00,Starlink,1.1.1.1,31.88,4.47,0.0,30.61,209.35,23.99,OmanTel,Seeb,28.1,50.0,2.69,0.0,3.0,False,False,False
+2026-03-20 21:30:00,Starlink,1.1.1.1,29.9,4.39,0.0,31.25,223.62,36.02,OmanTel,Seeb,28.15,49.5,2.51,0.0,3.0,False,True,True
 2026-03-20 21:45:00,Starlink,1.1.1.1,27.92,4.31,0.0,31.89,237.88,48.06,OmanTel,Seeb,28.2,49.0,2.33,0.0,3.0,False,False,False
 2026-03-20 22:00:00,Starlink,1.1.1.1,26.2,3.78,0.0,24.11,317.97,42.69,OmanTel,Seeb,28.3,49.0,2.19,0.0,3.0,False,False,False
 2026-03-20 22:15:00,Starlink,1.1.1.1,27.54,3.63,0.0,22.06,185.35,26.07,OmanTel,Seeb,28.3,49.0,1.92,0.0,3.0,False,False,False
@@ -1327,10 +1338,12 @@ timestamp,network_type,ping_target,ping_avg_rtt_ms,ping_jitter_ms,packet_loss_pe
 2026-03-20 23:00:00,Starlink,1.1.1.1,27.42,4.29,0.0,31.03,258.13,32.76,GSL Networks,Muscat,28.2,51.0,0.94,0.0,3.0,False,False,False
 2026-03-20 23:15:00,Starlink,1.1.1.1,26.86,5.18,0.0,24.65,256.24,10.31,Awasr,Muscat,28.1,52.0,0.81,0.0,3.0,False,False,False
 2026-03-20 23:30:00,Starlink,1.1.1.1,25.38,4.45,0.0,24.78,278.75,40.83,OmanTel,Muscat,27.9,54.0,0.81,0.0,3.0,False,False,False
+2026-03-20 23:45:00,Starlink,1.1.1.1,26.21,4.25,0.0,24.36,302.16,38.23,OmanTel,Muscat,27.8,55.5,0.83,0.0,3.0,False,True,True
 2026-03-21 00:00:00,Starlink,1.1.1.1,27.04,4.06,0.0,23.93,325.57,35.64,OmanTel,Muscat,27.7,57.0,0.86,0.0,3.0,False,False,False
 2026-03-21 00:15:00,Starlink,1.1.1.1,26.82,4.33,0.0,22.84,291.29,41.81,OmanTel,Seeb,27.6,59.0,0.5,0.0,3.0,False,False,False
 2026-03-21 00:30:00,Starlink,1.1.1.1,27.48,4.33,0.0,31.79,122.82,48.98,Ooredoo Oman,Seeb,27.4,61.0,0.14,0.0,3.0,False,False,False
 2026-03-21 00:45:00,Starlink,1.1.1.1,27.28,4.82,0.0,30.53,123.5,31.7,OmanTel,Muscat,27.3,64.0,0.69,0.0,3.0,False,False,False
+2026-03-21 01:00:00,Starlink,1.1.1.1,29.3,5.35,0.0,27.87,210.85,43.96,OmanTel,Muscat,27.2,65.0,0.88,0.0,3.0,False,True,True
 2026-03-21 01:15:00,Starlink,1.1.1.1,31.32,5.88,0.0,25.2,298.2,56.23,OmanTel,Muscat,27.1,66.0,1.06,0.0,3.0,False,False,False
 2026-03-21 01:30:00,Starlink,1.1.1.1,25.84,4.53,0.0,24.9,294.21,40.92,GSL Networks,Muscat,27.0,68.0,0.92,0.0,3.0,False,False,False
 2026-03-21 01:45:00,Starlink,1.1.1.1,25.36,3.92,0.0,27.72,227.16,28.76,OmanTel,Muscat,26.3,78.0,1.44,0.0,3.0,False,False,False
@@ -1625,6 +1638,7 @@ timestamp,network_type,ping_target,ping_avg_rtt_ms,ping_jitter_ms,packet_loss_pe
 2026-03-24 02:00:00,Starlink,1.1.1.1,25.32,3.61,0.0,26.9,280.13,46.48,GSL Networks,Muscat,25.4,80.0,2.31,0.0,61.0,False,False,False
 2026-03-24 02:15:00,Starlink,1.1.1.1,25.84,5.65,0.0,24.06,290.01,40.98,OmanTel,Muscat,25.4,80.0,2.19,0.0,61.0,False,False,False
 2026-03-24 02:30:00,Starlink,1.1.1.1,32.02,7.22,0.0,51.61,248.4,27.8,Ooredoo Oman,Muscat,25.3,80.0,2.11,0.0,61.0,False,False,False
+2026-03-24 02:45:00,Starlink,1.1.1.1,30.28,8.13,0.0,41.66,246.93,27.55,Ooredoo Oman,Muscat,25.3,80.0,2.0,0.0,61.0,False,True,True
 2026-03-24 03:00:00,Starlink,1.1.1.1,28.54,9.04,0.0,31.7,245.46,27.3,GSL Networks,Muscat,25.3,80.0,1.89,0.0,61.0,False,False,False
 2026-03-24 03:15:00,Starlink,1.1.1.1,45.5,7.06,0.0,33.13,238.38,37.92,OMREN,Seeb,25.3,80.0,2.11,0.0,61.0,False,False,False
 2026-03-24 03:30:00,Starlink,1.1.1.1,24.62,3.1,0.0,31.93,277.0,33.67,OmanTel,Seeb,25.3,81.0,2.42,0.0,61.0,False,False,False

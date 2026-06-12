@@ -61,7 +61,6 @@ Starlink-Performance-Dashboard/
 ├── archive/
 ├── data_reports/
 ├── results/
-│
 ├── .gitignore
 ├── LICENSE
 ├── README.md
@@ -136,25 +135,6 @@ The dashboard presents the cleaned data, ISP comparison results, forecasting res
 
 The advisor is included as a dashboard tab. It uses the trained Linear Regression model saved in the `Models/` folder to estimate short-term Starlink latency and provide a simple suitability recommendation for different user needs.
 
-## Security and Access Control
-
-The `security_config.py` file defines role-based access profiles for the dashboard. The role profiles include:
-
-| Role               | Access                  |
-| ------------------ | ----------------------- |
-| Network Manager    | Full dashboard access   |
-| Prospective User   | Advisor access          |
-| Technical Reviewer | Model evaluation access |
-
-The security implementation is maintained in the `security-login-roles` branch.
-
-## Branch Structure
-
-| Branch                 | Description                                                                                                                                     |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `main`                 | Main thesis codebase, including data processing, model training, dashboard, and advisor files                                                   |
-| `security-login-roles` | Backup branch created during development; the security features were later integrated into the main branch and retained here as a fallback copy |
-
 ## Key Findings
 
 - Starlink showed stable median latency across both experiments in Muscat.
@@ -163,6 +143,18 @@ The security implementation is maintained in the `security-login-roles` branch.
 - Latency spikes were difficult to predict because they appeared irregular and were likely affected by network routing or satellite-side factors.
 - Linear Regression was selected as the final forecasting model because it provided the best balance of accuracy, stability, and interpretability.
 - The dashboard and advisor provide a practical way to visualize the results and explain Starlink suitability to non-technical users.
+
+### Forecasting Validation Outputs
+
+The `results/forecasting_validation/` folder contains additional validation outputs for the final Linear Regression forecasting model.
+
+These files support three checks:
+
+1. **Cross-site generalization**: testing whether a model trained on one Muscat residential site can still forecast latency at another site.
+2. **Forecast confidence**: reporting a prediction interval around the next 15-minute latency forecast.
+3. **Explainability**: using permutation importance to identify which input features most affect forecasting error.
+
+These outputs are used to support the thesis forecasting results, dashboard/advisor interpretation, and presentation slides.
 
 ## Thesis Reference
 

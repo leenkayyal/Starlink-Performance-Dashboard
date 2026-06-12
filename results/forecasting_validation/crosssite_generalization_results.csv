@@ -1,0 +1,5 @@
+scenario,model,test_rows,model_MAE_ms,model_RMSE_ms,model_R2,naive_MAE_ms,naive_RMSE_ms
+"Within A (train A, test A)",Linear Regression,398,4.741,11.906,-0.052,5.152,11.494
+"Within B (train B, test B)",Linear Regression,413,4.311,6.091,-0.245,5.696,7.897
+"Transfer A->B (train A, test B)",Linear Regression,2062,4.801,7.044,-0.068,5.804,9.545
+"Transfer B->A (train B, test A)",Linear Regression,1988,3.903,8.189,-0.124,4.837,9.55

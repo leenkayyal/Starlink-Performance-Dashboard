@@ -1884,7 +1884,6 @@ st.markdown(
     f'<span style="color:#265868;">Performance Dashboard</span></div>'
     f'<div style="margin-top:0.45rem;color:#6B7B83;font-size:0.9rem;line-height:1.45;'
     f'font-family:\'Inter\',sans-serif;font-weight:500;">'
-    f'Historical performance analysis with short-term Starlink forecasting.'
     f'</div>'
     f'</div>',
     unsafe_allow_html=True
